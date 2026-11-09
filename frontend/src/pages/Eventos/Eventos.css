@@ -1,0 +1,259 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+
+.eventos-page-root {
+  min-height: 100vh;
+  background-color: #060508;
+  color: #ffffff;
+  padding: 8.5rem 2rem 6rem;
+  font-family: 'Montserrat', sans-serif;
+  box-sizing: border-box;
+}
+
+.eventos-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.eventos-header {
+  text-align: center;
+  max-width: 860px;
+  margin: 0 auto 3.5rem auto;
+}
+
+.eventos-pre-tag {
+  display: inline-block;
+  font-size: 0.74rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #d4af37;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+
+.eventos-header h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+  font-weight: 700;
+  color: #f3e5ab;
+  margin: 0 0 0.8rem 0;
+  letter-spacing: 1.5px;
+}
+
+.eventos-header p {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  line-height: 1.7;
+}
+
+/* Grilla de Espacios */
+.espacios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-bottom: 5rem;
+}
+
+.espacio-card {
+  background: #110f17;
+  border: 1px solid rgba(196, 181, 253, 0.18);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.espacio-card:hover {
+  transform: translateY(-5px);
+  border-color: #d4af37;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 175, 55, 0.2);
+}
+
+.espacio-img-wrap {
+  height: 200px;
+  position: relative;
+}
+
+.espacio-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.espacio-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(14, 12, 20, 0.85);
+  border: 1px solid #d4af37;
+  color: #f3e5ab;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 0.25rem 0.65rem;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+.espacio-card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.espacio-card-body h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.45rem;
+  color: #ffffff;
+  margin: 0 0 0.5rem 0;
+}
+
+.espacio-specs {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.76rem;
+  color: #c4b5fd;
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+}
+
+.espacio-card-body p {
+  color: #94a3b8;
+  font-size: 0.84rem;
+  line-height: 1.6;
+  margin: 0 0 1.2rem 0;
+  flex-grow: 1;
+}
+
+.btn-select-espacio {
+  background: transparent;
+  border: 1px solid #d4af37;
+  color: #d4af37;
+  padding: 0.6rem;
+  border-radius: 4px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-select-espacio:hover,
+.btn-select-espacio.selected {
+  background: #d4af37;
+  color: #060508;
+}
+
+/* Sección de Cotizador Interactivo */
+.cotizador-section {
+  background: linear-gradient(165deg, rgba(20, 18, 28, 0.98) 0%, rgba(12, 11, 16, 0.99) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 12px;
+  padding: 3rem 2.5rem;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
+}
+
+.cotizador-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 3rem;
+}
+
+@media (max-width: 960px) {
+  .cotizador-grid { grid-template-columns: 1fr; }
+}
+
+.cotizador-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.cotizador-form label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #c4b5fd;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.cotizador-form input,
+.cotizador-form select,
+.cotizador-form textarea {
+  width: 100%;
+  background: #14121d;
+  border: 1px solid rgba(196, 181, 253, 0.22);
+  border-radius: 4px;
+  padding: 0.7rem 0.9rem;
+  color: #ffffff;
+  font-size: 0.88rem;
+  outline: none;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.cotizador-form input:focus,
+.cotizador-form select:focus,
+.cotizador-form textarea:focus {
+  border-color: #d4af37;
+}
+
+.resumen-card {
+  background: #121019;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 8px;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.resumen-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  color: #f3e5ab;
+  margin: 0 0 1.2rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.6rem;
+}
+
+.resumen-line {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  color: #cbd5e1;
+  margin-bottom: 0.8rem;
+}
+
+.resumen-total {
+  border-top: 1px solid rgba(212, 175, 55, 0.3);
+  padding-top: 1rem;
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.resumen-total strong {
+  font-size: 1.6rem;
+  color: #f3e5ab;
+}
+
+.btn-guardar-cotizacion {
+  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
+  color: #060508;
+  border: none;
+  border-radius: 4px;
+  padding: 0.95rem;
+  font-size: 0.84rem;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 1.5rem;
+  width: 100%;
+}

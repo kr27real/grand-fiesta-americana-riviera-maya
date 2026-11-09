@@ -1,0 +1,46 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,400;1,600&family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+
+/* ========================================================
+   PALETA FIJA CORPORATIVA: NOIR OBSIDIENNE & ORO CHAMPAGNE
+   Grand Fiesta Americana Riviera Cancún Resort & Spa
+   ======================================================== */
+:root {
+  --bg-primary: #060508;
+  --bg-secondary: #110f17;
+  --bg-card: #14121d;
+  --text-main: #ffffff;
+  --text-muted: #94a3b8;
+  --gold-accent: #d4af37;
+  --gold-text: #f3e5ab;
+  --lila-accent: #c4b5fd;
+  --border-card: rgba(196, 181, 253, 0.18);
+  --border-gold: rgba(212, 175, 55, 0.4);
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: 'Montserrat', sans-serif;
+  overflow-x: hidden;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Scrollbar Corporativo Fijo */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #060508;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.35);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #d4af37;
+}

@@ -1,0 +1,192 @@
+.amenities-section {
+  background-color: #121214;
+  padding: 4.5rem 1.5rem;
+  border-top: 1px solid rgba(179, 157, 219, 0.15);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.amenities-container {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.amenities-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 2.5rem;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+  padding-bottom: 1.2rem;
+}
+
+.amenities-tagline {
+  color: #b39ddb;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.35rem;
+}
+
+.amenities-main-title {
+  color: #ffffff;
+  font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.amenities-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+}
+
+.see-all-amenities {
+  color: #d4af37;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s;
+}
+
+.see-all-amenities:hover {
+  color: #ffe082;
+  transform: translateX(3px);
+}
+
+.amenities-nav-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.amenity-arrow {
+  background: #1e1e24;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #d4af37;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.amenity-arrow:hover {
+  background: #d4af37;
+  color: #0d0d0d;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+}
+
+/* Grilla de amenidades */
+.amenities-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.amenity-card {
+  background: #18181b;
+  border: 1px solid rgba(179, 157, 219, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+.amenity-card:hover {
+  transform: translateY(-4px);
+  border-color: #b39ddb;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.7);
+}
+
+.amenity-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  overflow: hidden;
+}
+
+.amenity-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.amenity-card:hover .amenity-img {
+  transform: scale(1.05);
+}
+
+.amenity-icon-badge {
+  position: absolute;
+  bottom: 0.9rem;
+  right: 0.9rem;
+  background: rgba(13, 13, 13, 0.85);
+  border: 1px solid #d4af37;
+  color: #d4af37;
+  padding: 0.55rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+}
+
+.amenity-content {
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.amenity-title {
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+
+.amenity-desc {
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin-bottom: 1.4rem;
+  flex-grow: 1;
+}
+
+.amenity-link {
+  color: #b39ddb;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.amenity-link:hover {
+  color: #d4af37;
+  text-decoration: underline;
+}
+
+@media (max-width: 992px) {
+  .amenities-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .amenities-grid {
+    grid-template-columns: 1fr;
+  }
+  .amenities-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}

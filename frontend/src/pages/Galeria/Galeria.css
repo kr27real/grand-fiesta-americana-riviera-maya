@@ -1,0 +1,258 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+
+.galeria-page-root {
+  min-height: 100vh;
+  background-color: #060508;
+  color: #ffffff;
+  padding: 8.5rem 2rem 6rem;
+  font-family: 'Montserrat', sans-serif;
+  box-sizing: border-box;
+}
+
+.galeria-wrapper {
+  max-width: 1350px;
+  margin: 0 auto;
+}
+
+/* Cabecera */
+.galeria-header {
+  text-align: center;
+  max-width: 820px;
+  margin: 0 auto 3.5rem auto;
+}
+
+.galeria-pre-title {
+  display: inline-block;
+  font-size: 0.74rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #d4af37;
+  font-weight: 700;
+  margin-bottom: 0.8rem;
+}
+
+.galeria-header h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+  font-weight: 700;
+  color: #f3e5ab;
+  margin: 0 0 1rem 0;
+  letter-spacing: 1.5px;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.85);
+}
+
+.galeria-header p {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.7;
+}
+
+/* Barra de Filtros */
+.galeria-filters-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 3.5rem;
+}
+
+.btn-filter-tag {
+  background: rgba(22, 19, 30, 0.85);
+  border: 1px solid rgba(196, 181, 253, 0.2);
+  color: #cbd5e1;
+  padding: 0.6rem 1.4rem;
+  border-radius: 30px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-filter-tag:hover,
+.btn-filter-tag.active {
+  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
+  color: #060508;
+  border-color: #d4af37;
+  box-shadow: 0 4px 18px rgba(212, 175, 55, 0.35);
+}
+
+/* Grilla de Galería */
+.galeria-masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+  gap: 2rem;
+}
+
+.galeria-item-card {
+  position: relative;
+  height: 290px;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 1px solid rgba(196, 181, 253, 0.16);
+  background: #121019;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+  transition: transform 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
+}
+
+.galeria-item-card:hover {
+  transform: translateY(-6px);
+  border-color: #d4af37;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.9), 0 0 20px rgba(212, 175, 55, 0.2);
+}
+
+.galeria-item-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+}
+
+.galeria-item-card:hover img {
+  transform: scale(1.08);
+}
+
+.galeria-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, rgba(6, 5, 8, 0.95) 0%, rgba(6, 5, 8, 0.3) 55%, transparent 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.8rem;
+  opacity: 0.9;
+  transition: opacity 0.3s ease;
+}
+
+.galeria-item-card:hover .galeria-card-overlay {
+  opacity: 1;
+}
+
+.galeria-badge {
+  display: inline-block;
+  align-self: flex-start;
+  background: rgba(14, 12, 20, 0.85);
+  border: 1px solid #d4af37;
+  color: #f3e5ab;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+  margin-bottom: 0.6rem;
+}
+
+.galeria-card-overlay h4 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.45rem;
+  color: #ffffff;
+  margin: 0 0 0.3rem 0;
+  font-weight: 700;
+}
+
+.galeria-card-overlay p {
+  color: #cbd5e1;
+  font-size: 0.8rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Banner de Error / Desconexión de Base de Datos */
+.db-offline-card {
+  max-width: 680px;
+  margin: 4rem auto;
+  padding: 3rem 2.5rem;
+  background: linear-gradient(145deg, rgba(35, 15, 20, 0.95) 0%, rgba(18, 9, 12, 0.98) 100%);
+  border: 1px solid #ef4444;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 20px 45px rgba(239, 68, 68, 0.25);
+}
+
+.db-offline-card h3 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 2.2rem;
+  color: #fca5a5;
+  margin: 0.8rem 0 0.4rem 0;
+}
+
+.db-offline-card p {
+  color: #cbd5e1;
+  font-size: 0.92rem;
+  line-height: 1.7;
+  margin-bottom: 1.8rem;
+}
+
+.btn-retry-conn {
+  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
+  color: #060508;
+  border: none;
+  padding: 0.75rem 1.8rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+/* Modal Lightbox */
+.lightbox-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(8px);
+  z-index: 4000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.lightbox-content-box {
+  max-width: 950px;
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.lightbox-img-full {
+  width: 100%;
+  max-height: 75vh;
+  object-fit: contain;
+  border-radius: 8px;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+}
+
+.lightbox-caption {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.lightbox-caption h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  color: #f3e5ab;
+  margin: 0 0 0.2rem 0;
+}
+
+.lightbox-caption p {
+  color: #94a3b8;
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+.btn-close-lightbox {
+  position: absolute;
+  top: -45px;
+  right: 0;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+}

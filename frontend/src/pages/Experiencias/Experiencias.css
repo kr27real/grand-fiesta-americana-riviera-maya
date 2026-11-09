@@ -1,0 +1,323 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+
+.exp-page-root {
+  min-height: 100vh;
+  background-color: #060508;
+  color: #ffffff;
+  padding: 8.5rem 2rem 6rem;
+  font-family: 'Montserrat', sans-serif;
+  box-sizing: border-box;
+}
+
+.exp-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Cabecera */
+.exp-header {
+  text-align: center;
+  max-width: 860px;
+  margin: 0 auto 3.5rem auto;
+}
+
+.exp-pre-tag {
+  display: inline-block;
+  font-size: 0.74rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #d4af37;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+
+.exp-header h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(2.4rem, 4.5vw, 3.8rem);
+  font-weight: 700;
+  color: #f3e5ab;
+  margin: 0 0 0.8rem 0;
+  letter-spacing: 1.5px;
+  text-shadow: 0 4px 25px rgba(0, 0, 0, 0.9);
+}
+
+.exp-header p {
+  color: #94a3b8;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  font-weight: 300;
+}
+
+/* Filtros */
+.exp-filters-row {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin-bottom: 3.5rem;
+}
+
+.btn-filter-pill {
+  background: rgba(22, 19, 30, 0.85);
+  border: 1px solid rgba(196, 181, 253, 0.2);
+  color: #cbd5e1;
+  padding: 0.6rem 1.4rem;
+  border-radius: 30px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-filter-pill:hover,
+.btn-filter-pill.active {
+  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
+  color: #060508;
+  border-color: #d4af37;
+  box-shadow: 0 4px 18px rgba(212, 175, 55, 0.35);
+}
+
+/* Grilla de Tarjetas */
+.exp-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 2.5rem;
+}
+
+.exp-card-item {
+  background: linear-gradient(165deg, rgba(20, 18, 28, 0.95) 0%, rgba(12, 11, 16, 0.98) 100%);
+  border: 1px solid rgba(196, 181, 253, 0.18);
+  border-radius: 12px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+  transition: all 0.3s ease;
+}
+
+.exp-card-item:hover {
+  transform: translateY(-6px);
+  border-color: #d4af37;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.95), 0 0 20px rgba(212, 175, 55, 0.2);
+}
+
+.exp-img-box {
+  height: 240px;
+  position: relative;
+  overflow: hidden;
+}
+
+.exp-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.exp-card-item:hover .exp-img-box img {
+  transform: scale(1.08);
+}
+
+.exp-category-chip {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: rgba(14, 12, 20, 0.88);
+  border: 1px solid #d4af37;
+  color: #f3e5ab;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  padding: 0.3rem 0.75rem;
+  border-radius: 4px;
+  backdrop-filter: blur(6px);
+}
+
+.exp-duration-chip {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  background: rgba(8, 6, 12, 0.85);
+  border: 1px solid rgba(196, 181, 253, 0.3);
+  color: #cbd5e1;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.exp-card-body {
+  padding: 2rem 2.2rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.exp-card-body h3 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.6rem;
+  color: #f3e5ab;
+  margin: 0 0 0.6rem 0;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.exp-card-body p {
+  color: #94a3b8;
+  font-size: 0.88rem;
+  line-height: 1.65;
+  margin: 0 0 1.8rem 0;
+  flex-grow: 1;
+}
+
+.exp-price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1.2rem;
+  margin-bottom: 1.4rem;
+}
+
+.price-main {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+}
+
+.price-main small {
+  font-size: 0.75rem;
+  color: #d4af37;
+  margin-left: 4px;
+}
+
+.price-rewards {
+  font-size: 0.76rem;
+  color: #c4b5fd;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.btn-book-exp {
+  width: 100%;
+  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
+  color: #060508;
+  border: none;
+  border-radius: 4px;
+  padding: 0.85rem 1.4rem;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35);
+}
+
+.btn-book-exp:hover {
+  background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.55);
+}
+
+/* Modal de Reserva */
+.exp-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.9);
+  backdrop-filter: blur(10px);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.exp-modal-window {
+  background: linear-gradient(165deg, rgba(22, 19, 32, 0.98) 0%, rgba(12, 10, 18, 0.99) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 620px;
+  padding: 2.5rem;
+  position: relative;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95);
+}
+
+.btn-close-modal {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.btn-close-modal:hover {
+  color: #ffffff;
+}
+
+.modal-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.2rem;
+}
+
+.modal-form-group label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #c4b5fd;
+}
+
+.modal-form-group input,
+.modal-form-group select,
+.modal-form-group textarea {
+  background: #14121d;
+  border: 1px solid rgba(196, 181, 253, 0.22);
+  border-radius: 4px;
+  padding: 0.75rem 0.95rem;
+  color: #ffffff;
+  font-size: 0.88rem;
+  outline: none;
+  font-family: inherit;
+}
+
+.modal-form-group input:focus,
+.modal-form-group select:focus,
+.modal-form-group textarea:focus {
+  border-color: #d4af37;
+}
+
+/* Alerta de Desconexión de Base de Datos */
+.db-error-banner {
+  background: linear-gradient(145deg, rgba(35, 15, 20, 0.95) 0%, rgba(18, 9, 12, 0.98) 100%);
+  border: 1px solid #ef4444;
+  border-radius: 10px;
+  padding: 3rem 2rem;
+  max-width: 720px;
+  margin: 3rem auto;
+  text-align: center;
+}
+
+.db-error-banner h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2rem;
+  color: #fca5a5;
+  margin: 0.6rem 0 0.4rem 0;
+}

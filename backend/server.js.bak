@@ -1,0 +1,548 @@
+const express = require('express');
+const cors = require('cors');
+const sql = require('mssql');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcryptjs');
+const nodemailer = require('nodemailer');
+require('dotenv').config();
+
+const app = express();
+const PORT = process.env.PORT || 5000;
+const JWT_SECRET = process.env.JWT_SECRET || 'gfa_secret_key_2026_posadas';
+
+app.use(cors());
+app.use(express.json());
+
+const dbConfig = {
+    user: process.env.DB_USER || 'sa',
+    password: process.env.DB_PASSWORD || '123456',
+    server: process.env.DB_SERVER || 'localhost',
+    database: process.env.DB_DATABASE || 'HotelGranFiestaAmericanaDB',
+    options: { encrypt: false, trustServerCertificate: true }
+};
+
+const poolPromise = new sql.ConnectionPool(dbConfig)
+    .connect()
+    .then(pool => {
+        console.log('Conectado exitosamente a SQL Server: HotelGranFiestaAmericanaDB');
+        return pool;
+    })
+    .catch(err => {
+        console.error('Error al conectar a SQL Server:', err);
+        process.exit(1);
+    });
+
+// Middleware Estricto: Bloquea reservas a usuarios anónimos
+const verificarSesionObligatoria = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    let token = null;
+
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+        token = authHeader.split(' ')[1];
+    } else if (req.body && req.body.token_sesion) {
+        token = req.body.token_sesion;
+    }
+
+    if (!token || token === 'null' || token === 'undefined') {
+        return res.status(401).json({ 
+            error: 'ACCESO RESTRINGIDO: Debes iniciar sesión o registrarte como socio Fiesta Rewards para poder reservar.' 
+        });
+    }
+
+    jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        if (err) {
+            // Permitir token simulado de testing local preprod si aplica
+            if (token === 'session_gfa_preprod_token_valid' && req.body.usuario_id) {
+                req.user = { usuario_id: req.body.usuario_id };
+                return next();
+            }
+            return res.status(401).json({ error: 'Sesión expirada o inválida. Inicia sesión nuevamente.' });
+        }
+        req.user = decoded;
+        next();
+    });
+};
+
+// ==========================================
+// 1. SUITES
+// ==========================================
+app.get('/api/suites', async (req, res) => {
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request().query(`
+            SELECT 
+                suite_id, nombre, categoria, descripcion, precio_noche_base,
+                capacidad_adultos, capacidad_ninos, metros_cuadrados, tipo_cama,
+                vista_tipo, amenidades_destacadas, servicios_incluidos, detalles_confort,
+                detalles_bano, detalles_tecnologia, politica_suite, foto_principal,
+                galeria_fotos, inventario_total, inventario_disponible, creado_en
+            FROM HabitacionesSuites
+            ORDER BY suite_id ASC
+        `);
+        res.json(result.recordset);
+    } catch (err) {
+        console.error('Error suites:', err);
+        res.status(500).json({ error: 'Error al consultar suites' });
+    }
+});
+
+// ==========================================
+// 2. REGISTRO & LOGIN
+// ==========================================
+app.post('/api/usuarios/registro', async (req, res) => {
+    const { nombres, apellidos, email, password, telefono } = req.body;
+    try {
+        const pool = await poolPromise;
+        const userCheck = await pool.request()
+            .input('email', sql.VarChar(150), email)
+            .query('SELECT usuario_id FROM Usuarios WHERE email = @email');
+
+        if (userCheck.recordset.length > 0) {
+            return res.status(400).json({ error: 'El correo electrónico ya se encuentra registrado' });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const passHash = await bcrypt.hash(password || '123456', salt);
+        const randomFR = 'FR-' + Math.floor(100000 + Math.random() * 900000);
+
+        const insertUser = await pool.request()
+            .input('nombres', sql.VarChar(100), nombres)
+            .input('apellidos', sql.VarChar(100), apellidos)
+            .input('email', sql.VarChar(150), email)
+            .input('telefono', sql.VarChar(20), telefono || '')
+            .input('password_hash', sql.VarChar(255), passHash)
+            .input('fiesta_rewards_id', sql.VarChar(50), randomFR)
+            .query(`
+                INSERT INTO Usuarios (nombres, apellidos, email, telefono, password_hash, fiesta_rewards_id, creado_en)
+                OUTPUT INSERTED.usuario_id, INSERTED.nombres, INSERTED.apellidos, INSERTED.email, INSERTED.fiesta_rewards_id
+                VALUES (@nombres, @apellidos, @email, @telefono, @password_hash, @fiesta_rewards_id, GETDATE())
+            `);
+
+        const usuarioCreado = insertUser.recordset[0];
+
+        try {
+            const cuatroDigitos = Math.floor(1000 + Math.random() * 9000);
+            const numeroCard = `4829 9012 3456 ${cuatroDigitos}`;
+            await pool.request()
+                .input('uid_card', sql.Int, usuarioCreado.usuario_id)
+                .input('num_mask', sql.VarChar(30), numeroCard)
+                .query(`
+                    INSERT INTO dbo.TarjetasFiestaCard (
+                        usuario_id, numero_enmascarado, linea_credito_total, 
+                        saldo_disponible, saldo_utilizado, puntos_rewards_acumulados, 
+                        nivel_membresia, estatus_tarjeta, fecha_expiracion
+                    )
+                    VALUES (
+                        @uid_card, @num_mask, 50000.00, 
+                        50000.00, 0.00, 2500, 
+                        'Titanium Privilege', 'Activa', '11/30'
+                    )
+                `);
+        } catch (cardErr) {
+            console.warn('Aviso al emitir tarjeta:', cardErr.message);
+        }
+
+        const token = jwt.sign({ usuario_id: usuarioCreado.usuario_id, email: usuarioCreado.email }, JWT_SECRET, { expiresIn: '7d' });
+        res.status(201).json({ usuario: usuarioCreado, token });
+    } catch (err) {
+        console.error('Error en registro:', err);
+        res.status(500).json({ error: err.message || 'Error al registrar usuario' });
+    }
+});
+
+app.post('/api/usuarios/login', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('email', sql.VarChar(150), email)
+            .query('SELECT * FROM Usuarios WHERE email = @email');
+
+        if (!result.recordset.length) {
+            return res.status(401).json({ error: 'Credenciales inválidas' });
+        }
+
+        const user = result.recordset[0];
+        const valido = await bcrypt.compare(password, user.password_hash);
+        if (!valido) {
+            return res.status(401).json({ error: 'Credenciales inválidas' });
+        }
+
+        const token = jwt.sign({ usuario_id: user.usuario_id, email: user.email }, JWT_SECRET, { expiresIn: '7d' });
+        delete user.password_hash;
+        res.json({ usuario: user, token });
+    } catch (err) {
+        console.error('Error en login:', err);
+        res.status(500).json({ error: 'Error interno en autenticación' });
+    }
+});
+
+// ==========================================
+// 3. BILLETERA DIGITAL (WALLET COMPLETA)
+// ==========================================
+// Consultar todos los métodos de pago guardados
+app.get('/api/billetera/:usuario_id', async (req, res) => {
+    try {
+        const pool = await poolPromise;
+        const uid = req.params.usuario_id;
+
+        // 1. Tarjeta Institucional Fiesta Card
+        const fiestaCard = await pool.request()
+            .input('uid', sql.Int, uid)
+            .query('SELECT * FROM dbo.TarjetasFiestaCard WHERE usuario_id = @uid');
+
+        // 2. Tarjetas Bancarias Personales
+        const tarjetasBancarias = await pool.request()
+            .input('uid2', sql.Int, uid)
+            .query('SELECT * FROM dbo.TarjetasBancariasUsuario WHERE usuario_id = @uid2 ORDER BY es_preferida DESC, tarjeta_bancaria_id DESC');
+
+        res.json({
+            fiesta_card: fiestaCard.recordset[0] || null,
+            tarjetas_bancarias: tarjetasBancarias.recordset
+        });
+    } catch (err) {
+        console.error('Error al consultar billetera:', err);
+        res.status(500).json({ error: 'Error al consultar métodos de pago' });
+    }
+});
+
+// Registrar nueva tarjeta bancaria en la billetera
+app.post('/api/billetera', async (req, res) => {
+    const {
+        usuario_id, alias_tarjeta, banco_emisor, marca_tarjeta,
+        tipo_cuenta, numero_tarjeta, titular_nombre,
+        mes_expiracion, anio_expiracion, saldo_inicial_simulado, es_preferida
+    } = req.body;
+
+    if (!usuario_id || !numero_tarjeta || !titular_nombre || !mes_expiracion || !anio_expiracion) {
+        return res.status(400).json({ error: 'Faltan campos obligatorios para guardar la tarjeta.' });
+    }
+
+    try {
+        const pool = await poolPromise;
+        const ultimos4 = numero_tarjeta.replace(/\s/g, '').slice(-4);
+        const mask = `•••• •••• •••• ${ultimos4}`;
+
+        if (es_preferida) {
+            await pool.request()
+                .input('uid_pref', sql.Int, usuario_id)
+                .query('UPDATE dbo.TarjetasBancariasUsuario SET es_preferida = 0 WHERE usuario_id = @uid_pref');
+        }
+
+        const insert = await pool.request()
+            .input('u_id', sql.Int, usuario_id)
+            .input('alias', sql.VarChar(50), alias_tarjeta || `${banco_emisor || 'Bancaria'} ${marca_tarjeta || ''}`)
+            .input('banco', sql.VarChar(50), banco_emisor || 'Banco Internacional')
+            .input('marca', sql.VarChar(20), marca_tarjeta || 'Visa')
+            .input('tipo', sql.VarChar(20), tipo_cuenta || 'Crédito')
+            .input('mask', sql.VarChar(25), mask)
+            .input('titular', sql.NVarChar(150), titular_nombre.toUpperCase())
+            .input('mes', sql.Int, mes_expiracion)
+            .input('anio', sql.Int, anio_expiracion)
+            .input('saldo', sql.Decimal(10, 2), saldo_inicial_simulado !== undefined ? saldo_inicial_simulado : 30000.00)
+            .input('pref', sql.Bit, es_preferida ? 1 : 0)
+            .query(`
+                INSERT INTO dbo.TarjetasBancariasUsuario (
+                    usuario_id, alias_tarjeta, banco_emisor, marca_tarjeta,
+                    tipo_cuenta, numero_enmascarado, titular_nombre,
+                    mes_expiracion, anio_expiracion, saldo_disponible_simulado, es_preferida
+                )
+                OUTPUT INSERTED.*
+                VALUES (
+                    @u_id, @alias, @banco, @marca,
+                    @tipo, @mask, @titular,
+                    @mes, @anio, @saldo, @pref
+                )
+            `);
+
+        res.status(201).json({ mensaje: 'Tarjeta guardada en billetera exitosamente', tarjeta: insert.recordset[0] });
+    } catch (err) {
+        console.error('Error al registrar tarjeta bancaria:', err);
+        res.status(500).json({ error: 'Error al registrar la tarjeta en la billetera' });
+    }
+});
+
+// ==========================================
+// 4. RESERVACIONES (CON VALIDACIÓN UNIVERSAL DE SALDO)
+// ==========================================
+
+// ==========================================
+// 4.1 BÚSQUEDA / LOCALIZADOR OFICIAL DE RESERVACIÓN (GET Y POST)
+// ==========================================
+const handlerBuscarReservacion = async (req, res) => {
+    try {
+        const folio = (req.query.folio || req.body.folio || '').trim();
+        const correoOApellido = (req.query.email || req.body.email || req.body.email_o_apellido || '').trim();
+
+        if (!folio) {
+            return res.status(400).json({ error: 'Debes ingresar un folio de reservación válido.' });
+        }
+
+        const querySql = `
+            SELECT 
+                r.reservacion_id,
+                r.folio_confirmacion,
+                r.usuario_id,
+                r.suite_id,
+                r.fecha_llegada,
+                r.fecha_salida,
+                r.noches,
+                r.adultos,
+                r.ninos,
+                r.peticiones_especiales,
+                r.subtotal,
+                r.iva,
+                r.ishe,
+                r.saneamiento_ambiental,
+                r.total_general,
+                r.terminacion_tarjeta,
+                r.estatus_reservacion,
+                r.creado_en,
+                u.nombres,
+                u.apellidos,
+                u.email,
+                u.telefono,
+                s.nombre_suite,
+                s.descripcion_corta,
+                s.imagen_principal
+            FROM dbo.Reservaciones r
+            LEFT JOIN dbo.Usuarios u ON r.usuario_id = u.usuario_id
+            LEFT JOIN dbo.Suites s ON r.suite_id = s.suite_id
+            WHERE (r.folio_confirmacion = @folio OR CAST(r.reservacion_id AS VARCHAR) = @folio)
+              AND (
+                  @correo = '' 
+                  OR u.email = @correo 
+                  OR u.apellidos LIKE '%' + @correo + '%'
+              )
+        `;
+
+        const pool = await poolPromise;
+        const request = pool.request()
+            .input('folio', sql.VarChar(50), folio)
+            .input('correo', sql.VarChar(100), (typeof correoOApellido !== 'undefined' ? correoOApellido : (typeof correo !== 'undefined' ? correo : '')));
+
+        const result = await request.query(querySql);
+
+        if (!result.recordset.length) {
+            return res.status(404).json({ error: 'No se encontró ninguna reservación con el folio o correo especificado.' });
+        }
+
+        const reserva = result.recordset[0];
+        res.json({
+            ok: true,
+            data: reserva,
+            ...reserva
+        });
+    } catch (err) {
+        console.error('Error al buscar reservación por localizador:', err);
+        res.status(500).json({ error: 'Error interno al consultar el folio de reservación.' });
+    }
+};
+
+// ==========================================
+
+// ==========================================
+// CATÁLOGOS Y SERVICIOS DEL HOTEL (SQL SERVER)
+// ==========================================
+
+// 1. Galería de Fotos
+app.get('/api/galeria', async (req, res) => {
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request().query("SELECT * FROM dbo.Galeria WHERE activo = 1 ORDER BY foto_id ASC");
+        res.json({ ok: true, data: result.recordset });
+    } catch (err) {
+        console.error('Error en /api/galeria:', err);
+        res.status(500).json({ error: 'Error al consultar galería.' });
+    }
+});
+
+// 2. Ofertas y Promociones
+app.get('/api/ofertas', async (req, res) => {
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request().query("SELECT * FROM dbo.OfertasPromociones WHERE activo = 1 ORDER BY oferta_id ASC");
+        res.json({ ok: true, data: result.recordset });
+    } catch (err) {
+        console.error('Error en /api/ofertas:', err);
+        res.status(500).json({ error: 'Error al consultar ofertas.' });
+    }
+});
+
+// 3. Restaurantes y Bares
+app.get('/api/restaurantes', async (req, res) => {
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request().query("SELECT * FROM dbo.Restaurantes WHERE activo = 1 ORDER BY restaurante_id ASC");
+        res.json({ ok: true, data: result.recordset });
+    } catch (err) {
+        console.error('Error en /api/restaurantes:', err);
+        res.status(500).json({ error: 'Error al consultar restaurantes.' });
+    }
+});
+
+// 4. Experiencias Exclusivas
+app.get('/api/experiencias', async (req, res) => {
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request().query("SELECT * FROM dbo.ExperienciasExclusivas WHERE activo = 1 ORDER BY experiencia_id ASC");
+        res.json({ ok: true, data: result.recordset });
+    } catch (err) {
+        console.error('Error en /api/experiencias:', err);
+        res.status(500).json({ error: 'Error al consultar experiencias.' });
+    }
+});
+
+// 5. Espacios para Eventos MICE
+app.get('/api/eventos/espacios', async (req, res) => {
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request().query("SELECT * FROM dbo.EspaciosEventos WHERE activo = 1 ORDER BY espacio_id ASC");
+        res.json({ ok: true, data: result.recordset });
+    } catch (err) {
+        console.error('Error en /api/eventos/espacios:', err);
+        res.status(500).json({ error: 'Error al consultar espacios de eventos.' });
+    }
+});
+
+// 6. Cotizar Evento MICE
+app.post('/api/eventos/cotizar', async (req, res) => {
+    try {
+        const { espacio_id, nombre_contacto, email, telefono, tipo_evento, fecha_evento, num_asistentes, comentarios } = req.body;
+        const pool = await poolPromise;
+        const insert = await pool.request()
+            .input('eid', sql.Int, espacio_id || null)
+            .input('nom', sql.VarChar(150), nombre_contacto || '')
+            .input('mail', sql.VarChar(150), email || '')
+            .input('tel', sql.VarChar(50), telefono || '')
+            .input('tipo', sql.VarChar(100), tipo_evento || 'Corporativo')
+            .input('fecha', sql.Date, fecha_evento || new Date())
+            .input('num', sql.Int, num_asistentes || 10)
+            .input('com', sql.VarChar(sql.MAX), comentarios || '')
+            .query(`
+                INSERT INTO dbo.CotizacionesEventos (espacio_id, nombre_contacto, email, telefono, tipo_evento, fecha_evento, num_asistentes, comentarios, creado_en)
+                VALUES (@eid, @nom, @mail, @tel, @tipo, @fecha, @num, @com, GETDATE());
+                SELECT SCOPE_IDENTITY() AS cotizacion_id;
+            `);
+        res.status(201).json({ ok: true, mensaje: 'Cotización recibida con éxito.', cotizacion_id: insert.recordset[0].cotizacion_id });
+    } catch (err) {
+        console.error('Error en /api/eventos/cotizar:', err);
+        res.status(500).json({ error: 'Error al registrar la cotización.' });
+    }
+});
+
+// 7. Tickets de Contacto / Concierge
+app.post('/api/contacto/tickets', async (req, res) => {
+    try {
+        const { usuario_id, hotel_destino, categoria, tipo_solicitud, clave_reservacion, nombres, apellidos, email, telefono, descripcion } = req.body;
+        const pool = await poolPromise;
+        const insert = await pool.request()
+            .input('uid', sql.Int, usuario_id || null)
+            .input('hotel', sql.VarChar(150), hotel_destino || 'Grand Fiesta Americana Riviera Cancún')
+            .input('cat', sql.VarChar(100), categoria || 'Atención a Huéspedes')
+            .input('tipo', sql.VarChar(100), tipo_solicitud || 'Consulta General')
+            .input('clave', sql.VarChar(50), clave_reservacion || null)
+            .input('nom', sql.VarChar(100), nombres || '')
+            .input('ape', sql.VarChar(100), apellidos || '')
+            .input('mail', sql.VarChar(150), email || '')
+            .input('tel', sql.VarChar(50), telefono || '')
+            .input('desc', sql.VarChar(sql.MAX), descripcion || '')
+            .query(`
+                INSERT INTO dbo.TicketsContacto (usuario_id, hotel_destino, categoria, tipo_solicitud, clave_reservacion, nombres, apellidos, email, telefono, descripcion, estatus, creado_en)
+                VALUES (@uid, @hotel, @cat, @tipo, @clave, @nom, @ape, @mail, @tel, @desc, 'ABIERTO', GETDATE());
+                SELECT SCOPE_IDENTITY() AS ticket_id;
+            `);
+        res.status(201).json({ ok: true, ticket_id: insert.recordset[0].ticket_id });
+    } catch (err) {
+        console.error('Error en /api/contacto/tickets:', err);
+        res.status(500).json({ error: 'Error al registrar ticket de contacto.' });
+    }
+});
+
+
+// ==========================================
+// ==========================================
+// MÓDULO DE CONTACTO Y CONCIERGE (SQL SERVER)
+// ==========================================
+app.get('/api/contacto/usuario/:usuario_id', async (req, res) => {
+    try {
+        const { usuario_id } = req.params;
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('uid', sql.Int, usuario_id)
+            .query("SELECT * FROM dbo.TicketsContacto WHERE usuario_id = @uid ORDER BY ticket_id DESC");
+        res.json({ ok: true, data: result.recordset });
+    } catch (err) {
+        console.error('Error en /api/contacto/usuario:', err);
+        res.status(500).json({ error: 'Error al consultar tickets del usuario.' });
+    }
+});
+
+const handlerCrearTicket = async (req, res) => {
+    try {
+        const { usuario_id, hotel_destino, categoria, tipo_solicitud, clave_reservacion, nombres, apellidos, email, telefono, descripcion } = req.body;
+        const pool = await poolPromise;
+        const querySql = "INSERT INTO dbo.TicketsContacto (usuario_id, hotel_destino, categoria, tipo_solicitud, clave_reservacion, nombres, apellidos, email, telefono, descripcion, estatus, creado_en) VALUES (@uid, @hotel, @cat, @tipo, @clave, @nom, @ape, @mail, @tel, @desc, 'ABIERTO', GETDATE()); SELECT SCOPE_IDENTITY() AS ticket_id;";
+        const insert = await pool.request()
+            .input('uid', sql.Int, usuario_id || null)
+            .input('hotel', sql.VarChar(150), hotel_destino || 'Grand Fiesta Americana Riviera Cancún')
+            .input('cat', sql.VarChar(100), categoria || 'Atención a Huéspedes')
+            .input('tipo', sql.VarChar(100), tipo_solicitud || 'Consulta General')
+            .input('clave', sql.VarChar(50), clave_reservacion || null)
+            .input('nom', sql.VarChar(100), nombres || '')
+            .input('ape', sql.VarChar(100), apellidos || '')
+            .input('mail', sql.VarChar(150), email || '')
+            .input('tel', sql.VarChar(50), telefono || '')
+            .input('desc', sql.VarChar(sql.MAX), descripcion || '')
+            .query(querySql);
+        res.status(201).json({ ok: true, mensaje: 'Ticket registrado con éxito.', ticket_id: insert.recordset[0].ticket_id });
+    } catch (err) {
+        console.error('Error al crear ticket:', err);
+        res.status(500).json({ error: 'Error al registrar ticket de contacto.' });
+    }
+};
+
+app.post('/api/contacto', handlerCrearTicket);
+app.post('/api/contacto/tickets', handlerCrearTicket);
+
+// MANEJADOR GLOBAL 404 (FINAL ABSOLUTO DE RUTAS)
+// ==========================================
+
+// GET /api/usuarios/perfil/:id
+// GET /api/usuarios/perfil/:id
+app.get('/api/usuarios/perfil/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('uid', sql.Int, id)
+            .query("SELECT usuario_id, nombres, apellidos, email, telefono, pais, programa_lealtad, fiesta_rewards_id, creado_en FROM dbo.Usuarios WHERE usuario_id = @uid");
+
+        if (!result.recordset.length) {
+            return res.status(404).json({ error: 'Usuario no encontrado' });
+        }
+
+        const u = result.recordset[0];
+        res.json({
+            ok: true,
+            usuario_id: u.usuario_id,
+            nombre: u.nombres ? u.nombres.trim() : '',
+            apellido: u.apellidos ? u.apellidos.trim() : '',
+            nombres: u.nombres ? u.nombres.trim() : '',
+            apellidos: u.apellidos ? u.apellidos.trim() : '',
+            email: u.email || '',
+            telefono: u.telefono || '',
+            pais: u.pais || 'México',
+            programa_lealtad: u.programa_lealtad || 'FiestaRewards',
+            fiesta_rewards_id: u.fiesta_rewards_id || 'FR-000000'
+        });
+    } catch (err) {
+        console.error('Error al consultar perfil del usuario:', err.message);
+        res.status(500).json({ error: 'Error al consultar perfil: ' + err.message });
+    }
+});
+
+
+app.listen(PORT, () => {
+    console.log(`Servidor seguro corriendo en http://localhost:${PORT}`);
+});

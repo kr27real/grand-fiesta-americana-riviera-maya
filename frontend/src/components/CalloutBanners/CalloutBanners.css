@@ -1,0 +1,170 @@
+.callouts-section {
+  background-color: #0d0d10;
+  padding: 5rem 1.5rem;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.callouts-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2.8rem;
+}
+
+.callout-card {
+  background: #141418;
+  border: 1px solid rgba(179, 157, 219, 0.18);
+  border-radius: 10px;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.callout-card:hover {
+  transform: translateY(-3px);
+  border-color: #d4af37;
+  box-shadow: 0 14px 30px rgba(123, 82, 148, 0.2);
+}
+
+.callout-reversed {
+  grid-template-columns: 1fr 320px;
+}
+
+.callout-reversed .callout-logo-pane {
+  order: 2;
+}
+
+.callout-reversed .callout-info-pane {
+  order: 1;
+}
+
+.callout-logo-pane {
+  background: #1b1b22;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.callout-reversed .callout-logo-pane {
+  border-right: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.callout-logo-img {
+  max-width: 100%;
+  max-height: 140px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
+}
+
+.callout-info-pane {
+  padding: 2.8rem 2.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.callout-badge {
+  color: #d4af37;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.badge-icon {
+  color: #b39ddb;
+}
+
+.callout-title {
+  color: #ffffff;
+  font-size: clamp(1.3rem, 2vw, 1.7rem);
+  font-weight: 800;
+  line-height: 1.35;
+  margin-bottom: 0.85rem;
+}
+
+.callout-desc {
+  color: #cbd5e1;
+  font-size: 0.9rem;
+  line-height: 1.7;
+  font-weight: 300;
+  margin-bottom: 1.8rem;
+}
+
+.callout-buttons {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.btn-callout-primary {
+  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
+  color: #0d0d0d;
+  font-weight: 700;
+  font-size: 0.82rem;
+  padding: 0.7rem 1.6rem;
+  border-radius: 4px;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all 0.25s ease;
+}
+
+.btn-callout-primary:hover {
+  background: linear-gradient(135deg, #b39ddb 0%, #7e57c2 100%);
+  color: #ffffff;
+}
+
+.btn-callout-secondary {
+  background: transparent;
+  color: #ffffff;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  font-weight: 600;
+  font-size: 0.82rem;
+  padding: 0.7rem 1.6rem;
+  border-radius: 4px;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.25s ease;
+}
+
+.btn-callout-secondary:hover {
+  border-color: #b39ddb;
+  color: #b39ddb;
+}
+
+@media (max-width: 868px) {
+  .callout-card, .callout-reversed {
+    grid-template-columns: 1fr;
+  }
+  .callout-reversed .callout-logo-pane {
+    order: 1;
+    border-left: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .callout-reversed .callout-info-pane {
+    order: 2;
+  }
+  .callout-logo-pane {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 2rem;
+  }
+  .callout-info-pane {
+    padding: 2rem 1.5rem;
+  }
+}

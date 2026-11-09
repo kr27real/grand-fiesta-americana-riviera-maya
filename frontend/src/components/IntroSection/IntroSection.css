@@ -1,0 +1,114 @@
+.intro-section {
+  background-color: #0d0d0d;
+  padding: 4.5rem 1.5rem;
+  color: #ffffff;
+  position: relative;
+}
+
+.intro-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.intro-tagline {
+  color: #b39ddb;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 0.6rem;
+}
+
+.intro-main-title {
+  font-size: clamp(1.8rem, 3.2vw, 2.7rem);
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #ffffff;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.intro-subtitle {
+  font-size: clamp(1.1rem, 2vw, 1.45rem);
+  font-weight: 300;
+  color: #d4af37;
+  font-style: italic;
+  margin-bottom: 1.5rem;
+}
+
+.gold-divider {
+  width: 70px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #d4af37, transparent);
+  margin: 0 auto 2.2rem auto;
+}
+
+.intro-body {
+  color: #cbd5e1;
+  font-size: 0.98rem;
+  line-height: 1.8;
+  font-weight: 300;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-bottom: 3rem;
+}
+
+/* Recuadro de anuncio de apertura */
+.opening-callout {
+  background: linear-gradient(135deg, rgba(30, 27, 45, 0.9) 0%, rgba(18, 18, 20, 0.95) 100%);
+  border: 1px solid #d4af37;
+  border-radius: 8px;
+  padding: 1.8rem 2.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  text-align: left;
+  box-shadow: 0 10px 30px rgba(179, 157, 219, 0.12);
+}
+
+.callout-icon-box {
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid #d4af37;
+  padding: 0.8rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.callout-icon {
+  color: #ffe082;
+}
+
+.callout-content h4 {
+  color: #d4af37;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 0.3rem;
+}
+
+.callout-content p {
+  color: #f1f5f9;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.callout-content strong {
+  color: #ffe082;
+  font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .opening-callout {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem 1.2rem;
+  }
+}

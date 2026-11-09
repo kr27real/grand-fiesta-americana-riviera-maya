@@ -1,0 +1,125 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Montserrat:wght@400;500;600;700&display=swap');
+
+.gfa-pageloader-root {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, #120f1a 0%, #060508 85%);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: 'Montserrat', sans-serif;
+}
+
+.gfa-pageloader-root.fade-out {
+  opacity: 0;
+}
+
+.pageloader-center-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: logoSoftScale 0.65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes logoSoftScale {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Monograma Heráldico de Posadas / GFA */
+.pageloader-crest {
+  width: 68px;
+  height: 68px;
+  border: 1.5px solid #d4af37;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.4rem;
+  background: rgba(212, 175, 55, 0.06);
+  box-shadow: 0 0 30px rgba(212, 175, 55, 0.25);
+  position: relative;
+}
+
+.pageloader-crest::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  border: 1px dashed rgba(243, 229, 171, 0.4);
+  border-radius: 50%;
+}
+
+.pageloader-crest span {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.85rem;
+  font-weight: 700;
+  color: #f3e5ab;
+  line-height: 1;
+}
+
+/* Tipografía de la Marca */
+.pageloader-brand-title {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
+  margin: 0 0 0.4rem 0;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.9);
+}
+
+.pageloader-brand-sub {
+  font-size: 0.72rem;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: #d4af37;
+  font-weight: 600;
+  margin-bottom: 2rem;
+}
+
+/* Línea de Carga Dorada Luminosa */
+.pageloader-progress-track {
+  width: 220px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.pageloader-progress-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #aa8212, #d4af37 60%, #c4b5fd 100%);
+  box-shadow: 0 0 14px rgba(212, 175, 55, 0.8);
+  animation: loadFill 0.65s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes loadFill {
+  0% {
+    width: 0%;
+  }
+  60% {
+    width: 75%;
+  }
+  100% {
+    width: 100%;
+  }
+}

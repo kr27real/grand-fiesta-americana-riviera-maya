@@ -1,0 +1,265 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Montserrat:wght@400;500;600;700;800&display=swap');
+
+.checkout-page-root {
+  min-height: 100vh;
+  background-color: #060508;
+  color: #ffffff;
+  padding: 8.5rem 2rem 6rem;
+  font-family: 'Montserrat', sans-serif;
+  box-sizing: border-box;
+}
+
+.checkout-container {
+  max-width: 1320px;
+  margin: 0 auto;
+}
+
+.checkout-header {
+  text-align: center;
+  margin-bottom: 3.5rem;
+}
+
+.checkout-pretag {
+  font-size: 0.74rem;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: #d4af37;
+  font-weight: 800;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.checkout-header h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(2.4rem, 4vw, 3.6rem);
+  color: #f3e5ab;
+  margin: 0 0 0.8rem 0;
+}
+
+.checkout-header p {
+  color: #94a3b8;
+  font-size: 0.94rem;
+  max-width: 650px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Grilla Principal */
+.checkout-main-grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr;
+  gap: 2.5rem;
+  align-items: flex-start;
+}
+
+@media (max-width: 1024px) {
+  .checkout-main-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Tarjetas del Formulario */
+.checkout-card {
+  background: linear-gradient(165deg, rgba(20, 18, 28, 0.98) 0%, rgba(12, 10, 16, 0.99) 100%);
+  border: 1px solid rgba(196, 181, 253, 0.18);
+  border-radius: 10px;
+  padding: 2.2rem;
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.85);
+  margin-bottom: 2rem;
+}
+
+.checkout-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.65rem;
+  color: #f3e5ab;
+  margin: 0 0 1.5rem 0;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+  padding-bottom: 0.8rem;
+}
+
+.checkout-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.2rem;
+}
+
+@media (max-width: 600px) {
+  .checkout-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.checkout-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.checkout-field label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: #c4b5fd;
+}
+
+.checkout-field input,
+.checkout-field select,
+.checkout-field textarea {
+  background: #14121d;
+  border: 1px solid rgba(196, 181, 253, 0.22);
+  border-radius: 4px;
+  padding: 0.75rem 0.95rem;
+  color: #ffffff;
+  font-size: 0.88rem;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.25s ease;
+}
+
+.checkout-field input:focus,
+.checkout-field select:focus,
+.checkout-field textarea:focus {
+  border-color: #d4af37;
+}
+
+/* Resumen Lateral Fijo */
+.checkout-summary-card {
+  background: linear-gradient(165deg, rgba(22, 19, 32, 0.98) 0%, rgba(14, 11, 20, 0.99) 100%);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  border-radius: 10px;
+  padding: 2.2rem;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+  position: sticky;
+  top: 100px;
+}
+
+.summary-suite-preview {
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-suite-img {
+  width: 100px;
+  height: 80px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid #d4af37;
+  flex-shrink: 0;
+}
+
+.summary-suite-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.summary-suite-info h4 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.35rem;
+  color: #ffffff;
+  margin: 0 0 0.3rem 0;
+}
+
+.summary-suite-info span {
+  font-size: 0.72rem;
+  color: #c4b5fd;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: block;
+}
+
+.summary-table-breakdown {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-table-breakdown tr td {
+  padding: 0.5rem 0;
+  color: #cbd5e1;
+}
+
+.summary-table-breakdown tr td:last-child {
+  text-align: right;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.summary-pue-banner {
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid #22c55e;
+  border-radius: 6px;
+  padding: 0.65rem 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #86efac;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  margin-bottom: 1.5rem;
+}
+
+.summary-grand-total {
+  border-top: 1px dashed rgba(212, 175, 55, 0.4);
+  padding-top: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1.8rem;
+}
+
+.summary-grand-total span {
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  color: #94a3b8;
+  letter-spacing: 1px;
+}
+
+.summary-grand-total strong {
+  font-size: 1.8rem;
+  color: #f3e5ab;
+  font-weight: 800;
+}
+
+.btn-liquidar-estancia {
+  width: 100%;
+  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
+  color: #060508;
+  border: none;
+  border-radius: 4px;
+  padding: 0.95rem;
+  font-size: 0.84rem;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  box-shadow: 0 4px 18px rgba(212, 175, 55, 0.4);
+  transition: all 0.25s ease;
+}
+
+.btn-liquidar-estancia:hover {
+  background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 22px rgba(212, 175, 55, 0.6);
+}
+
+.btn-liquidar-estancia:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}

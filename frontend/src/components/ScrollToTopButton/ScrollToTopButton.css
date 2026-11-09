@@ -1,0 +1,56 @@
+﻿.gfa-scroll-top-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #181422 0%, #0a0810 100%);
+  border: 1.5px solid #d4af37;
+  color: #f3e5ab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 4000;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), 0 0 15px rgba(212, 175, 55, 0.25);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  outline: none;
+  opacity: 0;
+  transform: translateY(20px) scale(0.9);
+  pointer-events: none;
+}
+
+.gfa-scroll-top-btn.visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.gfa-scroll-top-btn:hover {
+  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
+  color: #060508;
+  transform: translateY(-4px) scale(1.06);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.85), 0 0 22px rgba(212, 175, 55, 0.55);
+  border-color: #f3e5ab;
+}
+
+.gfa-scroll-top-btn:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+/* Ocultar en la vista de impresión o generación de PDF */
+@media print {
+  .gfa-scroll-top-btn {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .gfa-scroll-top-btn {
+    bottom: 24px;
+    right: 20px;
+    width: 42px;
+    height: 42px;
+  }
+}
