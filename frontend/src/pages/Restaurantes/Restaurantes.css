@@ -1,225 +1,469 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap');
+﻿/* ==========================================================================
+   RESTAURANTES.CSS - GRAND FIESTA AMERICANA RIVIERA CANCÚN
+   Paleta: Lila (#C084FC), Dorado Arena (#D4AF37 / #C7AF8B), Obsidiana (#060508)
+   ========================================================================== */
 
-.restaurantes-page {
-  background-color: #08080a;
-  color: #ffffff;
-  padding: 8.5rem 2rem 6rem;
-  font-family: 'Montserrat', sans-serif;
+.restaurantes-page-root {
+  background-color: #060508;
+  color: #f1f5f9;
   min-height: 100vh;
+  font-family: 'Montserrat', sans-serif;
+  padding-top: 9.5rem; /* Libra la barra fija del Navbar institucional */
+  padding-bottom: 5rem;
 }
 
-.restaurantes-wrapper {
-  max-width: 1350px;
+.restaurantes-container {
+  max-width: 1280px;
   margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
-/* Encabezado */
+/* ==========================================================================
+   BLOQUE 1: ENCABEZADO EDITORIAL
+   ========================================================================== */
 .restaurantes-header {
   text-align: center;
-  max-width: 880px;
-  margin: 0 auto 4rem auto;
+  max-width: 860px;
+  margin: 0 auto 3rem auto;
 }
 
 .restaurantes-pre-title {
-  display: inline-block;
+  color: #c084fc;
   font-size: 0.72rem;
-  letter-spacing: 4px;
+  letter-spacing: 3.5px;
   text-transform: uppercase;
-  color: #d4af37;
   font-weight: 700;
-  margin-bottom: 0.8rem;
+  display: inline-block;
+  margin-bottom: 0.6rem;
+  text-shadow: 0 0 15px rgba(192, 132, 252, 0.35);
 }
 
 .restaurantes-header h1 {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(2.4rem, 4vw, 3.8rem);
-  color: #ffe082;
-  font-weight: 700;
-  letter-spacing: 1.5px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.4rem, 4vw, 3.5rem);
+  color: #f3e5ab;
   margin: 0 0 1rem 0;
-  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+  font-weight: 500;
+  line-height: 1.15;
 }
 
 .restaurantes-header p {
-  color: #94a3b8;
-  font-size: 0.95rem;
-  font-weight: 300;
-  line-height: 1.7;
+  color: #cbd5e1;
+  font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+  line-height: 1.8;
+  margin: 0;
 }
 
-/* Grilla de Restaurantes */
-.restaurantes-grid {
+.restaurantes-cache-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: rgba(199, 175, 139, 0.08);
+  border: 1px solid rgba(199, 175, 139, 0.25);
+  color: #f3e5ab;
+  padding: 0.45rem 1rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  width: fit-content;
+  margin: 0 auto 2.5rem auto;
+}
+
+/* ==========================================================================
+   BLOQUE 2: FILTROS DE CATEGORÍA
+   ========================================================================== */
+.restaurantes-filters-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  margin-bottom: 3.5rem;
+}
+
+.btn-filter-pill {
+  background: #100c1c;
+  border: 1px solid rgba(192, 132, 252, 0.22);
+  color: #cbd5e1;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  padding: 0.55rem 1.2rem;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  outline: none;
+}
+
+.btn-filter-pill:hover {
+  border-color: #d4af37;
+  color: #f3e5ab;
+  background: rgba(212, 175, 55, 0.08);
+}
+
+.btn-filter-pill.active {
+  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
+  color: #060508;
+  border-color: #d4af37;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35);
+}
+
+/* ==========================================================================
+   BLOQUE 3: CUADRÍCULA DE RESTAURANTES (3 COLUMNAS)
+   ========================================================================== */
+.restaurantes-grid-layout {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(390px, 1fr));
-  gap: 2.5rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
 }
 
-/* Tarjeta de Restaurante */
-.restaurante-card {
-  background: linear-gradient(165deg, rgba(20, 18, 26, 0.95) 0%, rgba(12, 11, 16, 0.98) 100%);
-  border-radius: 12px;
+@media (max-width: 1080px) {
+  .restaurantes-grid-layout {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  .restaurantes-grid-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.restaurante-card-item {
+  background: #110d1f;
+  border: 1px solid rgba(192, 132, 252, 0.2);
+  border-radius: 8px;
   overflow: hidden;
-  border: 1px solid rgba(179, 157, 219, 0.16);
   display: flex;
   flex-direction: column;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
-  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.35s ease, box-shadow 0.35s ease;
-  position: relative;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s, box-shadow 0.3s;
 }
 
-.restaurante-card:hover {
-  transform: translateY(-7px);
+.restaurante-card-item:hover {
+  transform: translateY(-6px);
   border-color: #d4af37;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9), 0 0 25px rgba(212, 175, 55, 0.15);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 175, 55, 0.2);
 }
 
-.restaurante-img-box {
+/* ==========================================================================
+   BLOQUE 4: FOTOGRAFÍA Y BADGES
+   ========================================================================== */
+.restaurante-media-box {
   position: relative;
-  height: 250px;
+  width: 100%;
+  aspect-ratio: 16 / 9;
   overflow: hidden;
-  background-color: #16151c;
+  background: #000;
 }
 
-.restaurante-img-box img {
+.restaurante-media-box img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform 0.6s ease;
 }
 
-.restaurante-card:hover .restaurante-img-box img {
+.restaurante-card-item:hover .restaurante-media-box img {
   transform: scale(1.06);
 }
 
 .cuisine-badge {
   position: absolute;
-  top: 16px;
-  left: 16px;
-  background: rgba(10, 10, 14, 0.85);
-  backdrop-filter: blur(6px);
+  top: 14px;
+  left: 14px;
+  background: rgba(13, 9, 23, 0.9);
   border: 1px solid #d4af37;
-  color: #ffe082;
-  font-size: 0.68rem;
+  color: #f3e5ab;
+  font-size: 0.65rem;
   font-weight: 700;
-  letter-spacing: 1.5px;
   text-transform: uppercase;
-  padding: 0.35rem 0.8rem;
-  border-radius: 4px;
+  padding: 0.3rem 0.7rem;
+  border-radius: 3px;
+  letter-spacing: 0.6px;
+  backdrop-filter: blur(4px);
+  z-index: 2;
 }
 
 .reservacion-badge {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  background: rgba(212, 175, 55, 0.95);
-  color: #0b0a0e;
+  top: 14px;
+  right: 14px;
+  background: rgba(192, 132, 252, 0.2);
+  border: 1px solid #c084fc;
+  color: #e9d5ff;
   font-size: 0.65rem;
-  font-weight: 800;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  padding: 0.35rem 0.75rem;
-  border-radius: 4px;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  backdrop-filter: blur(4px);
+  z-index: 2;
 }
 
-/* Cuerpo de la Tarjeta */
-.restaurante-body {
-  padding: 2.2rem 2rem 2rem;
+/* ==========================================================================
+   BLOQUE 5: CUERPO EDITORIAL Y ESPECIFICACIONES
+   ========================================================================== */
+.restaurante-body-content {
+  padding: 1.6rem;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  flex: 1;
 }
 
 .restaurante-nombre {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 1.85rem;
-  color: #ffffff;
-  font-weight: 700;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.65rem;
+  color: #f3e5ab;
   margin: 0 0 0.3rem 0;
   line-height: 1.2;
 }
 
 .restaurante-concepto {
-  color: #b39ddb;
-  font-size: 0.82rem;
-  font-weight: 500;
-  margin-bottom: 1.2rem;
-  font-style: italic;
+  font-size: 0.76rem;
+  color: #c084fc;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  letter-spacing: 0.4px;
 }
 
 .restaurante-descripcion {
   color: #94a3b8;
-  font-size: 0.88rem;
-  line-height: 1.65;
-  margin-bottom: 1.8rem;
-  flex-grow: 1;
+  font-size: 0.84rem;
+  line-height: 1.6;
+  margin: 0 0 1.4rem 0;
+  flex: 1;
 }
 
-/* Ficha de Detalles (Horarios y Vestimenta) */
-.restaurante-specs-card {
-  background: rgba(10, 9, 14, 0.7);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 8px;
-  padding: 1rem 1.2rem;
+.restaurante-specs-panel {
+  background: #171224;
+  border: 1px solid rgba(199, 175, 139, 0.22);
+  border-left: 3px solid #d4af37;
+  padding: 0.8rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.4rem;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
-  margin-bottom: 1.8rem;
+  gap: 0.4rem;
 }
 
-.spec-line {
+.spec-row {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  font-size: 0.78rem;
+  gap: 0.5rem;
+  font-size: 0.74rem;
   color: #cbd5e1;
 }
 
-.spec-line strong {
-  color: #ffe082;
+.spec-row svg {
+  color: #c084fc;
 }
 
-/* Pie de Tarjeta */
-.btn-mesa {
-  display: block;
-  text-align: center;
-  background: transparent;
-  color: #d4af37;
-  border: 1px solid #d4af37;
-  padding: 0.8rem 1.4rem;
+.spec-row strong {
+  color: #f3e5ab;
+}
+
+.btn-reservar-mesa {
+  width: 100%;
+  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
+  color: #060508;
+  border: none;
+  padding: 0.78rem;
   border-radius: 4px;
+  font-family: 'Montserrat', sans-serif;
   font-size: 0.78rem;
   font-weight: 800;
+  letter-spacing: 0.8px;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  text-decoration: none;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: opacity 0.2s, transform 0.2s;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
 }
 
-.btn-mesa:hover {
-  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
-  color: #0b0a0e;
-  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.35);
-  transform: translateY(-2px);
+.btn-reservar-mesa:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
 }
 
-/* Estados */
-.status-box {
-  max-width: 650px;
-  margin: 4rem auto;
-  padding: 2.5rem 2rem;
+/* ==========================================================================
+   BLOQUE 6: MODAL DE RESERVACIÓN DE MESA
+   ========================================================================== */
+.rest-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 5, 8, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: clamp(0.5rem, 2vw, 1.5rem);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.rest-modal-window {
+  background: #110d1c;
+  border: 1px solid rgba(199, 175, 139, 0.4);
   border-radius: 10px;
+  width: 100%;
+  max-width: 580px;
+  max-height: 92vh;
+  position: relative;
+  overflow-y: auto;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  box-shadow: 0 25px 65px rgba(0, 0, 0, 0.9), 0 0 25px rgba(192, 132, 252, 0.15);
+}
+
+.btn-close-rest-modal {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: rgba(13, 9, 23, 0.8);
+  border: 1px solid rgba(199, 175, 139, 0.35);
+  color: #f3e5ab;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.2s ease;
+}
+
+.btn-close-rest-modal:hover {
+  background: #c7af8b;
+  color: #060508;
+  transform: scale(1.08);
+}
+
+.rest-modal-subtitle {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  line-height: 1.6;
+  margin: 0.2rem 0 1.5rem 0;
+}
+
+.rest-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .rest-form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.rest-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 1.1rem;
+}
+
+.rest-input-group label {
+  font-size: 0.72rem;
+  color: #c084fc;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.rest-input-group input,
+.rest-input-group select,
+.rest-input-group textarea {
+  background: #181229;
+  border: 1px solid rgba(192, 132, 252, 0.28);
+  color: #ffffff;
+  padding: 0.75rem 0.9rem;
+  border-radius: 4px;
+  font-size: 0.86rem;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.rest-input-group input:focus,
+.rest-input-group select:focus,
+.rest-input-group textarea:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+/* VOUCHER TICKET CONFIRMADO */
+.rest-confirm-state {
   text-align: center;
 }
 
-.status-loading {
-  background: rgba(212, 175, 55, 0.06);
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  color: #ffe082;
+.confirm-icon {
+  margin: 0 auto 0.8rem auto;
 }
 
-.status-error {
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.35);
-  color: #fca5a5;
+.rest-ticket-voucher {
+  background: #171224;
+  border: 1px solid #d4af37;
+  border-radius: 6px;
+  padding: 1.2rem;
+  margin: 1.5rem 0 1.8rem 0;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.voucher-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.82rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 0.4rem;
+}
+
+.voucher-line:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.voucher-line span {
+  color: #94a3b8;
+}
+
+.voucher-line strong {
+  color: #f3e5ab;
+  font-family: 'Montserrat', sans-serif;
+}
+
+/* ESTADO DE CARGA Y SPINNER */
+.restaurantes-loading-box {
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.restaurantes-spinner {
+  color: #d4af37;
+  margin: 0 auto 1.2rem auto;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }

@@ -4,6 +4,7 @@ const sql = require('mssql');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const { validarReservacion } = require('./validators/reservacion.validator');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -1006,6 +1007,20 @@ const handlerPostTickets = async (req, res) => {
         res.status(500).json({ ok: false, error: 'Error al registrar ticket: ' + err.message });
     }
 };
+// ==========================================
+// SERVICIOS ADICIONALES Y PERSONALIZACIÓN DE ESTANCIA
+// ==========================================
+app.get('/api/servicios-adicionales', async (req, res) => {
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .query("SELECT * FROM dbo.ServiciosAdicionales WHERE activo = 1 ORDER BY categoria ASC, precio_unitario ASC");
+        res.json({ ok: true, data: result.recordset });
+    } catch (err) {
+        console.error('Error al consultar servicios adicionales:', err);
+        res.status(500).json({ error: 'Error al consultar catálogo de servicios: ' + err.message });
+    }
+});
 
 app.post(['/api/tickets', '/api/contacto', '/api/contacto/tickets'], handlerPostTickets);
 

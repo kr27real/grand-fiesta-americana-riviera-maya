@@ -1,259 +1,532 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700;800&display=swap');
+﻿/* ==========================================================================
+   EVENTOS.CSS - GRAND FIESTA AMERICANA RIVIERA CANCÚN
+   Paleta: Lila (#C084FC), Dorado Arena (#D4AF37 / #C7AF8B), Obsidiana (#060508)
+   ========================================================================== */
 
 .eventos-page-root {
-  min-height: 100vh;
   background-color: #060508;
-  color: #ffffff;
-  padding: 8.5rem 2rem 6rem;
+  color: #f1f5f9;
+  min-height: 100vh;
   font-family: 'Montserrat', sans-serif;
-  box-sizing: border-box;
+  padding-top: 9.5rem; /* Despeja el navbar institucional superior */
+  padding-bottom: 5rem;
 }
 
 .eventos-wrapper {
-  max-width: 1400px;
+  max-width: 1280px;
   margin: 0 auto;
+  padding: 0 1.5rem;
 }
 
+/* ==========================================================================
+   BLOQUE 1: ENCABEZADO EDITORIAL
+   ========================================================================== */
 .eventos-header {
   text-align: center;
   max-width: 860px;
-  margin: 0 auto 3.5rem auto;
+  margin: 0 auto 3rem auto;
 }
 
 .eventos-pre-tag {
-  display: inline-block;
-  font-size: 0.74rem;
-  letter-spacing: 5px;
+  color: #c084fc;
+  font-size: 0.72rem;
+  letter-spacing: 3.5px;
   text-transform: uppercase;
-  color: #d4af37;
   font-weight: 700;
+  display: inline-block;
   margin-bottom: 0.6rem;
+  text-shadow: 0 0 15px rgba(192, 132, 252, 0.35);
 }
 
 .eventos-header h1 {
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: clamp(2.4rem, 4.5vw, 3.8rem);
-  font-weight: 700;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.4rem, 4vw, 3.5rem);
   color: #f3e5ab;
-  margin: 0 0 0.8rem 0;
-  letter-spacing: 1.5px;
+  margin: 0 0 1rem 0;
+  font-weight: 500;
+  line-height: 1.15;
 }
 
 .eventos-header p {
-  color: #94a3b8;
-  font-size: 0.95rem;
-  line-height: 1.7;
+  color: #cbd5e1;
+  font-size: clamp(0.85rem, 1.2vw, 0.95rem);
+  line-height: 1.8;
+  margin: 0;
 }
 
-/* Grilla de Espacios */
+.eventos-cache-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: rgba(199, 175, 139, 0.08);
+  border: 1px solid rgba(199, 175, 139, 0.25);
+  color: #f3e5ab;
+  padding: 0.45rem 1rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  width: fit-content;
+  margin: 0 auto 2.5rem auto;
+}
+
+/* Indicadores de Pasos */
+.section-title-wrap {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.8rem;
+  border-bottom: 1px solid rgba(192, 132, 252, 0.15);
+  padding-bottom: 0.8rem;
+}
+
+.section-title-wrap h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.8rem, 3vw, 2.3rem);
+  color: #f3e5ab;
+  margin: 0;
+  font-weight: 500;
+}
+
+.eventos-step-pill {
+  background: #181229;
+  border: 1px solid #c084fc;
+  color: #e9d5ff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+  letter-spacing: 0.5px;
+}
+
+/* ==========================================================================
+   BLOQUE 2: CUADRÍCULA DE ESPACIOS Y SALONES (GRID)
+   ========================================================================== */
 .espacios-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 2rem;
-  margin-bottom: 5rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 4.5rem;
+}
+
+@media (max-width: 1100px) {
+  .espacios-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .espacios-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .espacio-card {
-  background: #110f17;
-  border: 1px solid rgba(196, 181, 253, 0.18);
-  border-radius: 10px;
+  background: #110d1f;
+  border: 1px solid rgba(192, 132, 252, 0.2);
+  border-radius: 8px;
   overflow: hidden;
-  transition: all 0.3s ease;
   display: flex;
   flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s, box-shadow 0.3s;
 }
 
 .espacio-card:hover {
   transform: translateY(-5px);
   border-color: #d4af37;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 175, 55, 0.2);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
+}
+
+.espacio-card.active-card {
+  border-color: #d4af37;
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
 }
 
 .espacio-img-wrap {
-  height: 200px;
   position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: #000;
 }
 
 .espacio-img-wrap img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.espacio-card:hover .espacio-img-wrap img {
+  transform: scale(1.06);
 }
 
 .espacio-badge {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  background: rgba(14, 12, 20, 0.85);
+  top: 10px;
+  left: 10px;
+  background: rgba(13, 9, 23, 0.9);
   border: 1px solid #d4af37;
   color: #f3e5ab;
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 700;
-  letter-spacing: 1px;
-  padding: 0.25rem 0.65rem;
-  border-radius: 3px;
   text-transform: uppercase;
+  padding: 0.25rem 0.55rem;
+  border-radius: 3px;
+  letter-spacing: 0.5px;
+  backdrop-filter: blur(4px);
 }
 
 .espacio-card-body {
-  padding: 1.5rem;
+  padding: 1.4rem;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  flex: 1;
 }
 
 .espacio-card-body h3 {
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.45rem;
-  color: #ffffff;
-  margin: 0 0 0.5rem 0;
+  color: #f3e5ab;
+  margin: 0 0 0.4rem 0;
+  line-height: 1.25;
 }
 
 .espacio-specs {
   display: flex;
-  gap: 1rem;
-  font-size: 0.76rem;
-  color: #c4b5fd;
-  margin-bottom: 0.8rem;
+  gap: 0.8rem;
+  font-size: 0.72rem;
+  color: #c084fc;
   font-weight: 600;
+  margin-bottom: 0.8rem;
+}
+
+.espacio-specs span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 .espacio-card-body p {
   color: #94a3b8;
-  font-size: 0.84rem;
-  line-height: 1.6;
+  font-size: 0.82rem;
+  line-height: 1.55;
   margin: 0 0 1.2rem 0;
-  flex-grow: 1;
+  flex: 1;
+}
+
+.espacio-base-price {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 0.7rem;
+  margin-bottom: 1.1rem;
+}
+
+.espacio-base-price small {
+  display: block;
+  font-size: 0.65rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.espacio-base-price strong {
+  font-size: 1.25rem;
+  color: #ffffff;
 }
 
 .btn-select-espacio {
+  width: 100%;
   background: transparent;
-  border: 1px solid #d4af37;
-  color: #d4af37;
-  padding: 0.6rem;
+  border: 1px solid rgba(199, 175, 139, 0.4);
+  color: #f3e5ab;
+  padding: 0.65rem;
   border-radius: 4px;
+  font-family: 'Montserrat', sans-serif;
   font-size: 0.76rem;
   font-weight: 700;
-  letter-spacing: 1.2px;
   text-transform: uppercase;
+  letter-spacing: 0.6px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.btn-select-espacio:hover,
-.btn-select-espacio.selected {
-  background: #d4af37;
-  color: #060508;
+.btn-select-espacio:hover {
+  background: rgba(212, 175, 55, 0.12);
+  border-color: #d4af37;
 }
 
-/* Sección de Cotizador Interactivo */
+.btn-select-espacio.selected {
+  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
+  color: #060508;
+  border-color: #d4af37;
+  font-weight: 800;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+/* ==========================================================================
+   BLOQUE 3: COTIZADOR EN TIEMPO REAL & PANEL ADHESIVO
+   ========================================================================== */
 .cotizador-section {
-  background: linear-gradient(165deg, rgba(20, 18, 28, 0.98) 0%, rgba(12, 11, 16, 0.99) 100%);
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  border-radius: 12px;
-  padding: 3rem 2.5rem;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9);
+  background: #090610;
+  border: 1px solid rgba(199, 175, 139, 0.25);
+  border-radius: 10px;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
 }
 
 .cotizador-grid {
   display: grid;
-  grid-template-columns: 1.3fr 1fr;
-  gap: 3rem;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 2.5rem;
+  align-items: flex-start;
 }
 
-@media (max-width: 960px) {
-  .cotizador-grid { grid-template-columns: 1fr; }
+@media (max-width: 900px) {
+  .cotizador-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .cotizador-form {
   display: flex;
   flex-direction: column;
-  gap: 1.2rem;
+  gap: 1.1rem;
 }
 
-.cotizador-form label {
-  font-size: 0.74rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 1.2px;
-  color: #c4b5fd;
-  display: block;
-  margin-bottom: 0.35rem;
+.form-double-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.1rem;
 }
 
-.cotizador-form input,
-.cotizador-form select,
-.cotizador-form textarea {
-  width: 100%;
-  background: #14121d;
-  border: 1px solid rgba(196, 181, 253, 0.22);
-  border-radius: 4px;
-  padding: 0.7rem 0.9rem;
-  color: #ffffff;
-  font-size: 0.88rem;
-  outline: none;
-  font-family: inherit;
-  box-sizing: border-box;
+@media (max-width: 600px) {
+  .form-double-col {
+    grid-template-columns: 1fr;
+  }
 }
 
-.cotizador-form input:focus,
-.cotizador-form select:focus,
-.cotizador-form textarea:focus {
-  border-color: #d4af37;
-}
-
-.resumen-card {
-  background: #121019;
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  border-radius: 8px;
-  padding: 2rem;
+.eventos-input-group {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  gap: 0.4rem;
 }
 
-.resumen-card h3 {
+.eventos-input-group label {
+  font-size: 0.72rem;
+  color: #c084fc;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.eventos-input-group input,
+.eventos-input-group select,
+.eventos-input-group textarea {
+  background: #181229;
+  border: 1px solid rgba(192, 132, 252, 0.28);
+  color: #ffffff;
+  padding: 0.75rem 0.9rem;
+  border-radius: 4px;
+  font-size: 0.86rem;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.eventos-input-group input:focus,
+.eventos-input-group select:focus,
+.eventos-input-group textarea:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.btn-guardar-cotizacion {
+  width: 100%;
+  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
+  color: #060508;
+  border: none;
+  padding: 0.85rem;
+  border-radius: 4px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-top: 0.6rem;
+  transition: opacity 0.2s, transform 0.2s;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
+}
+
+.btn-guardar-cotizacion:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   BLOQUE 4: TARJETA DE RESUMEN LATERAL (STICKY)
+   ========================================================================== */
+.resumen-card {
+  position: sticky;
+  top: 9.5rem;
+  background: #110d1f;
+  border: 1px solid #d4af37;
+  border-radius: 8px;
+  padding: 1.8rem;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.resumen-head h3 {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.8rem;
+  font-size: 1.7rem;
   color: #f3e5ab;
-  margin: 0 0 1.2rem 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  padding-bottom: 0.6rem;
+  margin: 0.3rem 0 0 0;
+}
+
+.resumen-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1rem;
 }
 
 .resumen-line {
   display: flex;
   justify-content: space-between;
-  font-size: 0.88rem;
-  color: #cbd5e1;
-  margin-bottom: 0.8rem;
-}
-
-.resumen-total {
-  border-top: 1px solid rgba(212, 175, 55, 0.3);
-  padding-top: 1rem;
-  margin-top: 1.5rem;
-  display: flex;
-  justify-content: space-between;
   align-items: center;
+  font-size: 0.82rem;
+  color: #cbd5e1;
 }
 
-.resumen-total strong {
-  font-size: 1.6rem;
+.resumen-line.highlight {
   color: #f3e5ab;
 }
 
-.btn-guardar-cotizacion {
-  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
-  color: #060508;
-  border: none;
-  border-radius: 4px;
-  padding: 0.95rem;
-  font-size: 0.84rem;
-  font-weight: 800;
-  letter-spacing: 1.6px;
+.resumen-line strong {
+  color: #ffffff;
+}
+
+.resumen-total {
+  border-top: 1px solid rgba(212, 175, 55, 0.4);
+  padding-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.resumen-total span {
+  font-size: 0.75rem;
+  color: #c084fc;
   text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.resumen-total strong {
+  font-size: 1.75rem;
+  color: #ffffff;
+}
+
+.resumen-total small {
+  font-size: 0.68rem;
+  color: #94a3b8;
+  line-height: 1.4;
+  margin-top: 0.4rem;
+}
+
+/* ==========================================================================
+   BLOQUE 5: ESTADO DE CONFIRMACIÓN & VOUCHER
+   ========================================================================== */
+.cotizacion-exitosa-card {
+  text-align: center;
+  padding: 3rem 1.5rem;
+  max-width: 650px;
+  margin: 0 auto;
+}
+
+.confirm-icon {
+  margin: 0 auto 0.8rem auto;
+}
+
+.cotizacion-exitosa-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.3rem;
+  color: #f3e5ab;
+  margin: 0.4rem 0 0.8rem 0;
+}
+
+.folio-voucher-box {
+  background: #171224;
+  border: 1px solid #d4af37;
+  border-radius: 6px;
+  padding: 1.5rem;
+  margin: 1.8rem 0 2rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.folio-voucher-box span {
+  font-size: 0.75rem;
+  color: #c084fc;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.folio-voucher-box strong {
+  font-size: 1.8rem;
+  color: #f3e5ab;
+  font-family: monospace;
+  letter-spacing: 1.5px;
+}
+
+.folio-voucher-box small {
+  font-size: 0.82rem;
+  color: #cbd5e1;
+}
+
+.btn-nueva-cotizacion {
+  background: transparent;
+  border: 1px solid #d4af37;
+  color: #f3e5ab;
+  padding: 0.8rem 2rem;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
   cursor: pointer;
-  margin-top: 1.5rem;
-  width: 100%;
+  transition: all 0.2s ease;
+}
+
+.btn-nueva-cotizacion:hover {
+  background: rgba(212, 175, 55, 0.15);
+  color: #ffffff;
+}
+
+/* SPINNER & ANIMACIONES */
+.eventos-loading-box {
+  text-align: center;
+  padding: 5rem 1rem;
+}
+
+.eventos-spinner {
+  color: #d4af37;
+  margin: 0 auto 1.2rem auto;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

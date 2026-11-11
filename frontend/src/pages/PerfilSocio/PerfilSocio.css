@@ -833,3 +833,163 @@
   cursor: not-allowed;
   background: #181620 !important;
 }
+/* ==========================================================================
+   PERFIL_SOCIO.CSS - ESTILOS ADICIONALES PARA REFLEJO 100% SQL
+   ========================================================================== */
+
+.perfil-sql-id {
+  background: rgba(192, 132, 252, 0.12);
+  border: 1px solid rgba(192, 132, 252, 0.35);
+  color: #e9d5ff;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 4px;
+  font-family: monospace;
+}
+
+.perfil-sql-id strong {
+  color: #ffffff;
+}
+
+.perfil-ultimo-acceso {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  margin-left: 0.4rem;
+}
+
+.reserva-peticion-preview {
+  color: #d4af37;
+  font-size: 0.78rem;
+  margin: 0.3rem 0 0 0;
+  font-style: italic;
+}
+
+.reserva-aviso-pendiente {
+  color: #f59e0b;
+  font-size: 0.78rem;
+  margin: 0.3rem 0 0 0;
+  font-weight: 500;
+}
+
+.subseccion-titulo-line {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.6rem;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.subseccion-tag {
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 1px;
+}
+
+.subseccion-tag.pagadas {
+  color: #10b981;
+}
+
+.subseccion-tag.pendientes {
+  color: #f59e0b;
+}
+
+.subseccion-tag.canceladas {
+  color: #ef4444;
+}
+
+.subseccion-titulo-line small {
+  color: #94a3b8;
+  font-size: 0.75rem;
+}
+
+.empty-subseccion {
+  color: #64748b;
+  font-style: italic;
+  padding: 0.8rem 0;
+  font-size: 0.85rem;
+}
+
+.subseccion-canceladas {
+  opacity: 0.65;
+}
+
+/* Tickets Grid dentro de Perfil */
+.tickets-grid-historial {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+
+.ticket-item-perfil {
+  background: #110d1f;
+  border: 1px solid rgba(192, 132, 252, 0.22);
+  border-radius: 8px;
+  padding: 1.2rem;
+}
+
+.ticket-item-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.4rem;
+}
+
+.ticket-id-tag {
+  color: #d4af37;
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.ticket-badge-estatus {
+  background: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+}
+
+.ticket-cat {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  color: #f3e5ab;
+  margin: 0.2rem 0 0.4rem 0;
+}
+
+.ticket-desc {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  margin: 0 0 0.6rem 0;
+  line-height: 1.5;
+}
+
+.ticket-date {
+  font-size: 0.7rem;
+  color: #64748b;
+}
+
+/* Textarea de preferencias */
+.cuenta-form textarea {
+  width: 100%;
+  background: #181229;
+  border: 1px solid rgba(192, 132, 252, 0.28);
+  border-radius: 4px;
+  color: #ffffff;
+  padding: 0.8rem 1rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box;
+}
+
+.cuenta-form textarea:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}

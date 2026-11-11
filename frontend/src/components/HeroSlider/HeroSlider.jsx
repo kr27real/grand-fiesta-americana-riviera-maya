@@ -5,27 +5,31 @@ import './HeroSlider.css';
 const slides = [
   {
     id: 1,
-    image: 'https://image-tc.galaxy.tf/wijpeg-asw61us5xgymd93dt3nu9y1nz/_photo.jpg',
-    title: 'Grand Fiesta Americana',
-    subtitle: 'Riviera Cancún / Riviera Maya by Hilton — Donde el Caribe cobra vida'
+    image: 'https://image-tc.galaxy.tf/wijpeg-1vkvkxf8aswz8zp6cnv3al62n/2998_photo.jpg',
+    tag: 'GRAND FIESTA AMERICANA RIVIERA CANCÚN',
+    title: 'Donde el Caribe cobra vida',
+    subtitle: 'Resort & Spa contemporáneo frente al mar, una experiencia definida por la amplitud y el ritmo pausado de la costa.'
   },
   {
     id: 2,
-    image: 'https://image-tc.galaxy.tf/wijpeg-8f436tlgefhnfu48zvpns3run/_photo.jpg',
-    title: 'Suites de Lujo Frente al Mar',
-    subtitle: 'Arquitectura contemporánea integrada a la calidez de la costa mexicana'
+    image: 'https://image-tc.galaxy.tf/wijpeg-keenuzs88sxwkosbzny52srv/2991_photo.jpg',
+    tag: 'ARQUITECTURA & HORIZONTE',
+    title: 'Arquitectura que abraza el mar',
+    subtitle: 'Amplitud, elegancia relajada y vistas infinitas al arrecife turquesa de Puerto Morelos.'
   },
   {
     id: 3,
-    image: 'https://image-tc.galaxy.tf/wijpeg-f4wozq3zmjrw9eececnvff107/_photo.jpg',
-    title: 'Gastronomía de Alta Gama',
-    subtitle: 'Seis restaurantes de especialidad y experiencias culinarias exclusivas'
+    image: 'https://image-tc.galaxy.tf/wijpeg-2xx11wxhp9nxv8hnyt0sr7vxf/2993_photo.jpg',
+    tag: 'COLECCIÓN EXCLUSIVA',
+    title: 'Suites de Lujo Frente al Mar',
+    subtitle: 'Espacios de descanso creados a la medida con amenidades L’Occitane y mayordomía de autor.'
   },
   {
     id: 4,
-    image: 'https://image-tc.galaxy.tf/wijpeg-keenuzs88sxwkosbzny52srv/_photo.jpg',
-    title: 'Piscinas y Playas Infinitas',
-    subtitle: 'Días diseñados para transcurrir completamente a tu propio ritmo'
+    image: 'https://image-tc.galaxy.tf/wijpeg-f4wozq3zmjrw9eececnvff107/2997_photo.jpg',
+    tag: 'ALTA GASTRONOMÍA & BIENESTAR',
+    title: 'Experiencias de Alta Gama',
+    subtitle: 'Seis restaurantes de especialidad internacional y un santuario holístico de hidroterapia.'
   }
 ];
 
@@ -37,7 +41,7 @@ export default function HeroSlider() {
     if (!isPlaying) return;
     const timer = setInterval(() => {
       setCurrentIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    }, 6000);
+    }, 6500);
     return () => clearInterval(timer);
   }, [isPlaying]);
 
@@ -50,45 +54,52 @@ export default function HeroSlider() {
   };
 
   return (
-    <div className="hero-slider-wrapper">
+    <div className="hero-slider-master">
       {slides.map((slide, index) => (
         <div
           key={slide.id}
-          className={`hero-slide ${index === currentIndex ? 'active' : ''}`}
+          className={`hero-slide-pane ${index === currentIndex ? 'slide-active' : ''}`}
           style={{ backgroundImage: `url(${slide.image})` }}
         >
-          <div className="hero-overlay" />
-          <div className="hero-slide-content">
-            <h1>{slide.title}</h1>
-            <p>{slide.subtitle}</p>
+          <div className="hero-scrim-layer" />
+          
+          <div className="hero-content-wrapper">
+            <div className="hero-content-glass">
+              <span className="hero-eyebrow-pill">{slide.tag}</span>
+              <h1 className="hero-display-title">{slide.title}</h1>
+              <p className="hero-description-text">{slide.subtitle}</p>
+            </div>
           </div>
         </div>
       ))}
 
-      {/* Flechas de navegación */}
-      <button className="slider-nav-btn prev-btn" onClick={handlePrev} aria-label="Slide anterior">
-        <ChevronLeft size={28} />
-      </button>
-      <button className="slider-nav-btn next-btn" onClick={handleNext} aria-label="Slide siguiente">
-        <ChevronRight size={28} />
-      </button>
-
-      {/* Control de pausa/play e indicadores */}
-      <div className="slider-footer-controls">
-        <button
-          className="play-pause-btn"
-          onClick={() => setIsPlaying(!isPlaying)}
-          aria-label={isPlaying ? 'Pausar slider' : 'Reproducir slider'}
-        >
-          {isPlaying ? <Pause size={16} /> : <Play size={16} />}
+      {/* Cápsula de control en la esquina inferior derecha */}
+      <div className="hero-control-cockpit">
+        <button className="cockpit-btn nav-arrow" onClick={handlePrev} aria-label="Slide anterior">
+          <ChevronLeft size={20} />
         </button>
 
-        <div className="dots-container">
-          {slides.map((_, dotIdx) => (
-            <span
-              key={dotIdx}
-              className={`dot ${dotIdx === currentIndex ? 'active-dot' : ''}`}
-              onClick={() => setCurrentIndex(dotIdx)}
+        <button
+          className="cockpit-btn nav-play"
+          onClick={() => setIsPlaying(!isPlaying)}
+          aria-label={isPlaying ? 'Pausar' : 'Reproducir'}
+        >
+          {isPlaying ? <Pause size={15} /> : <Play size={15} />}
+        </button>
+
+        <button className="cockpit-btn nav-arrow" onClick={handleNext} aria-label="Slide siguiente">
+          <ChevronRight size={20} />
+        </button>
+
+        <div className="cockpit-divider" />
+
+        <div className="cockpit-pagination">
+          {slides.map((_, idx) => (
+            <button
+              key={idx}
+              className={`dash-indicator ${idx === currentIndex ? 'active-dash' : ''}`}
+              onClick={() => setCurrentIndex(idx)}
+              aria-label={`Ir al slide ${idx + 1}`}
             />
           ))}
         </div>
