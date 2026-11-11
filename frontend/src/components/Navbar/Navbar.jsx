@@ -1,88 +1,46 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Key, User, Phone, LogOut, Award, MessageSquare, Search, Receipt } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import LoginModal from '../LoginModal/LoginModal';
 import './Navbar.css';
 
 export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const [usuario, setUsuario] = useState(() => {
-    return JSON.parse(localStorage.getItem('usuario_gfa') || localStorage.getItem('gfa_user') || 'null');
-  });
-
-  // Sincronizar estado de sesión en cada cambio de vista y eventos de storage
-  useEffect(() => {
-    const sincronizarSesion = () => {
-      const sesionGuardada = JSON.parse(localStorage.getItem('usuario_gfa') || localStorage.getItem('gfa_user') || 'null');
-      setUsuario(sesionGuardada);
-    };
-
-    sincronizarSesion();
-    window.addEventListener('storage', sincronizarSesion);
-    window.addEventListener('gfa_sesion_cambiada', sincronizarSesion);
-
-    return () => {
-      window.removeEventListener('storage', sincronizarSesion);
-      window.removeEventListener('gfa_sesion_cambiada', sincronizarSesion);
-    };
-  }, [location.pathname]);
+  const { usuario, estaAutenticado, cerrarSesion, abrirLogin, loginModalAbierto, cerrarLogin, iniciarSesion } = useAuth();
   const [modalAbierto, setModalAbierto] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  const handleBotonReservar = (e) => {
-    e.preventDefault();
-    const token = localStorage.getItem('token_gfa') || localStorage.getItem('token');
-    const sesion = usuario || JSON.parse(localStorage.getItem('usuario_gfa') || localStorage.getItem('gfa_user') || 'null');
-
-    if (!token || !sesion) {
-      setModalAbierto(true);
-      return;
-    }
-
-    navigate('/disponibilidad');
-  };
-  const sincronizarUsuario = () => {
-    const raw = localStorage.getItem('usuario_gfa') || localStorage.getItem('gfa_user');
-    if (raw) {
-      try {
-        setUsuario(JSON.parse(raw));
-      } catch (e) {
-        setUsuario(null);
-      }
-    } else {
-      setUsuario(null);
-    }
-  };
-
-    useEffect(() => {
-    const sincronizarUsuario = () => {
-      try {
-        const guardado = localStorage.getItem('usuario_gfa') || localStorage.getItem('gfa_user');
-        setUsuario(guardado ? JSON.parse(guardado) : null);
-      } catch {
-        setUsuario(null);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 40) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
       }
     };
-
-    sincronizarUsuario();
-    window.addEventListener('storage', sincronizarUsuario);
-    window.addEventListener('gfa_auth_cambio', sincronizarUsuario);
-
-    return () => {
-      window.removeEventListener('storage', sincronizarUsuario);
-      window.removeEventListener('gfa_auth_cambio', sincronizarUsuario);
-    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleCerrarSesion = () => {
-    localStorage.removeItem('usuario_gfa');
-    localStorage.removeItem('gfa_user');
-    setUsuario(null);
-    window.dispatchEvent(new Event('authChange'));
-    navigate('/');
+  const handleBotonReservar = (e) => {
+    e.preventDefault();
+    if (!estaAutenticado) {
+      if (abrirLogin) {
+        abrirLogin();
+      } else {
+        setModalAbierto(true);
+      }
+      return;
+    }
+    navigate('/disponibilidad');
   };
 
+  const handleCerrarSesion = () => {
+    cerrarSesion();
+    navigate('/');
+  };
   const isActive = (path) => location.pathname === path;
 
   return (
@@ -138,7 +96,7 @@ export default function Navbar() {
               </button>
             </div>
           ) : (
-            <button onClick={() => setModalAbierto(true)} className="top-bar-item">
+            <button onClick={abrirLogin} className="top-bar-item">
               <User size={13} />
               <span>Iniciar Sesión / Unirse a Fiesta Rewards</span>
             </button>
@@ -245,9 +203,9 @@ export default function Navbar() {
       </nav>
 
       <LoginModal
-        isOpen={modalAbierto}
-        onClose={() => setModalAbierto(false)}
-        onLoginSuccess={(user) => setUsuario(user)}
+        isOpen={loginModalAbierto}
+        onClose={cerrarLogin}
+        onLoginSuccess={(user, token) => iniciarSesion(user, token || 'session_token_valid')}
       />
 
     </header>

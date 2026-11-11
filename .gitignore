@@ -1,8 +1,30 @@
+# Dependencias
 node_modules/
 */node_modules/
+
+# Entorno y Secretos
 .env
 */.env
-.DS_Store
+*.env.local
+
+# Builds y Bundles
 dist/
 build/
+*/dist/
+
+# Archivos de respaldo y temporales
+*.bak
+*.fase2.bak
 *.log
+backend/qa_monitor.log
+
+# Logs de depuracion
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Sistema operativo y editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

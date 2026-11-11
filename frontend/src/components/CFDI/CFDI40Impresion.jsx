@@ -1,4 +1,5 @@
 ﻿import { generarYDescargarCFDI40XML } from '../../utils/cfdiXmlGenerator';
+import { generarPDFRepresentacionImpresa } from '../../utils/cfdiPdfGenerator';
 import React from 'react';
 // Código QR fiscal generado de forma nativa
 

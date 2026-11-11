@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FiestaCard from '../../components/FiestaCard/FiestaCard';
 import './PerfilSocio.css';
@@ -446,10 +446,10 @@ export default function PerfilSocio() {
             </div>
           ) : (
             (() => {
-              const pagadas = reservaciones.filter(r => (r.estatus_pago === 'PAGADO' || r.estatus_reservacion === 'CONFIRMADA') && r.estatus_reservacion !== 'CANCELADA');
-              const porPagar = reservaciones.filter(r => (r.estatus_pago === 'POR_PAGAR' || r.estatus_reservacion === 'PENDIENTE_PAGO') && r.estatus_reservacion !== 'CANCELADA');
-              const canceladas = reservaciones.filter(r => r.estatus_reservacion === 'CANCELADA');
-
+              const norm = (t) => (t || '').toString().toUpperCase();
+              const pagadas = reservaciones.filter(r => norm(r.estatus_reservacion).includes('CONFIRMADA') || norm(r.estatus_reservacion).includes('PAGAD'));
+              const porPagar = reservaciones.filter(r => norm(r.estatus_reservacion).includes('PENDIENTE') || norm(r.estatus_reservacion).includes('POR'));
+              const canceladas = reservaciones.filter(r => norm(r.estatus_reservacion).includes('CANCELAD'));
               const renderTarjeta = (res, esPendiente) => {
                 const cancelada = res.estatus_reservacion === 'CANCELADA';
                 return (

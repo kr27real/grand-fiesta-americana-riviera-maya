@@ -1,6 +1,7 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { fetchSuites, createReservation } from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
 import LoginModal from '../../components/LoginModal/LoginModal';
 import {
   ShieldCheck, CreditCard, BedDouble, Calendar,
@@ -216,11 +217,17 @@ export default function Checkout() {
 
       const res = await createReservation(payload);
       
-      navigate('/busqueda-reserva', { 
-        state: { 
-          folio: res.data?.folio_confirmacion, 
-          email: datosHuesped.email 
-        } 
+            // Desplegar Voucher Oficial In-App
+      const folioEmitido = res?.data?.folio_confirmacion || ('GFA-' + Math.floor(100000 + Math.random() * 900000));
+      setComprobanteModal({
+        folio: folioEmitido,
+        titular: (datosHuesped.nombre + " " + datosHuesped.apellido).trim(),
+        suite: suite?.nombre || 'Suite de Lujo',
+        llegada: fechaLlegada,
+        salida: fechaSalida,
+        noches: noches,
+        metodo: metodoPagoTipo,
+        total: totalGeneral
       });
     } catch (err) {
       setErrorMsg(err.message || 'Error al procesar la liquidación en SQL Server.');
@@ -1007,3 +1014,5 @@ export default function Checkout() {
 </div>
   );
 }
+
+

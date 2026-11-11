@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Calendar, Tag, Loader2, Sparkles } from 'lucide-react';
 import { fetchOfertas } from '../../services/api';
@@ -99,7 +99,7 @@ export default function Ofertas() {
 
                     <p className="oferta-desc">{descripcion}</p>
 
-                    <Link to="/disponibilidad" className="btn-oferta">
+                    <Link to='/habitaciones' className="btn-oferta">
                       Aprovechar Oferta
                     </Link>
                   </div>

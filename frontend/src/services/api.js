@@ -1,4 +1,4 @@
-const API_BASE_URL = 'http://localhost:5000/api';
+﻿const API_BASE_URL = 'http://localhost:5000/api';
 
 async function parseResponse(res) {
   const data = await res.json().catch(() => ({}));
@@ -128,11 +128,18 @@ export async function purgarCancelacionesApi(usuarioId) {
 
 // 6. Buscador por Folio
 export async function buscarReservacionPorFolioApi(folio, emailOApellido) {
-  const res = await fetch(`${API_BASE_URL}/reservaciones/buscar`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ folio, email_o_apellido: emailOApellido })
+  const params = new URLSearchParams();
+  if (folio) params.append('folio', folio.trim());
+  if (emailOApellido) {
+    params.append('email', emailOApellido.trim());
+    params.append('email_o_apellido', emailOApellido.trim());
+  }
+
+  const res = await fetch(`${API_BASE_URL}/reservaciones/buscar?${params.toString()}`, {
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' }
   });
+
   return parseResponse(res);
 }
 

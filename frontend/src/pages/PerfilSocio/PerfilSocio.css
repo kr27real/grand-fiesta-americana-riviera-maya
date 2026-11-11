@@ -658,3 +658,178 @@
   align-items: center !important;
   gap: 0.6rem !important;
 }
+
+/* MEJORAS DE CALIDAD: STATUS DE LEALTAD Y PREFERENCIAS */
+.perfil-fr-badge-interactive {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #d4af37;
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  user-select: none;
+}
+
+.perfil-fr-badge-interactive:hover {
+  background: rgba(212, 175, 55, 0.22);
+  border-color: #d4af37;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.25);
+}
+
+.copiado-feedback {
+  background: #28a745;
+  color: #fff;
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.loyalty-progress-container {
+  margin-top: 0.6rem;
+  background: #181520;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+}
+
+.loyalty-progress-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #b2afbe;
+  margin-bottom: 0.4rem;
+}
+
+.loyalty-progress-bar-bg {
+  width: 100%;
+  height: 6px;
+  background: #25222e;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.loyalty-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #d4af37, #f3e5ab);
+  border-radius: 3px;
+  transition: width 0.4s ease;
+}
+
+.preferencias-box {
+  background: #141219;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-top: 1.2rem;
+}
+
+/* ESTILOS CORPORATIVOS AVANZADOS: EXPEDIENTE DE SOCIO */
+.perfil-fr-badge-interactive {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  color: #d4af37;
+  padding: 0.4rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.perfil-fr-badge-interactive:hover {
+  background: rgba(212, 175, 55, 0.22);
+  border-color: #d4af37;
+  transform: translateY(-1px);
+}
+
+.copiar-tag {
+  background: rgba(212, 175, 55, 0.25);
+  color: #fff;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.cuenta-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.cuenta-seguridad-meta {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.meta-pill {
+  background: #1e1b26;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  color: #c9c5d5;
+  padding: 0.35rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.cuenta-bloque-grupo {
+  background: #14121a;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+  padding: 1.4rem;
+  margin-bottom: 1.4rem;
+}
+
+.grupo-subtitulo {
+  color: #d4af37;
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+  margin: 0 0 1rem 0;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.form-row-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-select, .form-textarea {
+  width: 100%;
+  background: #1c1924;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  padding: 0.75rem 0.9rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.form-select:focus, .form-textarea:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+.input-disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  background: #181620 !important;
+}

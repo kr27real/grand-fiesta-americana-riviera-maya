@@ -1,4 +1,6 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Eye, EyeOff, ShieldCheck, UserCheck, RefreshCw, Lock, Mail, Phone, Globe, Award, CheckCircle } from 'lucide-react';
+import { useAuth } from '../../context/AuthContext';
 import './LoginModal.css';
 
 const generarCaptcha = () => {
@@ -10,25 +12,40 @@ const generarCaptcha = () => {
   return codigo;
 };
 
-const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
-  const [vista, setVista] = useState('login');
+export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
+  const { iniciarSesion } = useAuth();
+  const [vista, setVista] = useState('login'); // 'login' | 'registro' | 'recuperar_solicitud' | 'recuperar_codigo'
   const [loading, setLoading] = useState(false);
-  const [mensajeExito, setMensajeExito] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [mensajeExito, setMensajeExito] = useState('');
 
-  // Credenciales
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // Estados de visualización de contraseña
+  const [verPassword, setVerPassword] = useState(false);
+  const [verConfirmar, setVerConfirmar] = useState(false);
+
+  // Formulario Login
+  const [identificador, setIdentificador] = useState('');
+  const [passwordLogin, setPasswordLogin] = useState('');
+  const [recordarSesion, setRecordarSesion] = useState(true);
+
+  // Formulario Registro
+  const [tratamiento, setTratamiento] = useState('Sr.');
   const [nombres, setNombres] = useState('');
   const [apellidos, setApellidos] = useState('');
+  const [emailRegistro, setEmailRegistro] = useState('');
   const [telefono, setTelefono] = useState('');
+  const [pais, setPais] = useState('México');
+  const [passwordRegistro, setPasswordRegistro] = useState('');
+  const [confirmarPassword, setConfirmarPassword] = useState('');
+  const [aceptaTerminos, setAceptaTerminos] = useState(false);
 
   // Recuperación & Captcha
+  const [emailRecuperacion, setEmailRecuperacion] = useState('');
   const [captchaTexto, setCaptchaTexto] = useState('');
   const [inputCaptcha, setInputCaptcha] = useState('');
   const [codigoIngresado, setCodigoIngresado] = useState('');
   const [nuevaPassword, setNuevaPassword] = useState('');
-  const [confirmarPassword, setConfirmarPassword] = useState('');
+  const [confirmarNuevaPassword, setConfirmarNuevaPassword] = useState('');
 
   useEffect(() => {
     if (isOpen) {
@@ -45,58 +62,43 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
     setInputCaptcha('');
   };
 
-  // Mapeo seguro de textos (evita fallos de removeChild en React DOM)
-  const obtenerTitulo = () => {
-    switch (vista) {
-      case 'registro': return 'Registro Fiesta Rewards';
-      case 'recuperar_solicitud': return 'Recuperación de Cuenta';
-      case 'recuperar_codigo': return 'Nueva Credencial';
-      default: return 'Acceso a Socios';
-    }
+  // Cálculo visual de fortaleza de contraseña
+  const evaluarFortaleza = (pwd) => {
+    let score = 0;
+    if (pwd.length >= 8) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/[0-9]/.test(pwd)) score++;
+    if (/[^A-Za-z0-9]/.test(pwd)) score++;
+    if (score <= 1) return { texto: 'Débil', color: '#ff4d4f', width: '30%' };
+    if (score === 2 || score === 3) return { texto: 'Media', color: '#faad14', width: '65%' };
+    return { texto: 'Robusta', color: '#52c41a', width: '100%' };
   };
 
-  const obtenerDescripcion = () => {
-    switch (vista) {
-      case 'registro': return 'Crea tu cuenta de socio para recibir beneficios exclusivos y tu Fiesta Card.';
-      case 'recuperar_solicitud': return 'Verificación de identidad mediante Captcha de alta seguridad.';
-      case 'recuperar_codigo': return 'Ingresa el código de 6 dígitos para validar el cambio seguro.';
-      default: return 'Ingresa con tus credenciales registradas para administrar tus estancias.';
-    }
-  };
+  const fortaleza = evaluarFortaleza(passwordRegistro);
 
-  const handleSubmitAcceso = async (e) => {
+  // Submit Login
+  const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMsg('');
     setLoading(true);
 
-    const esRegistro = vista === 'registro';
-    const endpoint = esRegistro
-      ? 'http://localhost:5000/api/usuarios/registro'
-      : 'http://localhost:5000/api/usuarios/login';
-
-    const payload = esRegistro
-      ? { nombres, apellidos, email, password, telefono }
-      : { email, password };
-
     try {
-      const res = await fetch(endpoint, {
+      const res = await fetch('http://localhost:5000/api/usuarios/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ identificador, password: passwordLogin })
       });
-      const data = await res.json();
 
+      const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Credenciales inválidas.');
 
-      const usuarioJson = JSON.stringify(data.usuario);
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('token_gfa', data.token);
-      localStorage.setItem('usuario', usuarioJson);
-      localStorage.setItem('usuario_gfa', usuarioJson);
-      localStorage.setItem('gfa_user', usuarioJson);
-
-      window.dispatchEvent(new Event('gfa_sesion_cambiada'));
-      window.dispatchEvent(new Event('storage'));
+      if (iniciarSesion) {
+        iniciarSesion(data.usuario, data.token);
+      } else {
+        localStorage.setItem('usuario_gfa', JSON.stringify(data.usuario));
+        localStorage.setItem('token_gfa', data.token);
+        window.dispatchEvent(new Event('gfa_sesion_cambiada'));
+      }
 
       if (onLoginSuccess) onLoginSuccess(data.usuario, data.token);
       onClose();
@@ -107,12 +109,69 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
     }
   };
 
+  // Submit Registro
+  const handleRegistro = async (e) => {
+    e.preventDefault();
+    setErrorMsg('');
+
+    if (passwordRegistro.length < 8) {
+      setErrorMsg('La contraseña debe tener un mínimo de 8 caracteres.');
+      return;
+    }
+
+    if (passwordRegistro !== confirmarPassword) {
+      setErrorMsg('Las contraseñas ingresadas no coinciden.');
+      return;
+    }
+
+    if (!aceptaTerminos) {
+      setErrorMsg('Debes aceptar los Términos y Condiciones y el Aviso de Privacidad.');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await fetch('http://localhost:5000/api/usuarios/registro', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          tratamiento,
+          nombres,
+          apellidos,
+          email: emailRegistro,
+          telefono,
+          pais,
+          password: passwordRegistro
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'No se pudo completar el registro.');
+
+      if (iniciarSesion) {
+        iniciarSesion(data.usuario, data.token);
+      } else {
+        localStorage.setItem('usuario_gfa', JSON.stringify(data.usuario));
+        localStorage.setItem('token_gfa', data.token);
+        window.dispatchEvent(new Event('gfa_sesion_cambiada'));
+      }
+
+      if (onLoginSuccess) onLoginSuccess(data.usuario, data.token);
+      onClose();
+    } catch (err) {
+      setErrorMsg(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Submit Recuperar Contraseña - Solicitud
   const handleSolicitarCodigo = async (e) => {
     e.preventDefault();
     setErrorMsg('');
 
     if (inputCaptcha.trim().toUpperCase() !== captchaTexto.toUpperCase()) {
-      setErrorMsg('El código de verificación Captcha es incorrecto.');
+      setErrorMsg('Código Captcha incorrecto. Intenta con uno nuevo.');
       refrescarCaptcha();
       return;
     }
@@ -122,13 +181,12 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
       const res = await fetch('http://localhost:5000/api/usuarios/recuperar-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ email: emailRecuperacion })
       });
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'No se pudo generar el código.');
 
-      if (!res.ok) throw new Error(data.error || 'No se pudo procesar la recuperación.');
-
-      setMensajeExito('Código emitido: ' + (data.codigo_simulado || 'Revisa tu terminal') + '. Ingrésalo abajo.');
+      setMensajeExito(`Código de seguridad emitido: ${data.codigo_simulado || 'Revisa tu terminal'}.`);
       setVista('recuperar_codigo');
     } catch (err) {
       setErrorMsg(err.message);
@@ -138,16 +196,16 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
     }
   };
 
+  // Submit Recuperar Contraseña - Cambio
   const handleRestablecerPassword = async (e) => {
     e.preventDefault();
     setErrorMsg('');
 
-    if (nuevaPassword.length < 6) {
-      setErrorMsg('La contraseña debe tener mínimo 6 caracteres.');
+    if (nuevaPassword.length < 8) {
+      setErrorMsg('La nueva contraseña debe tener al menos 8 caracteres.');
       return;
     }
-
-    if (nuevaPassword !== confirmarPassword) {
+    if (nuevaPassword !== confirmarNuevaPassword) {
       setErrorMsg('Las contraseñas no coinciden.');
       return;
     }
@@ -158,21 +216,17 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email,
+          email: emailRecuperacion,
           codigo_token: codigoIngresado,
           nueva_password: nuevaPassword
         })
       });
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Error al restablecer contraseña.');
 
-      if (!res.ok) throw new Error(data.error || 'Error al restablecer la contraseña.');
-
-      setMensajeExito('¡Contraseña restablecida con éxito! Ya puedes iniciar sesión.');
-      setPassword('');
-      setTimeout(() => {
-        setVista('login');
-        setErrorMsg('');
-      }, 1500);
+      setMensajeExito('Contraseña actualizada con éxito. Ya puedes iniciar sesión.');
+      setVista('login');
+      setPasswordLogin('');
     } catch (err) {
       setErrorMsg(err.message);
     } finally {
@@ -181,227 +235,423 @@ const LoginModal = ({ isOpen, onClose, onLoginSuccess }) => {
   };
 
   return (
-    <div className="login-modal-overlay">
-      <div className="login-modal-content">
-        <button className="login-modal-close" onClick={onClose} type="button">&times;</button>
+    <div className="login-modal-overlay" onClick={onClose}>
+      <div className="login-modal-container" onClick={(e) => e.stopPropagation()}>
+        <button className="login-modal-close" onClick={onClose} title="Cerrar modal">&times;</button>
 
+        {/* Encabezado Corporativo */}
         <div className="login-modal-header">
-          <p className="login-modal-sub">GRAND FIESTA AMERICANA</p>
-          <h2 className="login-modal-title">{obtenerTitulo()}</h2>
-          <p className="login-modal-desc">{obtenerDescripcion()}</p>
+          <div className="login-brand-icon">
+            <Award size={24} color="#d4af37" />
+          </div>
+          <h2 className="login-title">
+            {vista === 'registro' && 'Registro Fiesta Rewards'}
+            {vista === 'login' && 'Acceso a Socios'}
+            {vista === 'recuperar_solicitud' && 'Recuperación de Cuenta'}
+            {vista === 'recuperar_codigo' && 'Nueva Credencial'}
+          </h2>
+          <p className="login-subtitle">
+            {vista === 'registro' && 'Crea tu cuenta institucional y recibe tu Fiesta Card de cortesía con 2,500 puntos.'}
+            {vista === 'login' && 'Ingresa con tu correo electrónico o número de socio Fiesta Rewards.'}
+            {vista === 'recuperar_solicitud' && 'Ingresa tu correo registrado y valida el código Captcha de seguridad.'}
+            {vista === 'recuperar_codigo' && 'Digita el código de 6 dígitos para asignar una nueva contraseña segura.'}
+          </p>
         </div>
 
-        {(vista === 'login' || vista === 'registro') && (
-          <div className="login-tabs">
-            <button
-              type="button"
-              className={`login-tab-btn ${vista === 'login' ? 'active' : ''}`}
-              onClick={() => { setVista('login'); setErrorMsg(''); setMensajeExito(''); }}
-            >
-              INICIAR SESIÓN
-            </button>
-            <button
-              type="button"
-              className={`login-tab-btn ${vista === 'registro' ? 'active' : ''}`}
-              onClick={() => { setVista('registro'); setErrorMsg(''); setMensajeExito(''); }}
-            >
-              CREAR CUENTA FR
-            </button>
-          </div>
-        )}
+        {/* Mensajes de Alerta */}
+        {errorMsg && <div className="login-alert login-alert-danger">{errorMsg}</div>}
+        {mensajeExito && <div className="login-alert login-alert-success">{mensajeExito}</div>}
 
-        {errorMsg ? <div className="login-error-banner">{errorMsg}</div> : null}
-        {mensajeExito ? <div className="login-success-banner">{mensajeExito}</div> : null}
-
-        {(vista === 'login' || vista === 'registro') && (
-          <form onSubmit={handleSubmitAcceso} className="login-form">
-            {vista === 'registro' && (
-              <div className="login-input-row">
-                <div className="login-input-group">
-                  <label>Nombre(s)</label>
-                  <input
-                    type="text"
-                    required
-                    value={nombres}
-                    onChange={(e) => setNombres(e.target.value)}
-                    placeholder="Mauricio"
-                  />
-                </div>
-                <div className="login-input-group">
-                  <label>Apellido(s)</label>
-                  <input
-                    type="text"
-                    required
-                    value={apellidos}
-                    onChange={(e) => setApellidos(e.target.value)}
-                    placeholder="Garza Sada"
-                  />
-                </div>
-              </div>
-            )}
-
-            <div className="login-input-group">
-              <label>CORREO ELECTRÓNICO</label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="socio@posadas.com"
-              />
-            </div>
-
-            {vista === 'registro' && (
-              <div className="login-input-group">
-                <label>Teléfono de Contacto</label>
+        {/* 1. VISTA LOGIN */}
+        {vista === 'login' && (
+          <form onSubmit={handleLogin} className="login-form">
+            <div className="form-group">
+              <label className="form-label">Correo Electrónico o No. Fiesta Rewards</label>
+              <div className="input-with-icon">
+                <Mail size={16} className="field-icon" />
                 <input
-                  type="tel"
-                  value={telefono}
-                  onChange={(e) => setTelefono(e.target.value)}
-                  placeholder="5548166341"
+                  type="text"
+                  required
+                  placeholder="ej. socio@hotel.com o FR-222466"
+                  value={identificador}
+                  onChange={(e) => setIdentificador(e.target.value)}
+                  className="form-input"
+                  autoComplete="username"
                 />
               </div>
-            )}
-
-            <div className="login-input-group">
-              <label>CONTRASEÑA</label>
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-              />
             </div>
 
-            {vista === 'login' && (
-              <div className="login-options-row">
-                <label className="login-remember-me">
-                  <input type="checkbox" defaultChecked /> Recordar mi sesión
-                </label>
+            <div className="form-group">
+              <div className="label-with-link">
+                <label className="form-label">Contraseña</label>
                 <button
                   type="button"
-                  className="login-forgot-link"
-                  onClick={() => {
-                    setVista('recuperar_solicitud');
-                    setErrorMsg('');
-                    setMensajeExito('');
-                  }}
+                  onClick={() => { setVista('recuperar_solicitud'); setErrorMsg(''); setMensajeExito(''); }}
+                  className="link-btn"
                 >
-                  ¿Olvidaste tu clave?
+                  ¿Olvidaste tu contraseña?
                 </button>
+              </div>
+              <div className="input-with-icon">
+                <Lock size={16} className="field-icon" />
+                <input
+                  type={verPassword ? 'text' : 'password'}
+                  required
+                  placeholder="Introduce tu contraseña"
+                  value={passwordLogin}
+                  onChange={(e) => setPasswordLogin(e.target.value)}
+                  className="form-input"
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setVerPassword(!verPassword)}
+                  className="toggle-pwd-btn"
+                  tabIndex={-1}
+                >
+                  {verPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+
+            <div className="form-row-remember">
+              <label className="checkbox-container">
+                <input
+                  type="checkbox"
+                  checked={recordarSesion}
+                  onChange={(e) => setRecordarSesion(e.target.checked)}
+                />
+                <span className="checkbox-label">Mantener sesión iniciada</span>
+              </label>
+            </div>
+
+            <button type="submit" disabled={loading} className="btn-gold-submit">
+              {loading ? 'Validando credenciales...' : 'Iniciar Sesión'}
+            </button>
+
+            <div className="login-footer-switch">
+              <span>¿Aún no eres socio? </span>
+              <button
+                type="button"
+                onClick={() => { setVista('registro'); setErrorMsg(''); setMensajeExito(''); }}
+                className="link-switch"
+              >
+                Inscríbete a Fiesta Rewards aquí
+              </button>
+            </div>
+          </form>
+        )}
+
+        {/* 2. VISTA REGISTRO */}
+        {vista === 'registro' && (
+          <form onSubmit={handleRegistro} className="login-form">
+            <div className="form-row-2col">
+              <div className="form-group" style={{ flex: '0 0 90px' }}>
+                <label className="form-label">Tratamiento</label>
+                <select
+                  value={tratamiento}
+                  onChange={(e) => setTratamiento(e.target.value)}
+                  className="form-input"
+                >
+                  <option value="Sr.">Sr.</option>
+                  <option value="Sra.">Sra.</option>
+                  <option value="Lic.">Lic.</option>
+                  <option value="Dr.">Dr.</option>
+                </select>
+              </div>
+
+              <div className="form-group" style={{ flex: 1 }}>
+                <label className="form-label">Nombre(s) *</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="ej. Kevin"
+                  value={nombres}
+                  onChange={(e) => setNombres(e.target.value)}
+                  className="form-input"
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">Apellido(s) *</label>
+              <input
+                type="text"
+                required
+                placeholder="ej. Ramírez Soria"
+                value={apellidos}
+                onChange={(e) => setApellidos(e.target.value)}
+                className="form-input"
+              />
+            </div>
+
+            <div className="form-row-2col">
+              <div className="form-group">
+                <label className="form-label">Correo Electrónico *</label>
+                <div className="input-with-icon">
+                  <Mail size={16} className="field-icon" />
+                  <input
+                    type="email"
+                    required
+                    placeholder="socio@ejemplo.com"
+                    value={emailRegistro}
+                    onChange={(e) => setEmailRegistro(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Teléfono Móvil *</label>
+                <div className="input-with-icon">
+                  <Phone size={16} className="field-icon" />
+                  <input
+                    type="tel"
+                    required
+                    placeholder="ej. 5548166341"
+                    value={telefono}
+                    onChange={(e) => setTelefono(e.target.value)}
+                    className="form-input"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label className="form-label">País de Residencia</label>
+              <div className="input-with-icon">
+                <Globe size={16} className="field-icon" />
+                <select
+                  value={pais}
+                  onChange={(e) => setPais(e.target.value)}
+                  className="form-input"
+                >
+                  <option value="México">México</option>
+                  <option value="Estados Unidos">Estados Unidos</option>
+                  <option value="Canadá">Canadá</option>
+                  <option value="España">España</option>
+                  <option value="Colombia">Colombia</option>
+                  <option value="Argentina">Argentina</option>
+                  <option value="Otro">Otro</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="form-row-2col">
+              <div className="form-group">
+                <label className="form-label">Contraseña (Mín. 8 caracteres) *</label>
+                <div className="input-with-icon">
+                  <Lock size={16} className="field-icon" />
+                  <input
+                    type={verPassword ? 'text' : 'password'}
+                    required
+                    placeholder="Contraseña robusta"
+                    value={passwordRegistro}
+                    onChange={(e) => setPasswordRegistro(e.target.value)}
+                    className="form-input"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setVerPassword(!verPassword)}
+                    className="toggle-pwd-btn"
+                    tabIndex={-1}
+                  >
+                    {verPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Confirmar Contraseña *</label>
+                <div className="input-with-icon">
+                  <Lock size={16} className="field-icon" />
+                  <input
+                    type={verConfirmar ? 'text' : 'password'}
+                    required
+                    placeholder="Repite la contraseña"
+                    value={confirmarPassword}
+                    onChange={(e) => setConfirmarPassword(e.target.value)}
+                    className="form-input"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setVerConfirmar(!verConfirmar)}
+                    className="toggle-pwd-btn"
+                    tabIndex={-1}
+                  >
+                    {verConfirmar ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Medidor de Fortaleza */}
+            {passwordRegistro.length > 0 && (
+              <div className="strength-meter-container">
+                <div className="strength-bar-bg">
+                  <div
+                    className="strength-bar-fill"
+                    style={{ width: fortaleza.width, backgroundColor: fortaleza.color }}
+                  />
+                </div>
+                <span className="strength-label" style={{ color: fortaleza.color }}>
+                  Seguridad: {fortaleza.texto}
+                </span>
               </div>
             )}
 
-            <button type="submit" className="login-submit-btn" disabled={loading}>
-              {loading ? 'Validando...' : (vista === 'login' ? 'INGRESAR A MI CUENTA →' : 'CREAR MI CUENTA FR →')}
+            <div className="terms-checkbox-box">
+              <label className="checkbox-container">
+                <input
+                  type="checkbox"
+                  required
+                  checked={aceptaTerminos}
+                  onChange={(e) => setAceptaTerminos(e.target.checked)}
+                />
+                <span className="checkbox-label">
+                  Acepto los Términos del programa Fiesta Rewards y el Aviso de Privacidad conforme a la LFPDPPP.
+                </span>
+              </label>
+            </div>
+
+            <button type="submit" disabled={loading} className="btn-gold-submit">
+              {loading ? 'Creando membresía de socio...' : 'Completar Registro y Obtener Fiesta Card'}
             </button>
+
+            <div className="login-footer-switch">
+              <span>¿Ya tienes membresía? </span>
+              <button
+                type="button"
+                onClick={() => { setVista('login'); setErrorMsg(''); setMensajeExito(''); }}
+                className="link-switch"
+              >
+                Inicia sesión aquí
+              </button>
+            </div>
           </form>
         )}
 
+        {/* 3. VISTA RECUPERACIÓN - PASO 1 (SOLICITUD) */}
         {vista === 'recuperar_solicitud' && (
           <form onSubmit={handleSolicitarCodigo} className="login-form">
-            <div className="login-input-group">
-              <label>CORREO ASOCIADO A LA CUENTA</label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="socio@posadas.com"
-              />
-            </div>
-
-            <div className="login-captcha-container">
-              <label>VERIFICACIÓN DE SEGURIDAD (CAPTCHA)</label>
-              <div className="login-captcha-box">
-                <span className="login-captcha-code">{captchaTexto}</span>
-                <button type="button" className="login-captcha-refresh" onClick={refrescarCaptcha} title="Cambiar código">
-                  ↻
-                </button>
+            <div className="form-group">
+              <label className="form-label">Correo Electrónico Registrado</label>
+              <div className="input-with-icon">
+                <Mail size={16} className="field-icon" />
+                <input
+                  type="email"
+                  required
+                  placeholder="ej. socio@hotel.com"
+                  value={emailRecuperacion}
+                  onChange={(e) => setEmailRecuperacion(e.target.value)}
+                  className="form-input"
+                />
               </div>
-              <input
-                type="text"
-                required
-                value={inputCaptcha}
-                onChange={(e) => setInputCaptcha(e.target.value)}
-                placeholder="Escribe el código mostrado"
-                maxLength={6}
-                style={{ textTransform: 'uppercase' }}
-              />
             </div>
 
-            <button type="submit" className="login-submit-btn" disabled={loading}>
-              {loading ? 'Verificando...' : 'ENVIAR CÓDIGO DE SEGURIDAD →'}
+            <div className="form-group">
+              <label className="form-label">Código de Verificación Captcha</label>
+              <div className="captcha-wrapper">
+                <div className="captcha-badge">{captchaTexto}</div>
+                <button
+                  type="button"
+                  onClick={refrescarCaptcha}
+                  className="btn-refresh-captcha"
+                  title="Cambiar código Captcha"
+                >
+                  <RefreshCw size={16} />
+                </button>
+                <input
+                  type="text"
+                  required
+                  maxLength={5}
+                  placeholder="Ingresa código"
+                  value={inputCaptcha}
+                  onChange={(e) => setInputCaptcha(e.target.value)}
+                  className="form-input captcha-input"
+                />
+              </div>
+            </div>
+
+            <button type="submit" disabled={loading} className="btn-gold-submit">
+              {loading ? 'Enviando código...' : 'Solicitar Código de Seguridad'}
             </button>
 
-            <button
-              type="button"
-              className="login-back-btn"
-              onClick={() => { setVista('login'); setErrorMsg(''); }}
-            >
-              ← Volver al Inicio de Sesión
-            </button>
+            <div className="login-footer-switch">
+              <button
+                type="button"
+                onClick={() => { setVista('login'); setErrorMsg(''); setMensajeExito(''); }}
+                className="link-switch"
+              >
+                ← Volver al inicio de sesión
+              </button>
+            </div>
           </form>
         )}
 
+        {/* 4. VISTA RECUPERACIÓN - PASO 2 (VALIDAR CÓDIGO Y NUEVA CLAVE) */}
         {vista === 'recuperar_codigo' && (
           <form onSubmit={handleRestablecerPassword} className="login-form">
-            <div className="login-input-group">
-              <label>CÓDIGO DE 6 DÍGITOS</label>
+            <div className="form-group">
+              <label className="form-label">Código de Verificación (6 dígitos)</label>
               <input
                 type="text"
                 required
+                maxLength={6}
+                placeholder="000000"
                 value={codigoIngresado}
                 onChange={(e) => setCodigoIngresado(e.target.value)}
-                placeholder="Ej. 592814"
-                maxLength={6}
-                className="login-input-code"
+                className="form-input code-input"
               />
             </div>
 
-            <div className="login-input-group">
-              <label>NUEVA CONTRASEÑA</label>
-              <input
-                type="password"
-                required
-                value={nuevaPassword}
-                onChange={(e) => setNuevaPassword(e.target.value)}
-                placeholder="Mínimo 6 caracteres"
-              />
+            <div className="form-group">
+              <label className="form-label">Nueva Contraseña (Mín. 8 caracteres)</label>
+              <div className="input-with-icon">
+                <Lock size={16} className="field-icon" />
+                <input
+                  type={verPassword ? 'text' : 'password'}
+                  required
+                  placeholder="Introduce nueva contraseña"
+                  value={nuevaPassword}
+                  onChange={(e) => setNuevaPassword(e.target.value)}
+                  className="form-input"
+                />
+              </div>
             </div>
 
-            <div className="login-input-group">
-              <label>CONFIRMAR NUEVA CONTRASEÑA</label>
-              <input
-                type="password"
-                required
-                value={confirmarPassword}
-                onChange={(e) => setConfirmarPassword(e.target.value)}
-                placeholder="Repite la contraseña"
-              />
+            <div className="form-group">
+              <label className="form-label">Confirmar Nueva Contraseña</label>
+              <div className="input-with-icon">
+                <Lock size={16} className="field-icon" />
+                <input
+                  type={verConfirmar ? 'text' : 'password'}
+                  required
+                  placeholder="Repite la nueva contraseña"
+                  value={confirmarNuevaPassword}
+                  onChange={(e) => setConfirmarNuevaPassword(e.target.value)}
+                  className="form-input"
+                />
+              </div>
             </div>
 
-            <button type="submit" className="login-submit-btn" disabled={loading}>
-              {loading ? 'Actualizando...' : 'GUARDAR Y RESTABLECER CLAVE →'}
+            <button type="submit" disabled={loading} className="btn-gold-submit">
+              {loading ? 'Actualizando...' : 'Restablecer Contraseña'}
             </button>
 
-            <button
-              type="button"
-              className="login-back-btn"
-              onClick={() => { setVista('recuperar_solicitud'); setErrorMsg(''); }}
-            >
-              ← Reintentar con otro código
-            </button>
+            <div className="login-footer-switch">
+              <button
+                type="button"
+                onClick={() => { setVista('login'); setErrorMsg(''); setMensajeExito(''); }}
+                className="link-switch"
+              >
+                ← Cancelar y volver al inicio
+              </button>
+            </div>
           </form>
         )}
 
-        <div className="login-modal-footer-note">
-          Conexión segura cifrada con HotelGranFiestaAmericanaDB
-        </div>
       </div>
     </div>
   );
-};
-
-export default LoginModal;
+}
