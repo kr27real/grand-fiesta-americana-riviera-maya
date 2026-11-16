@@ -612,4 +612,14 @@
   .financial-table td {
     color: #000000 !important;
   }
+  
+}
+@media print {
+  header, nav, .navbar, .no-print {
+    display: none !important;
+  }
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
 }

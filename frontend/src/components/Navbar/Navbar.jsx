@@ -1,6 +1,6 @@
 ﻿import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Key, User, Phone, LogOut, Award, MessageSquare, Search, Receipt } from 'lucide-react';
+import { Key, User, Phone, LogOut, Award, MessageSquare, Receipt } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import LoginModal from '../LoginModal/LoginModal';
 import './Navbar.css';
@@ -11,18 +11,36 @@ export default function Navbar() {
   const { usuario, estaAutenticado, cerrarSesion, abrirLogin, loginModalAbierto, cerrarLogin, iniciarSesion } = useAuth();
   const [modalAbierto, setModalAbierto] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [puntosReales, setPuntosReales] = useState(null);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 40) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
+      setScrolled(window.scrollY > 40);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Sincronizar puntos reales desde TarjetasFiestaCard en SQL Server
+  useEffect(() => {
+    const uid = usuario?.usuario_id || usuario?.id;
+    if (!uid) {
+      setPuntosReales(null);
+      return;
+    }
+    const token = localStorage.getItem('token') || localStorage.getItem('token_gfa');
+    fetch(`http://localhost:5000/api/billetera/${uid}`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {}
+    })
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => {
+        const pts = data?.fiesta_card?.puntos_rewards_acumulados ?? data?.puntos_rewards_acumulados;
+        if (pts !== undefined && pts !== null) {
+          setPuntosReales(pts);
+        }
+      })
+      .catch(() => {});
+  }, [usuario, location.pathname]);
 
   const handleBotonReservar = (e) => {
     e.preventDefault();
@@ -41,7 +59,12 @@ export default function Navbar() {
     cerrarSesion();
     navigate('/');
   };
+
   const isActive = (path) => location.pathname === path;
+
+  const nombreMostrar = usuario?.nombres || usuario?.nombre || 'Socio';
+  const folioRewardsMostrar = usuario?.fiesta_rewards_id || usuario?.numero_socio_rewards || 'FR-964612';
+  const puntosMostrar = puntosReales ?? usuario?.puntos_rewards_acumulados ?? usuario?.saldo_puntos ?? 2500;
 
   return (
     <header className={`gfa-navbar-container ${scrolled ? 'scrolled' : ''}`}>
@@ -85,9 +108,9 @@ export default function Navbar() {
               <Link to="/perfil-socio" className="user-badge-chip" title="Ver mi cuenta de socio">
                 <Award size={14} color="#08060c" />
                 <span>
-                  Socio FR: <strong>{usuario.nombre || 'Socio'}</strong> ({usuario.numero_socio_rewards || 'FR-946469'})
+                  Socio FR: <strong>{nombreMostrar}</strong> ({folioRewardsMostrar})
                 </span>
-                <span className="user-pts-tag">{usuario.saldo_puntos ?? 500} pts</span>
+                <span className="user-pts-tag">{puntosMostrar} pts</span>
               </Link>
 
               <button onClick={handleCerrarSesion} className="btn-nav-logout" title="Cerrar Sesión">

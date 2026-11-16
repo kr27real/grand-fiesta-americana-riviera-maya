@@ -64,6 +64,113 @@ app.get('/api/experiencias', async (req, res) => {
         res.status(500).json({ error: 'Error al consultar experiencias exclusivas' });
     }
 });
+// Consultar experiencias agendadas de un socio
+app.get('/api/experiencias/usuario/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const pool = await poolPromise;
+
+        const result = await pool.request()
+            .input('uid', sql.Int, id)
+            .query(`
+                IF OBJECT_ID('dbo.ReservacionesExperiencias', 'U') IS NOT NULL
+                    SELECT * FROM dbo.ReservacionesExperiencias WHERE usuario_id = @uid ORDER BY creado_en DESC
+                ELSE
+                    SELECT 1 WHERE 1 = 0
+            `);
+
+        res.json(result.recordset);
+    } catch (err) {
+        console.error('Error al consultar experiencias del usuario:', err.message);
+        res.status(500).json({ error: 'Error al consultar experiencias del usuario: ' + err.message });
+    }
+});
+
+// Agendar nueva experiencia o cita en Spa
+app.post('/api/experiencias/reservar', async (req, res) => {
+    try {
+        const {
+            usuario_id,
+            experiencia_id,
+            titulo_experiencia,
+            nombre_experiencia,
+            categoria,
+            fecha_cita,
+            fecha_experiencia,
+            horario_cita,
+            hora_experiencia,
+            numero_personas,
+            personas,
+            precio_unitario,
+            total_mxn,
+            total,
+            notas_especiales,
+            comentarios
+        } = req.body;
+
+        const pool = await poolPromise;
+        const folioExp = `EXP-${Math.floor(100000 + Math.random() * 900000)}`;
+
+        const tituloFinal = titulo_experiencia || nombre_experiencia || 'Experiencia Exclusiva Resort & Spa';
+        const fechaFinal = fecha_cita || fecha_experiencia || new Date().toISOString().split('T')[0];
+        const horaFinal = horario_cita || hora_experiencia || '16:00';
+        const personasFinal = Number(numero_personas || personas || 2);
+        const totalFinal = Number(total_mxn || total || precio_unitario || 0);
+        const notasFinal = notas_especiales || comentarios || '';
+
+        const result = await pool.request()
+            .input('uid', sql.Int, usuario_id || 2)
+            .input('expId', sql.Int, experiencia_id || null)
+            .input('folio', sql.VarChar(30), folioExp)
+            .input('titulo', sql.VarChar(150), tituloFinal)
+            .input('cat', sql.VarChar(80), categoria || 'Experiencias & Spa')
+            .input('fecha', sql.Date, fechaFinal)
+            .input('hora', sql.VarChar(20), horaFinal)
+            .input('personas', sql.Int, personasFinal)
+            .input('total', sql.Decimal(12, 2), totalFinal)
+            .input('notas', sql.VarChar(sql.MAX), notasFinal)
+            .query(`
+                IF OBJECT_ID('dbo.ReservacionesExperiencias', 'U') IS NULL
+                BEGIN
+                    CREATE TABLE dbo.ReservacionesExperiencias (
+                        reserva_experiencia_id INT IDENTITY(1,1) PRIMARY KEY,
+                        usuario_id INT NOT NULL,
+                        experiencia_id INT NULL,
+                        folio_experiencia VARCHAR(30) NOT NULL,
+                        titulo_experiencia VARCHAR(150) NOT NULL,
+                        categoria VARCHAR(80) NULL,
+                        fecha_cita DATE NOT NULL,
+                        horario_cita VARCHAR(20) NOT NULL,
+                        numero_personas INT NOT NULL DEFAULT 1,
+                        total_mxn DECIMAL(12,2) NOT NULL,
+                        notas_especiales VARCHAR(MAX) NULL,
+                        estatus VARCHAR(30) NOT NULL DEFAULT 'Agendada',
+                        creado_en DATETIME NOT NULL DEFAULT GETDATE()
+                    );
+                END
+
+                INSERT INTO dbo.ReservacionesExperiencias (
+                    usuario_id, experiencia_id, folio_experiencia, titulo_experiencia, categoria,
+                    fecha_cita, horario_cita, numero_personas, total_mxn, notas_especiales, estatus, creado_en
+                )
+                OUTPUT INSERTED.*
+                VALUES (
+                    @uid, @expId, @folio, @titulo, @cat,
+                    @fecha, @hora, @personas, @total, @notas, 'Agendada', GETDATE()
+                );
+            `);
+
+        res.status(201).json({
+            ok: true,
+            mensaje: 'Experiencia agendada con éxito.',
+            folio: folioExp,
+            experiencia: result.recordset[0]
+        });
+    } catch (err) {
+        console.error('Error al reservar experiencia:', err.message);
+        res.status(500).json({ error: 'Error al agendar experiencia: ' + err.message });
+    }
+});
 
 // Restaurantes y Cava
 app.get('/api/restaurantes', async (req, res) => {
@@ -464,6 +571,47 @@ app.put(['/api/usuarios/perfil/:id', '/api/usuarios/:id'], async (req, res) => {
     } catch (err) {
         console.error('Error al actualizar perfil:', err);
         res.status(500).json({ error: 'Error al actualizar perfil: ' + err.message });
+    }
+});
+// ==========================================
+// ACTUALIZAR PREFERENCIAS DE SUITE DEL SOCIO
+// ==========================================
+app.put('/api/usuarios/preferencias/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { preferencia_cama, preferencia_piso, preferencias_adicionales } = req.body;
+        const pool = await poolPromise;
+
+        const result = await pool.request()
+            .input('uid', sql.Int, id)
+            .input('cama', sql.VarChar(80), preferencia_cama || 'King Size')
+            .input('piso', sql.VarChar(80), preferencia_piso || 'Piso Alto - Vista al Mar')
+            .input('adicionales', sql.VarChar(sql.MAX), preferencias_adicionales || '')
+            .query(`
+                UPDATE dbo.Usuarios
+                SET 
+                    preferencia_cama = @cama,
+                    preferencia_piso = @piso,
+                    preferencias_adicionales = @adicionales
+                OUTPUT INSERTED.usuario_id, INSERTED.nombres, INSERTED.apellidos, INSERTED.email,
+                       INSERTED.telefono, INSERTED.fiesta_rewards_id, INSERTED.nivel_socio,
+                       INSERTED.noches_acumuladas, INSERTED.preferencia_cama,
+                       INSERTED.preferencia_piso, INSERTED.preferencias_adicionales
+                WHERE usuario_id = @uid
+            `);
+
+        if (result.recordset.length === 0) {
+            return res.status(404).json({ ok: false, error: 'Usuario no encontrado' });
+        }
+
+        res.json({
+            ok: true,
+            mensaje: 'Preferencias de hospedaje actualizadas en SQL Server.',
+            usuario: result.recordset[0]
+        });
+    } catch (err) {
+        console.error('Error al actualizar preferencias:', err.message);
+        res.status(500).json({ ok: false, error: 'Error al actualizar preferencias: ' + err.message });
     }
 });
 
@@ -955,6 +1103,29 @@ app.delete('/api/billetera/:id', async (req, res) => {
     }
 });
 
+app.put('/api/billetera/:id/predeterminada', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const pool = await poolPromise;
+
+        // Obtener el usuario_id dueño de esa tarjeta
+        const info = await pool.request()
+            .input('tid', sql.Int, id)
+            .query("SELECT usuario_id FROM dbo.TarjetasBancariasUsuario WHERE tarjeta_bancaria_id = @tid");
+
+        if (info.recordset.length === 0) return res.status(404).json({ error: 'Tarjeta no encontrada' });
+        const uid = info.recordset[0].usuario_id;
+
+        // Desmarcar las demás y marcar la elegida
+        await pool.request().input('uid', sql.Int, uid).query("UPDATE dbo.TarjetasBancariasUsuario SET es_preferida = 0 WHERE usuario_id = @uid");
+        await pool.request().input('tid', sql.Int, id).query("UPDATE dbo.TarjetasBancariasUsuario SET es_preferida = 1 WHERE tarjeta_bancaria_id = @tid");
+
+        res.json({ ok: true, mensaje: 'Tarjeta principal actualizada.' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // Tickets Concierge / Contacto
 const handlerGetTickets = async (req, res) => {
     try {
@@ -988,7 +1159,7 @@ const handlerPostTickets = async (req, res) => {
             .input('apellidos', sql.VarChar(100), apellidos || '')
             .input('email', sql.VarChar(150), email || '')
             .input('tel', sql.VarChar(50), telefono || '')
-            .input('desc', sql.VarChar(-1), descripcion || '')
+            .input('desc', sql.VarChar(sql.MAX), descripcion || '')
             .query(`
                 INSERT INTO dbo.TicketsContacto (
                     usuario_id, hotel_destino, categoria, tipo_solicitud, clave_reservacion,
@@ -1023,6 +1194,7 @@ app.get('/api/servicios-adicionales', async (req, res) => {
 });
 
 app.post(['/api/tickets', '/api/contacto', '/api/contacto/tickets'], handlerPostTickets);
+
 
 // ==========================================
 // INICIALIZACIÓN

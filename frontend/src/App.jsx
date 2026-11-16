@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer/Footer';
 import PageLoader from './components/PageLoader/PageLoader';
@@ -27,6 +27,25 @@ import NotFound from './pages/NotFound/NotFound';
 
 import './index.css';
 
+// Resetea el scroll al inicio cada vez que cambia la ruta
+function AutoScrollTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }, [pathname]);
+  return null;
+}
+
+// Disparador automático del modal de Registro si algún botón navega a /registro
+function TriggerRegistro() {
+  const { abrirRegistro, abrirLogin } = useAuth();
+  useEffect(() => {
+    if (abrirRegistro) abrirRegistro();
+    else if (abrirLogin) abrirLogin();
+  }, [abrirRegistro, abrirLogin]);
+  return <Navigate to="/" replace />;
+}
+
 // Componente de protección amigable con llamado a la acción
 function RutaProtegida({ children, mensaje = "Para acceder a esta sección exclusiva, inicia sesión con tu membresía Fiesta Rewards." }) {
   const { estaAutenticado, abrirLogin } = useAuth();
@@ -40,7 +59,7 @@ function RutaProtegida({ children, mensaje = "Para acceder a esta sección exclu
         justifyContent: 'center',
         alignItems: 'center',
         textAlign: 'center',
-        padding: '2rem'
+        padding: '8rem 2rem 4rem'
       }}>
         <div style={{
           background: 'rgba(20, 16, 26, 0.9)',
@@ -62,7 +81,7 @@ function RutaProtegida({ children, mensaje = "Para acceder a esta sección exclu
             type="button"
             onClick={abrirLogin}
             style={{
-              background: '#c7af8b',
+              background: 'linear-gradient(135deg, #d4af37 0%, #aa8212 100%)',
               color: '#060508',
               border: 'none',
               padding: '0.9rem 2.2rem',
@@ -72,8 +91,7 @@ function RutaProtegida({ children, mensaje = "Para acceder a esta sección exclu
               cursor: 'pointer',
               letterSpacing: '1px',
               textTransform: 'uppercase',
-              boxShadow: '0 8px 25px rgba(199, 175, 139, 0.35)',
-              transition: 'background 0.2s'
+              boxShadow: '0 8px 25px rgba(212, 175, 55, 0.35)'
             }}
           >
             Iniciar Sesión Fiesta Rewards
@@ -90,6 +108,7 @@ export default function App() {
   return (
     <Router>
       <AuthProvider>
+        <AutoScrollTop />
         <PageLoader />
 
         <div className="app-container" style={{ backgroundColor: '#060508', minHeight: '100vh', color: '#fff', display: 'flex', flexDirection: 'column' }}>
@@ -99,9 +118,11 @@ export default function App() {
             <Routes>
               {/* Páginas Públicas */}
               <Route path="/" element={<Inicio />} />
+              <Route path="/inicio" element={<Navigate to="/" replace />} />
               
               {/* Embudo Comercial Conectado */}
               <Route path="/habitaciones" element={<Habitaciones />} />
+              <Route path="/suites" element={<Navigate to="/habitaciones" replace />} />
               <Route path="/disponibilidad" element={<Disponibilidad />} />
               
               {/* Módulos Informativos y Experiencias */}
@@ -114,6 +135,7 @@ export default function App() {
               <Route path="/contacto" element={<Contacto />} />
               <Route path="/concierge" element={<ConciergeVirtual />} />
               <Route path="/busqueda-reserva" element={<BusquedaReserva />} />
+              <Route path="/registro" element={<TriggerRegistro />} />
 
               {/* Rutas Protegidas / Transaccionales */}
               <Route 
@@ -124,10 +146,7 @@ export default function App() {
                   </RutaProtegida>
                 } 
               />
-              <Route 
-                path="/perfil" 
-                element={<Navigate to="/perfil-socio" replace />} 
-              />
+              <Route path="/perfil" element={<Navigate to="/perfil-socio" replace />} />
               <Route 
                 path="/perfil-socio" 
                 element={

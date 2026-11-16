@@ -5,11 +5,56 @@ import './PerfilSocio.css';
 
 const API_BASE = 'http://localhost:5000/api';
 
+const NIVELES_REWARDS = [
+  {
+    id: 'clasico',
+    nombre: 'Clásico',
+    minNoches: 0,
+    beneficios: [
+      { icono: '🛏️', titulo: 'Tarifa Preferencial Socios', desc: 'Hasta 10% de descuento directo en reservaciones web.' },
+      { icono: '📶', titulo: 'Wi-Fi Premium de Alta Velocidad', desc: 'Conexión ilimitada en suite, playa y áreas comunes.' },
+      { icono: '🍹', titulo: 'Bebida de Bienvenida Signature', desc: 'Coctel artesanal de recepción al hacer check-in.' }
+    ]
+  },
+  {
+    id: 'oro',
+    nombre: 'Oro',
+    minNoches: 5,
+    beneficios: [
+      { icono: '🥂', titulo: '10% Descuento en Restaurantes', desc: 'Aplicable en centros de consumo seleccionados del resort.' },
+      { icono: '⏰', titulo: 'Early Check-In / Late Check-Out', desc: 'Sujeto a disponibilidad al momento de llegada o salida.' },
+      { icono: '✨', titulo: 'Bono +15% Puntos Fiesta Rewards', desc: 'Acumulación acelerada en cada estancia liquidada.' }
+    ]
+  },
+  {
+    id: 'platino',
+    nombre: 'Platino',
+    minNoches: 15,
+    beneficios: [
+      { icono: '⬆️', titulo: 'Upgrade de Suite Garantizado', desc: 'Ascenso a categoría superior vista al mar sujeto a ocupación.' },
+      { icono: '💆', titulo: '15% en Feel Harmony Spa', desc: 'Descuento preferencial en circuitos de hidroterapia y masajes.' },
+      { icono: '🌙', titulo: '1 Noche Certificado Anual', desc: 'Válida en estancias mínimas de 3 noches consecutivas.' }
+    ]
+  },
+  {
+    id: 'titanium',
+    nombre: 'Titanium Privilege',
+    minNoches: 20,
+    beneficios: [
+      { icono: '🍽️', titulo: '20% Descuento en Gastronomía', desc: 'Válido en todos los restaurantes de especialidad y cavas.' },
+      { icono: '🧖', titulo: '20% en Feel Harmony Spa', desc: 'Tarifa VIP en rituales holísticos y tratamientos signature.' },
+      { icono: '🏝️', titulo: '2 Noches Gratis Disponibles', desc: 'Certificados activos listos para canjear en tu próxima estancia.' },
+      { icono: '👑', titulo: 'Acceso Lounge VIP & Concierge 24/7', desc: 'Check-in privado, coctelería premium y atención prioritaria.' }
+    ]
+  }
+];
+
 export default function PerfilSocio() {
   const navigate = useNavigate();
 
-  // Tabs: estancias | experiencias | tickets | billetera | facturacion | preferencias | cuenta
-  const [tabActiva, setTabActiva] = useState('estancias'); 
+  // Tabs: resumen | estancias | experiencias | tickets | billetera | facturacion | preferencias | cuenta
+  const [tabActiva, setTabActiva] = useState('estancias');
+  const [nivelVista, setNivelVista] = useState('titanium');
   const [usuario, setUsuario] = useState(null);
   const [reservaciones, setReservaciones] = useState([]);
   const [experiencias, setExperiencias] = useState([]);
@@ -17,16 +62,68 @@ export default function PerfilSocio() {
   const [tarjetasBancarias, setTarjetasBancarias] = useState([]);
   const [facturas, setFacturas] = useState([]);
   const [cargando, setCargando] = useState(true);
+  const [copiadoFr, setCopiadoFr] = useState(false);
 
   // Fiesta Card de Socio
   const [fiestaCard, setFiestaCard] = useState({
     saldo_disponible: 50000.00,
     linea_credito_total: 50000.00,
-    numero_enmascarado: '4829 •••• •••• 7788',
-    puntos_rewards_acumulados: 500,
+    numero_enmascarado: '4829 6049 3035 3467',
+    puntos_rewards_acumulados: 2500,
     fecha_expiracion: '11/30',
-    titular_tarjeta: 'KEVIN RAMIREZ SORIA'
+    titular_tarjeta: 'KEVIN RAMIREZ SORIA',
+    descuento_restaurantes_porcentaje: 20,
+    descuento_spa_porcentaje: 20,
+    noches_gratis_disponibles: 2,
+    acceso_lounge_vip: true
   });
+  // Premios, Cupones y Actividad del Monedero
+const [codigoCupon, setCodigoCupon] = useState('');
+const [cuponMsg, setCuponMsg] = useState('');
+const [mostrarActividadWallet, setMostrarActividadWallet] = useState(false);
+const [movimientosWallet, setMovimientosWallet] = useState([
+  { id: 'MOV-101', fecha: '2026-11-16', concepto: 'Asignación Línea Titanium Privilege', tipo: 'ABONO', monto: '+$50,000.00 MXN' },
+  { id: 'MOV-102', fecha: '2026-11-16', concepto: 'Bono Acumulado Estancias Confirmadas', tipo: 'ABONO', monto: '+2,500 PTS' },
+  { id: 'MOV-103', fecha: '2026-11-16', concepto: 'Canje aplicado en Folio GFA-903115', tipo: 'CANJE', monto: '-$1,250.00 MXN' }
+]);
+
+const handleCanjearCupon = (e) => {
+  e.preventDefault();
+  const code = codigoCupon.trim().toUpperCase();
+  if (!code) return;
+
+  const cuponesValidos = {
+    TITANIUM500: { pts: 500, bonoMxn: 0, desc: 'Bono VIP +500 Puntos Fiesta Rewards' },
+    CANCUN1000: { pts: 0, bonoMxn: 1000, desc: 'Vale de $1,000.00 MXN para Spa o Restaurantes' },
+    VIPGFA: { pts: 1000, bonoMxn: 500, desc: 'Paquete Bienvenida: +1,000 PTS y $500.00 MXN' }
+  };
+
+  const premio = cuponesValidos[code];
+  if (!premio) {
+    setCuponMsg('Código no válido o expirado. Prueba con: TITANIUM500, CANCUN1000 o VIPGFA.');
+    return;
+  }
+
+  setFiestaCard(prev => ({
+    ...prev,
+    saldo_disponible: prev.saldo_disponible + premio.bonoMxn,
+    puntos_rewards_acumulados: Number(prev.puntos_rewards_acumulados) + premio.pts
+  }));
+
+  setMovimientosWallet(prev => [
+    {
+      id: `MOV-${Math.floor(200 + Math.random() * 800)}`,
+      fecha: new Date().toISOString().split('T')[0],
+      concepto: `Cupón canjeado (${code}): ${premio.desc}`,
+      tipo: 'ABONO',
+      monto: premio.bonoMxn > 0 ? `+$${premio.bonoMxn.toLocaleString('es-MX')}.00 MXN` : `+${premio.pts} PTS`
+    },
+    ...prev
+  ]);
+
+  setCuponMsg(`✓ ¡Premio acreditado! ${premio.desc}`);
+  setCodigoCupon('');
+};
 
   // Modal Voucher
   const [reservaBaucher, setReservaBaucher] = useState(null);
@@ -66,6 +163,75 @@ export default function PerfilSocio() {
   const [editPassword, setEditPassword] = useState('');
   const [editConfirmPassword, setEditConfirmPassword] = useState('');
   const [editMsg, setEditMsg] = useState('');
+  // Seguridad, Comunicaciones y Acompañantes (MySettings VIP)
+  const [notifWhatsapp, setNotifWhatsapp] = useState(true);
+  const [notifEmailOfertas, setNotifEmailOfertas] = useState(true);
+  const [notifPushPagos, setNotifPushPagos] = useState(true);
+  const [acompanantes, setAcompanantes] = useState([
+    { id: 1, nombre: 'Acompañante Principal VIP', relacion: 'Invitado Frecuente', documento: 'INE / Pasaporte Verificado' }
+  ]);
+  const [nuevoAcompNombre, setNuevoAcompNombre] = useState('');
+  const [nuevoAcompRelacion, setNuevoAcompRelacion] = useState('Familiar');
+  const [seguridadFeedback, setSeguridadFeedback] = useState('');
+  // Expediente Internacional, Pre-Check-In y Accesibilidad (MySettings_Index)
+  const [idiomaAtencion, setIdiomaAtencion] = useState('es-mx');
+  const [divisaPreferida, setDivisaPreferida] = useState('MXN');
+  const [accesibilidadActiva, setAccesibilidadActiva] = useState(false);
+  const [tipoDocumento, setTipoDocumento] = useState('Pasaporte');
+  const [numeroDocumento, setNumeroDocumento] = useState('');
+  const [vigenciaDocumento, setVigenciaDocumento] = useState('2030-12-31');
+  const [direccionResidencia, setDireccionResidencia] = useState('Coacalco, Estado de México, México');
+  const [docGuardadoMsg, setDocGuardadoMsg] = useState('');
+
+  const handleGuardarExpedienteViajero = (e) => {
+    e.preventDefault();
+    setDocGuardadoMsg('✓ Documento de viaje, preferencias regionales y accesibilidad sincronizados para Pre-Check-In Express.');
+    setTimeout(() => setDocGuardadoMsg(''), 4000);
+  };
+
+  const handleAgregarAcompanante = (e) => {
+    e.preventDefault();
+    if (!nuevoAcompNombre.trim()) return;
+    setAcompanantes(prev => [
+      ...prev,
+      {
+        id: Date.now(),
+        nombre: nuevoAcompNombre.trim(),
+        relacion: nuevoAcompRelacion,
+        documento: 'Registro Express Pre-Check-In'
+      }
+    ]);
+    setNuevoAcompNombre('');
+    setSeguridadFeedback('✓ Acompañante agregado a tu lista de Pre-Check-In.');
+    setTimeout(() => setSeguridadFeedback(''), 3000);
+  };
+
+  const handleExportarExpedienteJson = () => {
+    const expediente = {
+      fecha_exportacion: new Date().toISOString(),
+      socio: {
+        usuario_id: usuario.usuario_id,
+        nombre_completo: `${usuario.nombres} ${usuario.apellidos}`,
+        email: usuario.email,
+        telefono: usuario.telefono,
+        fiesta_rewards_id: usuario.fiesta_rewards_id,
+        nivel_socio: nivelOficial,
+        noches_acumuladas: nochesSql
+      },
+      monedero: fiestaCard,
+      estancias: listaReservas,
+      experiencias: listaExperiencias,
+      facturas_cfdi: facturas,
+      tickets_concierge: listaTickets
+    };
+    const blob = new Blob([JSON.stringify(expediente, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Expediente_GFA_${usuario.fiesta_rewards_id || 'SOCIO'}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   useEffect(() => {
     const verificarSesion = async () => {
@@ -88,7 +254,6 @@ export default function PerfilSocio() {
 
       const uid = u.usuario_id || u.id;
 
-      // Asignar datos iniciales seguros desde el registro local
       setUsuario(u);
       setEditNombre(u.nombres || u.nombre || '');
       setEditApellidos(u.apellidos || u.apellido || '');
@@ -114,9 +279,9 @@ export default function PerfilSocio() {
 
   const cargarDatosPerfil = async (uid) => {
     const token = localStorage.getItem('token') || localStorage.getItem('token_gfa');
-    const authHeaders = { 
-      Authorization: `Bearer ${token}`, 
-      "Content-Type": "application/json" 
+    const authHeaders = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json"
     };
 
     setCargando(true);
@@ -143,7 +308,7 @@ export default function PerfilSocio() {
         console.warn('Ruta de perfil usuario no disponible, usando estado local.');
       }
 
-      // 2. Tickets de Front Desk (con protección estricta de arreglo)
+      // 2. Tickets de Front Desk
       try {
         const resTickets = await fetch(`${API_BASE}/tickets/usuario/${uid}`, { headers: authHeaders });
         if (resTickets.ok) {
@@ -185,10 +350,14 @@ export default function PerfilSocio() {
             setFiestaCard({
               saldo_disponible: parseFloat(f.saldo_disponible) || 50000.00,
               linea_credito_total: parseFloat(f.linea_credito_total) || 50000.00,
-              numero_enmascarado: f.numero_enmascarado || '4829 •••• •••• 7788',
-              puntos_rewards_acumulados: f.puntos_rewards_acumulados || 500,
+              numero_enmascarado: f.numero_enmascarado || '4829 6049 3035 3467',
+              puntos_rewards_acumulados: f.puntos_rewards_acumulados ?? 2500,
               fecha_expiracion: f.fecha_expiracion || '11/30',
-              titular_tarjeta: f.titular_tarjeta || `${usuario?.nombres || ''} ${usuario?.apellidos || ''}`.trim()
+              titular_tarjeta: f.titular_tarjeta || `${usuario?.nombres || ''} ${usuario?.apellidos || ''}`.trim(),
+              descuento_restaurantes_porcentaje: f.descuento_restaurantes_porcentaje ?? 20,
+              descuento_spa_porcentaje: f.descuento_spa_porcentaje ?? 20,
+              noches_gratis_disponibles: f.noches_gratis_disponibles ?? 2,
+              acceso_lounge_vip: Boolean(f.acceso_lounge_vip ?? true)
             });
           }
           if (Array.isArray(bData.tarjetas_bancarias)) {
@@ -206,8 +375,8 @@ export default function PerfilSocio() {
         const resR = await fetch(`${API_BASE}/reservaciones/usuario/${uid}`, { headers: authHeaders });
         if (resR.ok) {
           const rawRes = await resR.json();
-          const arrayReservas = Array.isArray(rawRes) 
-            ? rawRes 
+          const arrayReservas = Array.isArray(rawRes)
+            ? rawRes
             : (Array.isArray(rawRes?.reservaciones) ? rawRes.reservaciones : (Array.isArray(rawRes?.data) ? rawRes.data : []));
           setReservaciones(arrayReservas);
         }
@@ -215,8 +384,21 @@ export default function PerfilSocio() {
         setReservaciones([]);
       }
 
-      // 6. Experiencias
-      setExperiencias([]);
+      // 6. Experiencias & Spa en SQL Server
+      try {
+        const resExp = await fetch(`${API_BASE}/experiencias/usuario/${uid}`, { headers: authHeaders });
+        if (resExp.ok) {
+          const expData = await resExp.json();
+          const arrayExp = Array.isArray(expData)
+            ? expData
+            : (Array.isArray(expData?.experiencias) ? expData.experiencias : (Array.isArray(expData?.data) ? expData.data : []));
+          setExperiencias(arrayExp);
+        } else {
+          setExperiencias([]);
+        }
+      } catch (eExp) {
+        setExperiencias([]);
+      }
 
     } catch (err) {
       console.error('Error al sincronizar datos del socio:', err);
@@ -225,12 +407,19 @@ export default function PerfilSocio() {
     }
   };
 
+  const handleCopiarFolioFr = () => {
+    const idFr = usuario?.fiesta_rewards_id || 'FR-964612';
+    navigator.clipboard?.writeText(idFr);
+    setCopiadoFr(true);
+    setTimeout(() => setCopiadoFr(false), 2000);
+  };
+
   const handleCancelarReservacion = async (reservaObj) => {
     const resId = reservaObj?.reservacion_id || reservaObj;
     const esPagada = (reservaObj?.estatus_reservacion || '').toUpperCase().includes('CONFIRMADA') || reservaObj?.estatus_pago === 'PAGADO';
-    
-    const msgConfirm = esPagada 
-      ? '¿Deseas cancelar esta reservación confirmada? El importe liquidado se reembolsará íntegramente a tu método de pago registrado en SQL Server.' 
+
+    const msgConfirm = esPagada
+      ? '¿Deseas cancelar esta reservación confirmada? El importe liquidado se reembolsará íntegramente a tu método de pago registrado en SQL Server.'
       : '¿Deseas cancelar esta reservación pendiente?';
 
     if (!window.confirm(msgConfirm)) return;
@@ -238,7 +427,7 @@ export default function PerfilSocio() {
     try {
       const res = await fetch(`${API_BASE}/reservaciones/${resId}/cancelar`, {
         method: 'PUT',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token') || localStorage.getItem('token_gfa')}`
         }
@@ -261,9 +450,12 @@ export default function PerfilSocio() {
       return;
     }
 
-    let marcaDetectada = 'VISA';
-    if (cleanNum.startsWith('5') || cleanNum.startsWith('2')) marcaDetectada = 'MASTERCARD';
-    else if (cleanNum.startsWith('3')) marcaDetectada = 'AMEX';
+    let marcaDetectada = 'Visa';
+    if (cleanNum.startsWith('5') || cleanNum.startsWith('2')) marcaDetectada = 'Mastercard';
+    else if (cleanNum.startsWith('3')) marcaDetectada = 'American Express';
+
+    const ultimos4 = cleanNum.slice(-4);
+    const numeroEnmascarado = `${cleanNum.slice(0, 4)} •••• •••• ${ultimos4}`;
 
     try {
       const expParts = tbExp.split('/');
@@ -272,15 +464,14 @@ export default function PerfilSocio() {
 
       const payload = {
         usuario_id: usuario.usuario_id,
-        alias_tarjeta: tbBanco || 'Mi Tarjeta',
+        alias_tarjeta: tbBanco || 'Tarjeta Personal',
         banco_emisor: tbBanco,
         marca_tarjeta: marcaDetectada,
         tipo_cuenta: tbTipo === 'CREDITO' ? 'Crédito' : 'Débito',
-        numero_tarjeta: cleanNum,
+        numero_enmascarado: numeroEnmascarado,
         titular_nombre: tbTitular.toUpperCase(),
         mes_expiracion: mExp,
         anio_expiracion: aExp,
-        saldo_disponible_simulado: 50000.00,
         es_preferida: tbPredeterminada ? 1 : 0
       };
 
@@ -293,8 +484,11 @@ export default function PerfilSocio() {
         body: JSON.stringify(payload)
       });
 
-      if (!res.ok) throw new Error('Error al registrar la tarjeta en SQL Server.');
-      
+      const resData = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        throw new Error(resData.error || 'Error al registrar la tarjeta en SQL Server.');
+      }
+
       cargarDatosPerfil(usuario.usuario_id);
       setModalTarjetaOpen(false);
       setTbNumero('');
@@ -326,7 +520,7 @@ export default function PerfilSocio() {
   const handleEliminarTarjeta = async (tarjetaId) => {
     if (!window.confirm('¿Deseas remover esta tarjeta de tu bóveda bancaria?')) return;
     try {
-      await fetch(`${API_BASE}/billetera/${tarjetaId}`, { 
+      await fetch(`${API_BASE}/billetera/${tarjetaId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token') || localStorage.getItem('token_gfa')}`
@@ -346,7 +540,7 @@ export default function PerfilSocio() {
     try {
       const res = await fetch(`${API_BASE}/facturas`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token') || localStorage.getItem('token_gfa')}`
         },
@@ -393,7 +587,7 @@ export default function PerfilSocio() {
     try {
       const res = await fetch(`${API_BASE}/usuarios/preferencias/${usuario.usuario_id}`, {
         method: 'PUT',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token') || localStorage.getItem('token_gfa')}`
         },
@@ -407,11 +601,11 @@ export default function PerfilSocio() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'No se pudieron actualizar las preferencias.');
 
-      const usuarioActualizado = { 
-        ...usuario, 
-        preferencia_cama: prefCama, 
-        preferencia_piso: prefPiso, 
-        preferencias_adicionales: prefAdicionales 
+      const usuarioActualizado = {
+        ...usuario,
+        preferencia_cama: prefCama,
+        preferencia_piso: prefPiso,
+        preferencias_adicionales: prefAdicionales
       };
       localStorage.setItem('usuario', JSON.stringify(usuarioActualizado));
       setUsuario(usuarioActualizado);
@@ -434,7 +628,7 @@ export default function PerfilSocio() {
     try {
       const res = await fetch(`${API_BASE}/usuarios/perfil/${usuario.usuario_id}`, {
         method: 'PUT',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('token') || localStorage.getItem('token_gfa')}`
         },
@@ -465,33 +659,43 @@ export default function PerfilSocio() {
   const listaReservas = Array.isArray(reservaciones) ? reservaciones : [];
   const listaTickets = Array.isArray(tickets) ? tickets : [];
   const listaExperiencias = Array.isArray(experiencias) ? experiencias : [];
-  
-  // Noches acumuladas: refleja fielmente la columna noches_acumuladas (36)
+
   const nochesSql = usuario.noches_acumuladas !== undefined && usuario.noches_acumuladas !== null
     ? Number(usuario.noches_acumuladas)
     : listaReservas.reduce((acc, r) => acc + (parseInt(r.noches) || 0), 0);
 
-  const totalInvertido = listaReservas.reduce((acc, r) => acc + (parseFloat(r.total_general) || 0), 0);
-  const estanciasActivas = listaReservas.filter(r => (r.estatus_reservacion || '').toUpperCase() !== 'CANCELADA').length;
+  // Solo suma estancias vigentes (excluye CANCELADA)
+  const reservasVigentes = listaReservas.filter(r => (r.estatus_reservacion || '').toUpperCase() !== 'CANCELADA');
+  const totalInvertido = reservasVigentes.reduce((acc, r) => acc + (parseFloat(r.total_general) || 0), 0);
+  const estanciasActivas = reservasVigentes.length;
   const nivelOficial = usuario.nivel_socio || 'Titanium Privilege';
+  const porcentajeProgreso = Math.min(100, Math.round((nochesSql / 25) * 100));
+  const nivelSeleccionadoObj = NIVELES_REWARDS.find(n => n.id === nivelVista) || NIVELES_REWARDS[3];
 
   return (
     <main className="perfil-socio-container">
-      
+
       {/* 1. CABECERA DE SOCIO REFLEJADA DE SQL SERVER */}
       <section className="perfil-header-box">
         <div className="perfil-avatar">
           <span>👤</span>
         </div>
         <div className="perfil-info">
-          <h2>{usuario.nombres} {usuario.apellidos}</h2>
+          <span className="perfil-greeting-tag">EXPEDIENTE DE FIDELIZACIÓN • GRUPO POSADAS</span>
+          <h2>Hola, {usuario.nombres} {usuario.apellidos}</h2>
           <p className="perfil-meta">
             ✉ {usuario.email} &nbsp;|&nbsp; ✆ {usuario.telefono || 'Sin teléfono'} &nbsp;|&nbsp; 📍 {usuario.pais || 'México'}
           </p>
           <div className="perfil-header-actions">
-            <span className="perfil-fr-badge">
-              Socio Fiesta Rewards: <strong>{usuario.fiesta_rewards_id || 'FR-412600'}</strong>
-            </span>
+            <button
+              type="button"
+              onClick={handleCopiarFolioFr}
+              className="perfil-fr-badge-interactive"
+              title="Haz clic para copiar tu ID Fiesta Rewards"
+            >
+              <span>Socio Fiesta Rewards: <strong>{usuario.fiesta_rewards_id || 'FR-964612'}</strong></span>
+              <span className="copiar-tag">{copiadoFr ? '✓ COPIADO' : 'COPIAR'}</span>
+            </button>
             <span className="perfil-sql-id">
               ID Usuario SQL: <strong>#{usuario.usuario_id}</strong>
             </span>
@@ -505,8 +709,8 @@ export default function PerfilSocio() {
 
         {/* Panel de Estatus de Socio Titanium Privilege */}
         <div className="perfil-loyalty-status">
-          <div className="loyalty-level-badge">NIVEL {nivelOficial.toUpperCase()}</div>
-          <div className="loyalty-points-val">{fiestaCard.puntos_rewards_acumulados} PTS</div>
+          <div className="loyalty-level-badge">👑 NIVEL {nivelOficial.toUpperCase()}</div>
+          <div className="loyalty-points-val">{Number(fiestaCard.puntos_rewards_acumulados).toLocaleString('es-MX')} PTS</div>
           <span className="loyalty-points-sub">FIESTA REWARDS DISPONIBLES</span>
         </div>
       </section>
@@ -522,50 +726,56 @@ export default function PerfilSocio() {
           <span className="metric-val">{nochesSql} Noches</span>
         </div>
         <div className="metric-box">
-          <span className="metric-label">INVERSIÓN TOTAL EN RESORT</span>
+          <span className="metric-label">INVERSIÓN ACTIVA EN RESORT</span>
           <span className="metric-val">${totalInvertido.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</span>
         </div>
       </section>
 
       {/* 3. NAVEGACIÓN COMPLETA POR TABS */}
       <nav className="perfil-tabs-nav">
-        <button 
+        <button
+          className={`perfil-tab-btn ${tabActiva === 'resumen' ? 'active' : ''}`}
+          onClick={() => setTabActiva('resumen')}
+        >
+          👑 HUB FIESTA REWARDS
+        </button>
+        <button
           className={`perfil-tab-btn ${tabActiva === 'estancias' ? 'active' : ''}`}
           onClick={() => setTabActiva('estancias')}
         >
           🏨 ESTANCIAS &amp; SUITES ({listaReservas.length})
         </button>
-        <button 
+        <button
           className={`perfil-tab-btn ${tabActiva === 'experiencias' ? 'active' : ''}`}
           onClick={() => setTabActiva('experiencias')}
         >
           ✨ EXPERIENCIAS &amp; SPA ({listaExperiencias.length})
         </button>
-        <button 
+        <button
           className={`perfil-tab-btn ${tabActiva === 'tickets' ? 'active' : ''}`}
           onClick={() => setTabActiva('tickets')}
         >
           🛎 TICKETS &amp; CONCIERGE ({listaTickets.length})
         </button>
-        <button 
+        <button
           className={`perfil-tab-btn ${tabActiva === 'billetera' ? 'active' : ''}`}
           onClick={() => setTabActiva('billetera')}
         >
           💳 BILLETERAS Y TARJETAS ({tarjetasBancarias.length + 1})
         </button>
-        <button 
+        <button
           className={`perfil-tab-btn ${tabActiva === 'facturacion' ? 'active' : ''}`}
           onClick={() => setTabActiva('facturacion')}
         >
           📑 FACTURACIÓN CFDI 4.0 ({facturas.length})
         </button>
-        <button 
+        <button
           className={`perfil-tab-btn ${tabActiva === 'preferencias' ? 'active' : ''}`}
           onClick={() => setTabActiva('preferencias')}
         >
           ⭐ PREFERENCIAS DE SUITE
         </button>
-        <button 
+        <button
           className={`perfil-tab-btn ${tabActiva === 'cuenta' ? 'active' : ''}`}
           onClick={() => setTabActiva('cuenta')}
         >
@@ -574,6 +784,144 @@ export default function PerfilSocio() {
       </nav>
 
       {/* 4. CONTENIDOS DE CADA PESTAÑA */}
+
+      {/* TAB 0: HUB FIESTA REWARDS (ESTILO MEMBERSHIP HUB SUPERADO) */}
+      {tabActiva === 'resumen' && (
+        <section className="tab-pane">
+          <div className="rewards-hub-top-grid">
+            {/* Bloque Izquierdo: Progresión y Ventajas por Nivel */}
+            <div className="rewards-hub-card">
+              <div className="rewards-hub-card-head">
+                <div>
+                  <h4 className="seccion-subtitulo">PROGRESIÓN Y VENTAJAS FIESTA REWARDS</h4>
+                  <p className="seccion-desc" style={{ marginBottom: 0 }}>
+                    Disfruta beneficios exclusivos sincronizados desde <code>TarjetasFiestaCard</code>.
+                  </p>
+                </div>
+                <span className="hub-status-pill">ESTATUS ACTIVO: {nivelOficial.toUpperCase()}</span>
+              </div>
+
+              {/* Barra de Progreso de Noches */}
+              <div className="loyalty-progress-container">
+                <div className="loyalty-progress-header">
+                  <span>Progreso de Estancias Anuales: <strong>{nochesSql} noches acumuladas</strong></span>
+                  <span>{nochesSql >= 20 ? 'Nivel Máximo Desbloqueado (100%)' : `${porcentajeProgreso}%`}</span>
+                </div>
+                <div className="loyalty-progress-bar-bg">
+                  <div className="loyalty-progress-fill" style={{ width: `${porcentajeProgreso}%` }}></div>
+                </div>
+              </div>
+
+              {/* Selector de Niveles (Carrusel / Pestañas de Nivel) */}
+              <div className="rewards-tiers-selector">
+                {NIVELES_REWARDS.map((niv) => {
+                  const desbloqueado = nochesSql >= niv.minNoches;
+                  return (
+                    <button
+                      key={niv.id}
+                      type="button"
+                      className={`tier-pill-btn ${nivelVista === niv.id ? 'active' : ''} ${desbloqueado ? 'unlocked' : 'locked'}`}
+                      onClick={() => setNivelVista(niv.id)}
+                    >
+                      <span>{desbloqueado ? '🔓' : '🔒'} {niv.nombre}</span>
+                      <small>{niv.minNoches === 0 ? 'Inicial' : `${niv.minNoches}+ noches`}</small>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Tarjetas de Beneficios del Nivel Seleccionado */}
+              <div className="rewards-benefits-grid">
+                {nivelSeleccionadoObj.beneficios.map((ben, index) => (
+                  <div key={index} className="reward-benefit-tile">
+                    <span className="reward-benefit-icon">{ben.icono}</span>
+                    <div>
+                      <h5>{ben.titulo}</h5>
+                      <p>{ben.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Bloque Derecho: Resumen de Monedero, Crédito Institucional y Vales */}
+            <div className="rewards-wallet-summary-card">
+              <h4 className="seccion-subtitulo">RESUMEN DE CRÉDITO Y MONEDERO</h4>
+              <p className="seccion-desc">Saldos disponibles listos para aplicar en check-out o consumos.</p>
+
+              <div className="wallet-summary-rows">
+                <div className="wallet-summary-row">
+                  <span>Línea de Crédito Fiesta Card</span>
+                  <strong>${fiestaCard.saldo_disponible.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</strong>
+                </div>
+                <div className="wallet-summary-row">
+                  <span>Puntos Fiesta Rewards</span>
+                  <strong className="gold-text">{Number(fiestaCard.puntos_rewards_acumulados).toLocaleString('es-MX')} PTS</strong>
+                </div>
+                <div className="wallet-summary-row">
+                  <span>Certificados de Noche Gratis</span>
+                  <strong>{fiestaCard.noches_gratis_disponibles} Noches</strong>
+                </div>
+                <div className="wallet-summary-row">
+                  <span>Cortesía Gastronomía &amp; Spa</span>
+                  <strong>{fiestaCard.descuento_restaurantes_porcentaje}% / {fiestaCard.descuento_spa_porcentaje}%</strong>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                className="btn-guardar-perfil"
+                onClick={() => setTabActiva('billetera')}
+              >
+                IR AL MONEDERO Y TARJETAS →
+              </button>
+            </div>
+          </div>
+
+          {/* Directorio Rápido por Categorías (Estilo Booking Membership Hub) */}
+          <div className="hub-directory-grid">
+            <div className="hub-dir-card">
+              <h5>💳 Información de Pago y Fiscal</h5>
+              <button type="button" onClick={() => setTabActiva('billetera')}>
+                <span>Billetera Fiesta Card &amp; Tarjetas ({tarjetasBancarias.length + 1})</span>
+                <span>›</span>
+              </button>
+              <button type="button" onClick={() => setTabActiva('facturacion')}>
+                <span>Comprobantes Fiscales CFDI 4.0 ({facturas.length})</span>
+                <span>›</span>
+              </button>
+            </div>
+
+            <div className="hub-dir-card">
+              <h5>🏨 Viajes y Experiencias</h5>
+              <button type="button" onClick={() => setTabActiva('estancias')}>
+                <span>Estancias &amp; Suites Reservadas ({listaReservas.length})</span>
+                <span>›</span>
+              </button>
+              <button type="button" onClick={() => setTabActiva('experiencias')}>
+                <span>Citas Feel Harmony Spa &amp; Experiencias ({listaExperiencias.length})</span>
+                <span>›</span>
+              </button>
+            </div>
+
+            <div className="hub-dir-card">
+              <h5>⚙️ Gestión de Cuenta y Concierge</h5>
+              <button type="button" onClick={() => setTabActiva('preferencias')}>
+                <span>Preferencias de Suite ({prefCama})</span>
+                <span>›</span>
+              </button>
+              <button type="button" onClick={() => setTabActiva('tickets')}>
+                <span>Tickets de Atención Concierge ({listaTickets.length})</span>
+                <span>›</span>
+              </button>
+              <button type="button" onClick={() => setTabActiva('cuenta')}>
+                <span>Datos Personales y Seguridad</span>
+                <span>›</span>
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* TAB 1: ESTANCIAS */}
       {tabActiva === 'estancias' && (
@@ -597,8 +945,8 @@ export default function PerfilSocio() {
               const renderTarjeta = (res, esPendiente) => {
                 const cancelada = norm(res.estatus_reservacion).includes('CANCELAD');
                 return (
-                  <article 
-                    key={res.reservacion_id} 
+                  <article
+                    key={res.reservacion_id}
                     className={`reserva-card-item ${cancelada ? 'cancelada' : ''} ${esPendiente ? 'borde-por-pagar' : 'borde-pagado'}`}
                   >
                     <div className="reserva-header-row">
@@ -630,7 +978,7 @@ export default function PerfilSocio() {
                         <span className={`reserva-precio-monto ${esPendiente ? 'color-pendiente' : ''}`}>
                           ${parseFloat(res.total_general || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN
                         </span>
-                        
+
                         <div className="reserva-acciones-row">
                           <button
                             className={`btn-ver-baucher ${esPendiente ? 'btn-pagar-pendiente' : ''}`}
@@ -708,10 +1056,10 @@ export default function PerfilSocio() {
           ) : (
             <div className="experiencias-grid-historial">
               {listaExperiencias.map(exp => (
-                <article key={exp.folio_experiencia || exp.experiencia_id} className="reserva-card-item borde-pagado">
+                <article key={exp.folio_experiencia || exp.reserva_experiencia_id || exp.experiencia_id} className="reserva-card-item borde-pagado">
                   <div className="reserva-header-row">
                     <span className="reserva-folio">FOLIO: {exp.folio_experiencia}</span>
-                    <span className="reserva-badge badge-confirmada">AGENDADA</span>
+                    <span className="reserva-badge badge-confirmada">{(exp.estatus || 'AGENDADA').toUpperCase()}</span>
                   </div>
                   <div className="reserva-body-grid">
                     <div className="reserva-suite-info">
@@ -746,95 +1094,207 @@ export default function PerfilSocio() {
             </div>
           ) : (
             <div className="tickets-grid-historial">
-              {listaTickets.map(t => (
-                <div key={t.ticket_id} className="ticket-item-perfil">
-                  <div className="ticket-item-top">
-                    <span className="ticket-id-tag">TCK-{t.ticket_id}</span>
-                    <span className="ticket-badge-estatus">{t.estatus || 'En Revisión'}</span>
+              {listaTickets.map(t => {
+                const descLimpia = (t.descripcion || '').replace(/^"+|"+$/g, '');
+                return (
+                  <div key={t.ticket_id} className="ticket-item-perfil">
+                    <div className="ticket-item-top">
+                      <span className="ticket-id-tag">TCK-{t.ticket_id} {t.clave_reservacion ? `• ${t.clave_reservacion}` : ''}</span>
+                      <span className="ticket-badge-estatus">{t.estatus || 'En Revisión'}</span>
+                    </div>
+                    <h4 className="ticket-cat">{t.categoria}</h4>
+                    <p className="ticket-desc">"{descLimpia}"</p>
+                    <small className="ticket-date">Registrado el: {new Date(t.creado_en).toLocaleString('es-MX')}</small>
                   </div>
-                  <h4 className="ticket-cat">{t.categoria}</h4>
-                  <p className="ticket-desc">"{t.descripcion}"</p>
-                  <small className="ticket-date">Registrado el: {new Date(t.creado_en).toLocaleString('es-MX')}</small>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </section>
       )}
 
-      {/* TAB 4: BILLETERA & TARJETAS */}
-      {tabActiva === 'billetera' && (
-        <section className="tab-pane">
-          <div className="billetera-grid-layout">
-            <div className="billetera-card-col">
-              <h4 className="seccion-subtitulo">TARJETA CORPORATIVA FIESTA RECOMPENSAS</h4>
-              <p className="seccion-desc">Línea de crédito institucional asignada a tu membresía {nivelOficial}.</p>
-              
-              <div className="fiesta-card-render-wrapper">
-                <FiestaCard 
-                  saldoDisponible={fiestaCard.saldo_disponible}
-                  lineaCredito={fiestaCard.linea_credito_total}
-                  numeroEnmascarado={fiestaCard.numero_enmascarado}
-                  titular={`${usuario.nombres} ${usuario.apellidos}`}
-                  expiracion={fiestaCard.fecha_expiracion}
-                  puntosRewards={fiestaCard.puntos_rewards_acumulados}
-                />
-              </div>
-            </div>
+      {/* TAB 4: PREMIOS, MONEDERO Y TARJETAS */}
+   {tabActiva === 'billetera' && (
+     <section className="tab-pane">
+       {/* A. PANEL CONSOLIDADO DE PREMIOS Y MONEDERO */}
+       <div className="wallet-hero-panel">
+         <div className="wallet-hero-main">
+           <div className="wallet-hero-title-group">
+             <span className="wallet-icon-badge">👛</span>
+             <div>
+               <h4 className="seccion-subtitulo" style={{ marginBottom: '2px' }}>SALDO CONSOLIDADO DE PREMIOS Y MONEDERO</h4>
+               <p className="seccion-desc" style={{ marginBottom: 0 }}>
+                 Incluye tu crédito institucional Fiesta Card y el valor canjeable de tus puntos y certificados.
+               </p>
+             </div>
+           </div>
+           <div className="wallet-hero-total">
+             <small>DISPONIBLE TOTAL</small>
+             <strong>
+               ${(fiestaCard.saldo_disponible + (Number(fiestaCard.puntos_rewards_acumulados) * 0.5)).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN
+             </strong>
+           </div>
+         </div>
 
-            <div className="billetera-metodos-col">
-              <div className="metodos-header-flex">
-                <div>
-                  <h4 className="seccion-subtitulo">TARJETAS BANCARIAS VINCULADAS</h4>
-                  <p className="seccion-desc">Bóveda con cifrado bancario almacenada en SQL Server.</p>
-                </div>
-                <button 
-                  className="btn-agregar-tarjeta"
-                  onClick={() => setModalTarjetaOpen(true)}
-                >
-                  + AGREGAR TARJETA
-                </button>
-              </div>
+         <div className="wallet-hero-breakdown">
+           <div className="wallet-break-item">
+             <span>Crédito Institucional Fiesta Card</span>
+             <strong>${fiestaCard.saldo_disponible.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</strong>
+           </div>
+           <div className="wallet-break-item">
+             <span>Puntos Fiesta Rewards ({Number(fiestaCard.puntos_rewards_acumulados).toLocaleString('es-MX')} PTS)</span>
+             <strong className="gold-text">
+               ${(Number(fiestaCard.puntos_rewards_acumulados) * 0.5).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN
+             </strong>
+           </div>
+           <div className="wallet-break-item">
+             <span>Vales / Certificados Noche Gratis ({fiestaCard.noches_gratis_disponibles || 2})</span>
+             <strong>Activos en Cuenta</strong>
+           </div>
+           <button
+             type="button"
+             className="btn-ver-actividad-wallet"
+             onClick={() => setMostrarActividadWallet(!mostrarActividadWallet)}
+           >
+             {mostrarActividadWallet ? 'Ocultar Actividad ▲' : 'Ver Actividad en Premios y Monedero ▼'}
+           </button>
+         </div>
 
-              <div className="billetera-tarjetas-lista">
-                {tarjetasBancarias.length === 0 ? (
-                  <p style={{ color: '#888', fontStyle: 'italic', padding: '1rem' }}>No tienes tarjetas bancarias externas registradas.</p>
-                ) : (
-                  tarjetasBancarias.map((t) => (
-                    <div key={t.tarjeta_bancaria_id} className={`tarjeta-bancaria-item ${t.es_predeterminada ? 'predeterminada-activa' : ''}`}>
-                      <div className="tb-brand-badge">{t.marca_tarjeta || 'CARD'}</div>
-                      <div className="tb-info">
-                        <span className="tb-num">•••• •••• •••• {t.ultimos_cuatro || t.numero_tarjeta?.slice(-4)}</span>
-                        <span className="tb-titular">{t.titular_nombre} | Vence: {t.mes_expiracion}/{t.anio_expiracion}</span>
-                        <span className="tb-banco">{t.banco_emisor}</span>
-                      </div>
-                      <div className="tb-acciones">
-                        {t.es_predeterminada ? (
-                          <span className="tb-badge-pred">PREDETERMINADA</span>
-                        ) : (
-                          <button 
-                            className="btn-hacer-pred"
-                            onClick={() => handleEstablecerPredeterminada(t.tarjeta_bancaria_id)}
-                          >
-                            Elegir principal
-                          </button>
-                        )}
-                        <button 
-                          className="btn-eliminar-tb"
-                          onClick={() => handleEliminarTarjeta(t.tarjeta_bancaria_id)}
-                          title="Eliminar tarjeta"
-                        >
-                          🗑
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
+         {/* Desplegable de Actividad del Monedero */}
+         {mostrarActividadWallet && (
+           <div className="wallet-activity-drawer">
+             <h5>HISTORIAL DE MOVIMIENTOS Y CANJES</h5>
+             {movimientosWallet.map(mov => (
+               <div key={mov.id} className="wallet-mov-row">
+                 <div>
+                   <span className="mov-id">{mov.id}</span>
+                   <span className="mov-concepto">{mov.concepto}</span>
+                   <small className="mov-fecha">{mov.fecha}</small>
+                 </div>
+                 <span className={`mov-monto ${mov.tipo === 'ABONO' ? 'abono' : 'canje'}`}>{mov.monto}</span>
+               </div>
+             ))}
+           </div>
+         )}
+       </div>
+
+       {/* B. CANJEADOR DE CÓDIGOS PROMOCIONALES */}
+       <div className="wallet-coupon-bar">
+         <div className="coupon-bar-text">
+           <strong>🎟 ¿Has conseguido un código de cortesía o regalo?</strong>
+           <span>Acredita puntos extra o saldo promocional directo a tu monedero (Ej. <code>TITANIUM500</code>, <code>CANCUN1000</code>).</span>
+         </div>
+         <form onSubmit={handleCanjearCupon} className="coupon-bar-form">
+           <input
+             type="text"
+             placeholder="Ingresa tu código..."
+             value={codigoCupon}
+             onChange={(e) => setCodigoCupon(e.target.value.toUpperCase())}
+           />
+           <button type="submit">AÑADIR AL MONEDERO</button>
+         </form>
+       </div>
+       {cuponMsg && <div className="factura-alert-banner" style={{ marginBottom: '22px' }}>{cuponMsg}</div>}
+
+       {/* C. TARJETA CORPORATIVA 3D Y BÓVEDA DE TARJETAS BANCARIAS */}
+       <div className="billetera-grid-layout">
+         <div className="billetera-card-col">
+           <h4 className="seccion-subtitulo">TARJETA CORPORATIVA FIESTA RECOMPENSAS</h4>
+           <p className="seccion-desc">Línea de crédito institucional asignada a tu membresía {nivelOficial}.</p>
+
+           <div className="fiesta-card-render-wrapper">
+             <FiestaCard
+               saldoDisponible={fiestaCard.saldo_disponible}
+               lineaCredito={fiestaCard.linea_credito_total}
+               numeroEnmascarado={fiestaCard.numero_enmascarado}
+               titular={`${usuario.nombres} ${usuario.apellidos}`}
+               expiracion={fiestaCard.fecha_expiracion}
+               puntosRewards={fiestaCard.puntos_rewards_acumulados}
+             />
+           </div>
+         </div>
+
+         <div className="billetera-metodos-col">
+           <div className="metodos-header-flex">
+             <div>
+               <h4 className="seccion-subtitulo">TARJETAS BANCARIAS VINCULADAS</h4>
+               <p className="seccion-desc">Bóveda con cifrado bancario almacenada en SQL Server.</p>
+             </div>
+             <button
+               className="btn-agregar-tarjeta"
+               onClick={() => setModalTarjetaOpen(true)}
+             >
+               + AGREGAR TARJETA
+             </button>
+           </div>
+
+           <div className="billetera-tarjetas-lista">
+             {tarjetasBancarias.length === 0 ? (
+               <p style={{ color: '#888', fontStyle: 'italic', padding: '1rem' }}>No tienes tarjetas bancarias externas registradas.</p>
+             ) : (
+               tarjetasBancarias.map((t) => (
+                 <div key={t.tarjeta_bancaria_id} className={`tarjeta-bancaria-item ${t.es_preferida ? 'predeterminada-activa' : ''}`}>
+                   <div className="tb-brand-badge">{t.marca_tarjeta || 'CARD'}</div>
+                   <div className="tb-info">
+                     <span className="tb-num">{t.numero_enmascarado}</span>
+                     <span className="tb-titular">{t.titular_nombre} | Vence: {t.mes_expiracion}/{t.anio_expiracion}</span>
+                     <span className="tb-banco">{t.banco_emisor} • {t.tipo_cuenta}</span>
+                   </div>
+                   <div className="tb-acciones">
+                     {t.es_preferida ? (
+                       <span className="tb-badge-pred">PREDETERMINADA</span>
+                     ) : (
+                       <button
+                         className="btn-hacer-pred"
+                         onClick={() => handleEstablecerPredeterminada(t.tarjeta_bancaria_id)}
+                       >
+                         Elegir principal
+                       </button>
+                     )}
+                     <button
+                       className="btn-eliminar-tb"
+                       onClick={() => handleEliminarTarjeta(t.tarjeta_bancaria_id)}
+                       title="Eliminar tarjeta"
+                     >
+                       🗑
+                     </button>
+                   </div>
+                 </div>
+               ))
+             )}
+           </div>
+         </div>
+       </div>
+
+       {/* D. GUÍA DE FUNCIONAMIENTO DE PREMIOS Y MONEDERO */}
+       <div className="wallet-pillars-box">
+         <h4 className="seccion-subtitulo">¿CÓMO FUNCIONA PREMIOS Y MONEDERO?</h4>
+         <div className="wallet-pillars-grid">
+           <div className="wallet-pillar-item">
+             <span>🏆</span>
+             <div>
+               <h5>Reserva y gana premios</h5>
+               <p>Cada estancia liquidada y experiencia en Spa acumula puntos y certificados listos para tu próxima visita.</p>
+             </div>
+           </div>
+           <div className="wallet-pillar-item">
+             <span>📱</span>
+             <div>
+               <h5>Tenlo todo a mano</h5>
+               <p>Consulta en un solo lugar tus saldos, códigos promocionales, certificados vigentes y tarjetas guardadas.</p>
+             </div>
+           </div>
+           <div className="wallet-pillar-item">
+             <span>💎</span>
+             <div>
+               <h5>Paga con el Monedero y ahorra</h5>
+               <p>Aplica tus puntos Fiesta Rewards o tu línea institucional directamente en la pasarela de reservaciones.</p>
+             </div>
+           </div>
+         </div>
+       </div>
+     </section>
+   )}
 
       {/* TAB 5: FACTURACIÓN CFDI 4.0 */}
       {tabActiva === 'facturacion' && (
@@ -909,7 +1369,7 @@ export default function PerfilSocio() {
                       <span className="fic-total">${parseFloat(f.total_facturado || 29250).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</span>
                     </div>
                     <p className="fic-uuid"><strong>UUID:</strong> {f.uuid_sat || 'SAT-VALIDATED-UUID'}</p>
-                    <p className="fic-meta">Receptor: {f.rfc_receptor || 'XAXX010101000'} | {f.razon_social || 'Socio Posadas'}</p>
+                    <p className="fic-meta">Receptor: {f.rfc_receptor || 'XAXX010101000'} | {f.razon_social_receptor || f.razon_social || 'Socio Posadas'}</p>
                     <div className="fic-actions">
                       <button className="btn-descarga-xml" onClick={() => alert('Descargando archivo XML timbrado...')}>XML SAT</button>
                       <button className="btn-descarga-pdf" onClick={() => alert('Descargando representación impresa PDF...')}>PDF SAT</button>
@@ -956,7 +1416,7 @@ export default function PerfilSocio() {
 
               <div className="input-field">
                 <label>Preferencias Adicionales (Columna: preferencias_adicionales)</label>
-                <textarea 
+                <textarea
                   rows="3"
                   placeholder="Ej. Almohadas hipoalergénicas, copa de vino a la llegada, habitación libre de plumas..."
                   value={prefAdicionales}
@@ -972,12 +1432,51 @@ export default function PerfilSocio() {
         </section>
       )}
 
-      {/* TAB 7: SEGURIDAD & CUENTA */}
+      {/* TAB 7: SEGURIDAD, PRIVACIDAD & CUENTA */}
       {tabActiva === 'cuenta' && (
         <section className="tab-pane">
-          <div className="cuenta-box">
-            <h4 className="seccion-subtitulo">DATOS DE LA CUENTA DE SOCIO</h4>
-            <p className="seccion-desc">Actualiza tu información personal y credenciales en la tabla Usuarios de SQL Server.</p>
+          {/* A. PANEL DE ESTADO DE SEGURIDAD Y VERIFICACIÓN */}
+          <div className="security-status-banner">
+            <div className="sec-badge-card">
+              <span className="sec-icon">🛡️</span>
+              <div>
+                <strong>Protección de Cuenta Alta</strong>
+                <small>Contraseña cifrada con Bcrypt Hash • Sesión JWT Activa</small>
+              </div>
+            </div>
+            <div className="sec-badge-card">
+              <span className="sec-icon">✅</span>
+              <div>
+                <strong>Correo Titular Verificado</strong>
+                <small>{usuario.email}</small>
+              </div>
+            </div>
+            <div className="sec-badge-card">
+              <span className="sec-icon">📲</span>
+              <div>
+                <strong>Canal Directo Concierge</strong>
+                <small>{editTelefono || 'Sin teléfono asignado'}</small>
+              </div>
+            </div>
+          </div>
+
+          {seguridadFeedback && <div className="factura-alert-banner">{seguridadFeedback}</div>}
+
+          {/* B. DATOS PERSONALES Y CREDENCIALES (SQL SERVER) */}
+          <div className="cuenta-box" style={{ marginBottom: '24px' }}>
+            <div className="cuenta-header-row">
+              <div>
+                <h4 className="seccion-subtitulo">DATOS PERSONALES Y CREDENCIALES (SQL SERVER)</h4>
+                <p className="seccion-desc" style={{ marginBottom: 0 }}>
+                  Actualiza tu información oficial y clave de acceso en <code>dbo.Usuarios</code>.
+                </p>
+              </div>
+              <div className="cuenta-seguridad-meta">
+                <span className="meta-pill">ID SQL: #{usuario.usuario_id}</span>
+                <span className="meta-pill">Rol: {usuario.rol || 'Socio VIP'}</span>
+              </div>
+            </div>
+
             {editMsg && <div className="cuenta-alert-banner">{editMsg}</div>}
 
             <form onSubmit={handleGuardarPerfil} className="cuenta-form">
@@ -994,8 +1493,8 @@ export default function PerfilSocio() {
 
               <div className="form-row-2">
                 <div className="input-field">
-                  <label>Correo Electrónico (Columna: email - Lectura)</label>
-                  <input type="email" disabled value={usuario.email} />
+                  <label>Correo Electrónico (Columna: email - Verificado)</label>
+                  <input type="email" disabled className="input-disabled" value={usuario.email} />
                 </div>
                 <div className="input-field">
                   <label>Teléfono de Contacto (Columna: telefono)</label>
@@ -1019,8 +1518,216 @@ export default function PerfilSocio() {
               </button>
             </form>
           </div>
+
+          {/* C. PREFERENCIAS DE COMUNICACIÓN Y ACOMPAÑANTES DE VIAJE */}
+          <div className="billetera-grid-layout" style={{ marginBottom: '24px' }}>
+            {/* Preferencias de Comunicación */}
+            <div className="cuenta-box">
+              <h4 className="seccion-subtitulo">PREFERENCIAS DE COMUNICACIÓN</h4>
+              <p className="seccion-desc">Elige cómo deseas recibir tus llaves digitales, facturas y beneficios.</p>
+
+              <div className="comm-toggles-list">
+                <label className="comm-toggle-row">
+                  <div>
+                    <strong>WhatsApp Concierge &amp; Check-In Express</strong>
+                    <small>Recibe tu código QR de suite y confirmaciones de traslado privado.</small>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={notifWhatsapp}
+                    onChange={(e) => {
+                      setNotifWhatsapp(e.target.checked);
+                      setSeguridadFeedback('Preferencias de comunicación actualizadas.');
+                    }}
+                  />
+                </label>
+
+                <label className="comm-toggle-row">
+                  <div>
+                    <strong>Preventas y Beneficios Titanium Privilege</strong>
+                    <small>Acceso anticipado a tarifas preferenciales y eventos gastronómicos.</small>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={notifEmailOfertas}
+                    onChange={(e) => {
+                      setNotifEmailOfertas(e.target.checked);
+                      setSeguridadFeedback('Preferencias de comunicación actualizadas.');
+                    }}
+                  />
+                </label>
+
+                <label className="comm-toggle-row">
+                  <div>
+                    <strong>Alertas de Pagos, Reembolsos y Timbrado CFDI</strong>
+                    <small>Notificación inmediata cuando se emite una factura SAT o movimiento.</small>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={notifPushPagos}
+                    onChange={(e) => {
+                      setNotifPushPagos(e.target.checked);
+                      setSeguridadFeedback('Preferencias de comunicación actualizadas.');
+                    }}
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* Acompañantes de Viaje */}
+            <div className="cuenta-box">
+              <h4 className="seccion-subtitulo">ACOMPAÑANTES DE VIAJE FRECUENTES</h4>
+              <p className="seccion-desc">Agiliza la entrega de brazaletes RFID registrando a tus invitados habituales.</p>
+
+              <form onSubmit={handleAgregarAcompanante} className="acomp-inline-form">
+                <input
+                  type="text"
+                  placeholder="Nombre completo del acompañante"
+                  value={nuevoAcompNombre}
+                  onChange={(e) => setNuevoAcompNombre(e.target.value)}
+                />
+                <select value={nuevoAcompRelacion} onChange={(e) => setNuevoAcompRelacion(e.target.value)}>
+                  <option value="Familiar">Familiar</option>
+                  <option value="Pareja">Pareja</option>
+                  <option value="Ejecutivo / Negocios">Ejecutivo</option>
+                </select>
+                <button type="submit">+ AÑADIR</button>
+              </form>
+
+              <div className="acomp-list">
+                {acompanantes.map(ac => (
+                  <div key={ac.id} className="acomp-item">
+                    <div>
+                      <strong>{ac.nombre}</strong>
+                      <small>{ac.relacion} • {ac.documento}</small>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn-eliminar-tb"
+                      onClick={() => setAcompanantes(acompanantes.filter(item => item.id !== ac.id))}
+                      title="Quitar acompañante"
+                    >
+                      🗑
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+          {/* C2. DOCUMENTOS DE VIAJE (PRE-CHECK-IN) Y PREFERENCIAS REGIONALES */}
+          <div className="cuenta-box" style={{ marginBottom: '24px' }}>
+            <div className="cuenta-header-row">
+              <div>
+                <h4 className="seccion-subtitulo">DOCUMENTACIÓN DE VIAJE Y ACCESIBILIDAD (PRE-CHECK-IN)</h4>
+                <p className="seccion-desc" style={{ marginBottom: 0 }}>
+                  Registra tu identificación oficial, idioma de concierge y accesibilidad para entrega directa de llave RFID.
+                </p>
+              </div>
+              <span className="hub-status-pill">FAST-TRACK CHECK-IN</span>
+            </div>
+
+            {docGuardadoMsg && <div className="cuenta-alert-banner">{docGuardadoMsg}</div>}
+
+            <form onSubmit={handleGuardarExpedienteViajero} className="cuenta-form">
+              <div className="form-row-3">
+                <div className="input-field">
+                  <label>Documento Oficial</label>
+                  <select value={tipoDocumento} onChange={(e) => setTipoDocumento(e.target.value)}>
+                    <option value="Pasaporte">Pasaporte Internacional</option>
+                    <option value="INE / ID Oficial">INE / Identificación Nacional</option>
+                    <option value="Licencia / Global Entry">Global Entry / Sentri</option>
+                  </select>
+                </div>
+
+                <div className="input-field">
+                  <label>Folio / Número de Documento (Cifrado)</label>
+                  <input
+                    type="text"
+                    placeholder="Ej. G38492014"
+                    value={numeroDocumento}
+                    onChange={(e) => setNumeroDocumento(e.target.value.toUpperCase())}
+                  />
+                </div>
+
+                <div className="input-field">
+                  <label>Fecha de Expiración</label>
+                  <input
+                    type="date"
+                    value={vigenciaDocumento}
+                    onChange={(e) => setVigenciaDocumento(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="form-row-3">
+                <div className="input-field">
+                  <label>Idioma de Atención en Resort</label>
+                  <select value={idiomaAtencion} onChange={(e) => setIdiomaAtencion(e.target.value)}>
+                    <option value="es-mx">Español (México)</option>
+                    <option value="en-us">English (US)</option>
+                    <option value="fr">Français</option>
+                    <option value="pt-br">Português</option>
+                  </select>
+                </div>
+
+                <div className="input-field">
+                  <label>Divisa Preferida en Tarifas</label>
+                  <select value={divisaPreferida} onChange={(e) => setDivisaPreferida(e.target.value)}>
+                    <option value="MXN">MXN - Peso Mexicano ($)</option>
+                    <option value="USD">USD - Dólar Estadounidense (US$)</option>
+                    <option value="EUR">EUR - Euro (€)</option>
+                  </select>
+                </div>
+
+                <div className="input-field">
+                  <label>Domicilio / Ciudad de Residencia</label>
+                  <input
+                    type="text"
+                    value={direccionResidencia}
+                    onChange={(e) => setDireccionResidencia(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <label className="comm-toggle-row" style={{ marginBottom: '14px' }}>
+                <div>
+                  <strong>Suite con Adaptaciones de Accesibilidad</strong>
+                  <small>Priorizar habitaciones con acceso sin escalones, barras de apoyo y regadera tipo roll-in.</small>
+                </div>
+                <input
+                  type="checkbox"
+                  checked={accesibilidadActiva}
+                  onChange={(e) => setAccesibilidadActiva(e.target.checked)}
+                />
+              </label>
+
+              <button type="submit" className="btn-guardar-perfil">
+                GUARDAR EXPEDIENTE DE VIAJERO →
+              </button>
+            </form>
+          </div>
+
+          {/* D. PRIVACIDAD, PORTABILIDAD DE DATOS Y SESIÓN */}
+          <div className="privacy-footer-box">
+            <div>
+              <h4 className="seccion-subtitulo" style={{ marginBottom: '4px' }}>PRIVACIDAD Y PORTABILIDAD DE DATOS</h4>
+              <p className="seccion-desc" style={{ marginBottom: 0 }}>
+                Descarga una copia íntegra de tu historial en SQL Server o cierra tu sesión activa de forma segura.
+              </p>
+            </div>
+            <div className="privacy-footer-actions">
+              <button type="button" className="btn-agregar-tarjeta" onClick={handleExportarExpedienteJson}>
+                📥 EXPORTAR EXPEDIENTE (JSON)
+              </button>
+              <button type="button" className="btn-cerrar-sesion-sec" onClick={expulsarUsuario}>
+                CERRAR SESIÓN SEGURA
+              </button>
+            </div>
+          </div>
         </section>
+        
       )}
+      
 
       {/* MODAL BAUCHER */}
       {reservaBaucher && (
@@ -1091,48 +1798,48 @@ export default function PerfilSocio() {
             <form onSubmit={handleAgregarTarjeta} className="tarjeta-form">
               <div className="input-field">
                 <label>Número de Tarjeta (15 o 16 dígitos)</label>
-                <input 
-                  type="text" 
-                  required 
-                  maxLength={19} 
-                  placeholder="4152 3140 1234 5678" 
-                  value={tbNumero} 
-                  onChange={(e) => setTbNumero(e.target.value)} 
+                <input
+                  type="text"
+                  required
+                  maxLength={19}
+                  placeholder="4152 3140 1234 5678"
+                  value={tbNumero}
+                  onChange={(e) => setTbNumero(e.target.value)}
                 />
               </div>
 
               <div className="input-field">
                 <label>Nombre del Titular</label>
-                <input 
-                  type="text" 
-                  required 
-                  placeholder="KEVIN RAMIREZ SORIA" 
-                  value={tbTitular} 
-                  onChange={(e) => setTbTitular(e.target.value)} 
+                <input
+                  type="text"
+                  required
+                  placeholder="KEVIN RAMIREZ SORIA"
+                  value={tbTitular}
+                  onChange={(e) => setTbTitular(e.target.value)}
                 />
               </div>
 
               <div className="form-row-2">
                 <div className="input-field">
                   <label>Vencimiento (MM/AA)</label>
-                  <input 
-                    type="text" 
-                    required 
-                    maxLength={5} 
-                    placeholder="12/28" 
-                    value={tbExp} 
-                    onChange={(e) => setTbExp(e.target.value)} 
+                  <input
+                    type="text"
+                    required
+                    maxLength={5}
+                    placeholder="12/28"
+                    value={tbExp}
+                    onChange={(e) => setTbExp(e.target.value)}
                   />
                 </div>
                 <div className="input-field">
                   <label>CVV / CVC</label>
-                  <input 
-                    type="password" 
-                    required 
-                    maxLength={4} 
-                    placeholder="•••" 
-                    value={tbCvv} 
-                    onChange={(e) => setTbCvv(e.target.value)} 
+                  <input
+                    type="password"
+                    required
+                    maxLength={4}
+                    placeholder="•••"
+                    value={tbCvv}
+                    onChange={(e) => setTbCvv(e.target.value)}
                   />
                 </div>
               </div>
@@ -1159,10 +1866,10 @@ export default function PerfilSocio() {
               </div>
 
               <label className="checkbox-pred-label">
-                <input 
-                  type="checkbox" 
-                  checked={tbPredeterminada} 
-                  onChange={(e) => setTbPredeterminada(e.target.checked)} 
+                <input
+                  type="checkbox"
+                  checked={tbPredeterminada}
+                  onChange={(e) => setTbPredeterminada(e.target.checked)}
                 />
                 Establecer como tarjeta principal de cobro
               </label>
