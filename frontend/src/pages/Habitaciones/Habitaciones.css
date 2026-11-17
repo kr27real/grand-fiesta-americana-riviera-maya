@@ -1366,3 +1366,632 @@
   height: auto !important;
   min-height: 360px;
 }
+/* ==========================================================================
+   BLOQUE 16: ESTRUCTURA INTEGRAL BOOKING LUXURY (9/3, TABLA, RESUMEN Y FAQ)
+   ========================================================================== */
+.booking-subnav-sticky {
+  background: #0b0912;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+  margin-bottom: 1.8rem;
+  position: sticky;
+  top: 78px;
+  z-index: 40;
+}
+
+.subnav-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.subnav-links {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+}
+
+.subnav-links button {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #94a3b8;
+  padding: 0.85rem 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.subnav-links button:hover,
+.subnav-links button.active {
+  color: #f3e5ab;
+  border-bottom-color: #d4af37;
+}
+
+.subnav-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.price-match-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: #c7af8b;
+  font-weight: 600;
+}
+
+.btn-subnav-cta {
+  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
+  color: #060508;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.sustainable-pill {
+  background: rgba(74, 222, 128, 0.12);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  color: #86efac;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+}
+
+.link-map-inline {
+  background: none;
+  border: none;
+  color: #d4af37;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.header-cta-cluster {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.btn-icon-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #141020;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.btn-icon-circle:hover {
+  transform: scale(1.06);
+  border-color: #d4af37;
+}
+
+/* GRID 9/3 HERO */
+.hero-9-3-layout {
+  display: grid;
+  grid-template-columns: 2.35fr 1fr;
+  gap: 14px;
+  margin-bottom: 1.2rem;
+}
+
+.hero-col-9 .resort-mosaic-grid {
+  height: 100%;
+  min-height: 350px;
+  margin-bottom: 0;
+}
+
+.hero-col-3 {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sidebar-review-card,
+.sidebar-location-card {
+  background: #100d1a;
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.src-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.65rem;
+  margin-bottom: 0.65rem;
+}
+
+.src-top strong {
+  display: block;
+  color: #f3e5ab;
+  font-size: 0.95rem;
+}
+
+.src-top small {
+  color: #94a3b8;
+  font-size: 0.72rem;
+}
+
+.src-quote {
+  font-size: 0.76rem;
+  color: #cbd5e1;
+  font-style: italic;
+  line-height: 1.45;
+  margin: 0 0 0.45rem 0;
+}
+
+.src-author {
+  display: block;
+  font-size: 0.7rem;
+  color: #c7af8b;
+  margin-bottom: 0.75rem;
+}
+
+.src-subscores {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.src-subscores div {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.74rem;
+  color: #94a3b8;
+}
+
+.src-subscores strong {
+  color: #ffffff;
+}
+
+.slc-header {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #f3e5ab;
+  font-size: 0.84rem;
+  margin-bottom: 0.6rem;
+}
+
+.slc-distances {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.slc-distances li {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #cbd5e1;
+}
+
+.slc-distances strong {
+  color: #d4af37;
+}
+
+/* BANNER TITANIUM GENIUS */
+.titanium-genius-banner {
+  background: linear-gradient(90deg, #171226 0%, #100d1a 100%);
+  border: 1px solid #d4af37;
+  border-radius: 8px;
+  padding: 1rem 1.4rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.tgb-emblem {
+  display: inline-block;
+  background: #d4af37;
+  color: #060508;
+  font-size: 0.64rem;
+  font-weight: 900;
+  padding: 0.2rem 0.55rem;
+  border-radius: 3px;
+  letter-spacing: 0.8px;
+  margin-bottom: 0.3rem;
+}
+
+.titanium-genius-banner h4 {
+  margin: 0 0 0.2rem 0;
+  color: #f3e5ab;
+  font-size: 0.92rem;
+}
+
+.titanium-genius-banner p {
+  margin: 0;
+  color: #94a3b8;
+  font-size: 0.76rem;
+}
+
+.tgb-switch-pill {
+  background: rgba(212, 175, 55, 0.14);
+  border: 1px solid #d4af37;
+  color: #f3e5ab;
+  padding: 0.55rem 1rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* CHIPS DE FILTRO RÁPIDO */
+.quick-filter-chips {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.qf-chip {
+  background: #161224;
+  border: 1px solid rgba(199, 175, 139, 0.3);
+  color: #cbd5e1;
+  padding: 0.45rem 0.9rem;
+  border-radius: 20px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.qf-chip.active,
+.qf-chip:hover {
+  background: rgba(212, 175, 55, 0.16);
+  border-color: #d4af37;
+  color: #f3e5ab;
+}
+
+/* TABLA COMPARATIVA + RESUMEN LATERAL */
+.booking-room-table-section {
+  margin-top: 4rem;
+}
+
+.room-table-with-summary {
+  display: grid;
+  grid-template-columns: 2.6fr 1fr;
+  gap: 1.2rem;
+  align-items: start;
+  margin-top: 1.2rem;
+}
+
+.rt-main-table-wrap {
+  overflow-x: auto;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 8px;
+  background: #0f0c18;
+}
+
+.luxury-rooms-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.luxury-rooms-table th {
+  background: #181326;
+  color: #f3e5ab;
+  text-align: left;
+  padding: 0.85rem 1rem;
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+}
+
+.luxury-rooms-table td {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  vertical-align: top;
+}
+
+.rt-row-selected {
+  background: rgba(212, 175, 55, 0.07);
+}
+
+.rt-suite-cell {
+  background: #120e1d;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  min-width: 190px;
+}
+
+.rt-suite-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #f3e5ab;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-bottom: 0.5rem;
+}
+
+.rt-suite-specs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  color: #94a3b8;
+}
+
+.rt-suite-specs span {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.occ-icons {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.rt-plan-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #d4af37;
+  margin-bottom: 2px;
+}
+
+.rt-plan-cell strong {
+  display: block;
+  color: #ffffff;
+  margin-bottom: 0.35rem;
+}
+
+.rt-plan-cell ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: 0.72rem;
+  color: #4ade80;
+}
+
+.rt-price-cell strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #f3e5ab;
+}
+
+.rt-price-cell small,
+.rt-tax-note {
+  display: block;
+  font-size: 0.68rem;
+  color: #94a3b8;
+}
+
+.btn-rt-select {
+  background: transparent;
+  border: 1px solid #d4af37;
+  color: #f3e5ab;
+  padding: 0.45rem 0.85rem;
+  border-radius: 4px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-rt-select.active {
+  background: #d4af37;
+  color: #060508;
+}
+
+.rt-sticky-summary {
+  background: #120e1d;
+  border: 1px solid #d4af37;
+  border-radius: 8px;
+  padding: 1.2rem;
+  position: sticky;
+  top: 135px;
+}
+
+.rt-sticky-summary h4 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.35rem;
+  color: #f3e5ab;
+  margin: 0.25rem 0;
+}
+
+.rts-plan-name {
+  font-size: 0.76rem;
+  color: #c7af8b;
+  margin: 0 0 0.85rem 0;
+}
+
+.rts-dates-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  background: #090610;
+  padding: 0.6rem;
+  border-radius: 6px;
+  margin-bottom: 0.85rem;
+}
+
+.rts-dates-box small {
+  display: block;
+  font-size: 0.62rem;
+  color: #94a3b8;
+}
+
+.rts-dates-box strong {
+  font-size: 0.78rem;
+  color: #ffffff;
+}
+
+.rts-price-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  color: #cbd5e1;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.rts-price-lines div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.rts-total {
+  border-top: 1px solid rgba(212, 175, 55, 0.3);
+  padding-top: 0.55rem;
+  margin-top: 0.2rem;
+  font-size: 0.9rem;
+  color: #f3e5ab;
+}
+
+.rts-footnote {
+  display: block;
+  text-align: center;
+  font-size: 0.68rem;
+  color: #94a3b8;
+  margin-top: 0.6rem;
+}
+
+/* SERVICIOS 3 COLUMNAS Y FAQ */
+.resort-facilities-full {
+  margin-top: 3.5rem;
+}
+
+.facilities-3-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  margin-top: 1rem;
+}
+
+.fac-category-card {
+  background: #100d1a;
+  border: 1px solid rgba(199, 175, 139, 0.22);
+  border-radius: 8px;
+  padding: 1.2rem;
+}
+
+.fac-category-card h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #f3e5ab;
+  font-size: 0.92rem;
+  margin: 0 0 0.75rem 0;
+}
+
+.fac-category-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  font-size: 0.78rem;
+  color: #cbd5e1;
+}
+
+.resort-faq-wrap {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.faq-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #f3e5ab;
+  font-size: 0.95rem;
+  margin: 0 0 1rem 0;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.faq-item {
+  background: #161224;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.faq-question {
+  width: 100%;
+  background: none;
+  border: none;
+  padding: 0.85rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #f1f5f9;
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.faq-answer {
+  margin: 0;
+  padding: 0 1rem 0.9rem;
+  font-size: 0.78rem;
+  color: #94a3b8;
+  line-height: 1.55;
+}
+
+/* Ajuste altura imagen izquierda modal */
+.modal-left-gallery .modal-slider-wrap {
+  display: flex;
+  flex-direction: column;
+}
+.modal-left-gallery .modal-slider-main {
+  flex: 1 1 auto !important;
+  height: auto !important;
+  min-height: 360px;
+}
+
+@media (max-width: 980px) {
+  .hero-9-3-layout,
+  .room-table-with-summary,
+  .facilities-3-cols {
+    grid-template-columns: 1fr;
+  }
+  .rt-sticky-summary {
+    position: static;
+  }
+}

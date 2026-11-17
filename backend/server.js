@@ -832,7 +832,29 @@ app.post('/api/reservaciones', async (req, res) => {
             .input('uid', sql.Int, parseInt(usuario_id))
             .input('noches', sql.Int, totalNoches)
             .query("UPDATE dbo.Usuarios SET noches_acumuladas = ISNULL(noches_acumuladas, 0) + @noches WHERE usuario_id = @uid");
+            const ptsGanados = puntos_ganados ? parseInt(puntos_ganados, 10) : Math.round((sub / 18.5) * 10);
+        const ptsCanjeados = puntos_canjeados ? parseInt(puntos_canjeados, 10) : 0;
 
+        await pool.request()
+            .input('uid', sql.Int, parseInt(usuario_id))
+            .input('ganados', sql.Int, estatusFinal === 'Confirmada' ? ptsGanados : 0)
+            .input('canjeados', sql.Int, ptsCanjeados)
+            .query(`
+                UPDATE dbo.TarjetasFiestaCard
+                SET puntos_rewards_acumulados = CASE 
+                        WHEN ISNULL(puntos_rewards_acumulados, 0) + @ganados - @canjeados >= 0 
+                        THEN ISNULL(puntos_rewards_acumulados, 0) + @ganados - @canjeados 
+                        ELSE 0 
+                    END
+                WHERE usuario_id = @uid
+            `);
+
+        res.status(201).json({
+            ok: true,
+            folio: folioConfirmacion,
+            mensaje: 'Reservación procesada exitosamente.',
+            reservacion: result.recordset[0]
+        });
         res.status(201).json({
             ok: true,
             mensaje: 'Reservación procesada exitosamente.',

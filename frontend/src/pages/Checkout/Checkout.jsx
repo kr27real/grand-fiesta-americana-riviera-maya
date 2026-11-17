@@ -84,6 +84,7 @@ export default function Checkout() {
   const [procesando, setProcesando] = useState(false);
   const [errorTransaccion, setErrorTransaccion] = useState('');
   const [reservacionExitosa, setReservacionExitosa] = useState(null);
+  
 
   useEffect(() => {
     async function inicializar() {
@@ -305,7 +306,9 @@ export default function Checkout() {
         total_general: totalGeneral,
         metodo_pago_tipo: esSpei ? 'spei' : (metodoPago === 'fiesta_card' ? 'fiesta_card' : 'tarjeta_credito'),
         terminacion_tarjeta: terminacion,
-        estatus_reservacion: esSpei ? 'Pendiente' : 'Confirmada'
+        estatus_reservacion: esSpei ? 'Pendiente' : 'Confirmada',
+        puntos_ganados: typeof puntosGanadosEstancia !== 'undefined' ? puntosGanadosEstancia : Math.round((subtotalGravable / 18.5) * 10),
+        puntos_canjeados: usarPuntosRewards && typeof puntosCanjeados !== 'undefined' ? puntosCanjeados : 0
       };
 
       const res = await createReservation(payload);
@@ -322,6 +325,9 @@ export default function Checkout() {
           telefono: datosHuesped.telefono,
           meses_msi: mesesSinIntereses
         });
+        if (typeof refrescarPerfil === 'function') {
+        await refrescarPerfil();
+      }
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         throw new Error(res?.error || 'No se pudo generar el folio en SQL Server.');
@@ -332,6 +338,7 @@ export default function Checkout() {
       setProcesando(false);
     }
   };
+  
 
   return (
     <div className="checkout-master-page">
