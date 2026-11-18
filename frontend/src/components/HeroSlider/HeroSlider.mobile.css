@@ -1,6 +1,83 @@
 /* ==========================================================================
-   HEROSLIDER.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (380x800 en adelante)
+   HERO-SLIDER.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (380x800 en adelante hasta 768px)
    ========================================================================== */
 @media (max-width: 768px) {
-  /* Reglas móviles de HeroSlider */
+  .hero-slider-master {
+    height: 74vh;
+    min-height: 480px;
+    max-height: 620px;
+  }
+
+  .hero-content-wrapper {
+    left: 1rem;
+    right: 1rem;
+    top: 44%;
+    padding-right: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .hero-content-glass {
+    padding: 1.15rem 1.2rem;
+    background: rgba(13, 9, 23, 0.62);
+  }
+
+  .hero-eyebrow-pill {
+    font-size: 0.62rem;
+    letter-spacing: 2px;
+    margin-bottom: 0.45rem;
+  }
+
+  .hero-display-title {
+    font-size: 1.72rem;
+    line-height: 1.15;
+    margin-bottom: 0.6rem;
+  }
+
+  .hero-description-text {
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  /* Cockpit centrado en la base sin encimarse con la tarjeta de texto */
+  .hero-control-cockpit {
+    bottom: 1.1rem;
+    right: 50%;
+    transform: translateX(50%);
+    padding: 0.35rem 0.7rem;
+    gap: 0.35rem;
+    max-width: calc(100% - 2rem);
+  }
+
+  .cockpit-btn {
+    width: 30px;
+    height: 30px;
+  }
+
+  .dash-indicator {
+    width: 12px;
+  }
+
+  .dash-indicator.active-dash {
+    width: 24px;
+  }
+}
+
+/* Ajuste ultra-compacto (380px - 420px) */
+@media (max-width: 420px) {
+  .hero-slider-master {
+    min-height: 460px;
+  }
+
+  .hero-content-wrapper {
+    top: 42%;
+  }
+
+  .hero-display-title {
+    font-size: 1.55rem;
+  }
+
+  .hero-description-text {
+    font-size: 0.78rem;
+  }
 }

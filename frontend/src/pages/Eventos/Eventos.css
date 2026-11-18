@@ -1,5 +1,5 @@
 ﻿/* ==========================================================================
-   EVENTOS.CSS - GRAND FIESTA AMERICANA RIVIERA CANCÚN
+   EVENTOS.CSS - GRAND FIESTA AMERICANA RIVIERA CANCÚN (ESCRITORIO / PC)
    Paleta: Lila (#C084FC), Dorado Arena (#D4AF37 / #C7AF8B), Obsidiana (#060508)
    ========================================================================== */
 
@@ -8,23 +8,26 @@
   color: #f1f5f9;
   min-height: 100vh;
   font-family: 'Montserrat', sans-serif;
-  padding-top: 9.5rem; /* Despeja el navbar institucional superior */
+  padding-top: 8.5rem; /* Sincronizado debajo del Navbar fijo en PC */
   padding-bottom: 5rem;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .eventos-wrapper {
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  box-sizing: border-box;
 }
 
-/* ==========================================================================
-   BLOQUE 1: ENCABEZADO EDITORIAL
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   1. ENCABEZADO EDITORIAL E INDICADORES DE PASOS
+   -------------------------------------------------------------------------- */
 .eventos-header {
   text-align: center;
   max-width: 860px;
-  margin: 0 auto 3rem auto;
+  margin: 0 auto 3rem;
 }
 
 .eventos-pre-tag {
@@ -42,7 +45,7 @@
   font-family: 'Cormorant Garamond', serif;
   font-size: clamp(2.4rem, 4vw, 3.5rem);
   color: #f3e5ab;
-  margin: 0 0 1rem 0;
+  margin: 0 0 1rem;
   font-weight: 500;
   line-height: 1.15;
 }
@@ -66,10 +69,9 @@
   border-radius: 20px;
   font-size: 0.75rem;
   width: fit-content;
-  margin: 0 auto 2.5rem auto;
+  margin: 0 auto 2.5rem;
 }
 
-/* Indicadores de Pasos */
 .section-title-wrap {
   display: flex;
   align-items: center;
@@ -99,26 +101,14 @@
   letter-spacing: 0.5px;
 }
 
-/* ==========================================================================
-   BLOQUE 2: CUADRÍCULA DE ESPACIOS Y SALONES (GRID)
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   2. CUADRÍCULA DE ESPACIOS Y SALONES
+   -------------------------------------------------------------------------- */
 .espacios-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
   margin-bottom: 4.5rem;
-}
-
-@media (max-width: 1100px) {
-  .espacios-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .espacios-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 .espacio-card {
@@ -188,7 +178,7 @@
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.45rem;
   color: #f3e5ab;
-  margin: 0 0 0.4rem 0;
+  margin: 0 0 0.4rem;
   line-height: 1.25;
 }
 
@@ -211,7 +201,7 @@
   color: #94a3b8;
   font-size: 0.82rem;
   line-height: 1.55;
-  margin: 0 0 1.2rem 0;
+  margin: 0 0 1.2rem;
   flex: 1;
 }
 
@@ -262,9 +252,9 @@
   box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
 }
 
-/* ==========================================================================
-   BLOQUE 3: COTIZADOR EN TIEMPO REAL & PANEL ADHESIVO
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   3. COTIZADOR EN TIEMPO REAL Y FORMULARIO MICE
+   -------------------------------------------------------------------------- */
 .cotizador-section {
   background: #090610;
   border: 1px solid rgba(199, 175, 139, 0.25);
@@ -280,16 +270,11 @@
   align-items: flex-start;
 }
 
-@media (max-width: 900px) {
-  .cotizador-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
 .cotizador-form {
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
+  min-width: 0;
 }
 
 .form-double-col {
@@ -298,16 +283,11 @@
   gap: 1.1rem;
 }
 
-@media (max-width: 600px) {
-  .form-double-col {
-    grid-template-columns: 1fr;
-  }
-}
-
 .eventos-input-group {
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
+  min-width: 0;
 }
 
 .eventos-input-group label {
@@ -321,6 +301,8 @@
 .eventos-input-group input,
 .eventos-input-group select,
 .eventos-input-group textarea {
+  width: 100%;
+  box-sizing: border-box;
   background: #181229;
   border: 1px solid rgba(192, 132, 252, 0.28);
   color: #ffffff;
@@ -337,6 +319,12 @@
 .eventos-input-group textarea:focus {
   border-color: #d4af37;
   box-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+}
+
+.aforo-warning {
+  color: #fca5a5;
+  font-size: 0.72rem;
+  margin-top: 0.2rem;
 }
 
 .btn-guardar-cotizacion {
@@ -366,12 +354,12 @@
   transform: translateY(-1px);
 }
 
-/* ==========================================================================
-   BLOQUE 4: TARJETA DE RESUMEN LATERAL (STICKY)
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   4. TARJETA DE RESUMEN LATERAL (STICKY)
+   -------------------------------------------------------------------------- */
 .resumen-card {
   position: sticky;
-  top: 9.5rem;
+  top: 8.5rem;
   background: #110d1f;
   border: 1px solid #d4af37;
   border-radius: 8px;
@@ -386,7 +374,13 @@
   font-family: 'Cormorant Garamond', serif;
   font-size: 1.7rem;
   color: #f3e5ab;
-  margin: 0.3rem 0 0 0;
+  margin: 0.3rem 0 0;
+}
+
+.resumen-meta-tag {
+  margin: 0.3rem 0 0;
+  font-size: 0.76rem;
+  color: #94a3b8;
 }
 
 .resumen-body {
@@ -401,6 +395,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.75rem;
   font-size: 0.82rem;
   color: #cbd5e1;
 }
@@ -411,6 +406,14 @@
 
 .resumen-line strong {
   color: #ffffff;
+  text-align: right;
+}
+
+.resumen-line.tax-line {
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+  padding-top: 0.55rem;
+  color: #94a3b8;
+  font-size: 0.78rem;
 }
 
 .resumen-total {
@@ -434,6 +437,16 @@
   color: #ffffff;
 }
 
+.resumen-anticipo-pill {
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  color: #f3e5ab;
+  font-size: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  margin: 0.45rem 0;
+}
+
 .resumen-total small {
   font-size: 0.68rem;
   color: #94a3b8;
@@ -441,9 +454,9 @@
   margin-top: 0.4rem;
 }
 
-/* ==========================================================================
-   BLOQUE 5: ESTADO DE CONFIRMACIÓN & VOUCHER
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   5. ESTADO DE CONFIRMACIÓN, VOUCHER Y SPINNER
+   -------------------------------------------------------------------------- */
 .cotizacion-exitosa-card {
   text-align: center;
   padding: 3rem 1.5rem;
@@ -452,14 +465,14 @@
 }
 
 .confirm-icon {
-  margin: 0 auto 0.8rem auto;
+  margin: 0 auto 0.8rem;
 }
 
 .cotizacion-exitosa-card h3 {
   font-family: 'Cormorant Garamond', serif;
   font-size: 2.3rem;
   color: #f3e5ab;
-  margin: 0.4rem 0 0.8rem 0;
+  margin: 0.4rem 0 0.8rem;
 }
 
 .folio-voucher-box {
@@ -467,7 +480,7 @@
   border: 1px solid #d4af37;
   border-radius: 6px;
   padding: 1.5rem;
-  margin: 1.8rem 0 2rem 0;
+  margin: 1.8rem 0 2rem;
   display: flex;
   flex-direction: column;
   gap: 0.4rem;
@@ -480,11 +493,35 @@
   letter-spacing: 1px;
 }
 
+.folio-copy-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
 .folio-voucher-box strong {
   font-size: 1.8rem;
   color: #f3e5ab;
   font-family: monospace;
   letter-spacing: 1.5px;
+}
+
+.btn-copy-folio {
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid #d4af37;
+  color: #f3e5ab;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.btn-copy-folio:hover {
+  background: #d4af37;
+  color: #060508;
 }
 
 .folio-voucher-box small {
@@ -511,7 +548,6 @@
   color: #ffffff;
 }
 
-/* SPINNER & ANIMACIONES */
 .eventos-loading-box {
   text-align: center;
   padding: 5rem 1rem;
@@ -519,7 +555,7 @@
 
 .eventos-spinner {
   color: #d4af37;
-  margin: 0 auto 1.2rem auto;
+  margin: 0 auto 1.2rem;
 }
 
 .animate-spin {
@@ -530,185 +566,19 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
-/* ==========================================================================
-   BLOQUE 6: OPTIMIZACIÓN RESPONSIVA PARA EVENTOS Y COTIZADOR (MÓVIL)
-   ========================================================================== */
-@media (max-width: 900px) {
+
+/* Ajuste intermedio para tablets (769px - 1100px) */
+@media (max-width: 1100px) and (min-width: 769px) {
+  .espacios-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .cotizador-grid {
+    grid-template-columns: 1fr;
+  }
+
   .resumen-card {
     position: static;
     top: auto;
   }
-}
-
-@media (max-width: 640px) {
-  .eventos-page-root {
-    padding-top: 5.8rem;
-    padding-bottom: 3rem;
-  }
-
-  .eventos-wrapper {
-    padding: 0 1rem;
-  }
-
-  .eventos-header {
-    margin-bottom: 1.8rem;
-  }
-
-  .eventos-pre-tag {
-    font-size: 0.65rem;
-    letter-spacing: 2px;
-  }
-
-  .eventos-header h1 {
-    font-size: 2rem;
-  }
-
-  .eventos-cache-badge {
-    width: 100%;
-    text-align: center;
-    border-radius: 8px;
-    padding: 0.6rem 0.85rem;
-    margin-bottom: 1.6rem;
-  }
-
-  .section-title-wrap {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 1.2rem;
-  }
-
-  .section-title-wrap h2 {
-    font-size: 1.55rem;
-  }
-
-  .espacios-grid {
-    gap: 1.3rem;
-    margin-bottom: 2.5rem;
-  }
-
-  .espacio-card-body {
-    padding: 1.2rem;
-  }
-
-  .espacio-specs {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .cotizador-section {
-    padding: 1.2rem;
-  }
-
-  /* Evita el auto-zoom del teclado móvil en iOS y Android */
-  .eventos-input-group input,
-  .eventos-input-group select,
-  .eventos-input-group textarea {
-    font-size: 16px;
-  }
-
-  .resumen-card {
-    padding: 1.25rem;
-  }
-
-  .resumen-total strong {
-    font-size: 1.45rem;
-  }
-
-  /* Confirmación final */
-  .cotizacion-exitosa-card {
-    padding: 1.5rem 0.5rem;
-  }
-
-  .cotizacion-exitosa-card h3 {
-    font-size: 1.75rem;
-  }
-
-  .folio-voucher-box {
-    padding: 1.1rem;
-  }
-
-  .folio-voucher-box strong {
-    font-size: 1.35rem;
-    word-break: break-all;
-  }
-
-  .btn-nueva-cotizacion {
-    width: 100%;
-    padding: 0.85rem 1rem;
-  }
-}
-/* ==========================================================================
-   ESTILOS COMPLEMENTARIOS COTIZADOR MICE (AFORO, DESGLOSE Y COPIA DE FOLIO)
-   ========================================================================== */
-.cotizador-form,
-.eventos-input-group {
-  min-width: 0;
-}
-
-.eventos-input-group input,
-.eventos-input-group select,
-.eventos-input-group textarea {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.aforo-warning {
-  color: #fca5a5;
-  font-size: 0.72rem;
-  margin-top: 0.2rem;
-}
-
-.resumen-meta-tag {
-  margin: 0.3rem 0 0 0;
-  font-size: 0.76rem;
-  color: #94a3b8;
-}
-
-.resumen-line {
-  gap: 0.75rem;
-}
-
-.resumen-line strong {
-  text-align: right;
-}
-
-.resumen-line.tax-line {
-  border-top: 1px dashed rgba(255, 255, 255, 0.1);
-  padding-top: 0.55rem;
-  color: #94a3b8;
-  font-size: 0.78rem;
-}
-
-.resumen-anticipo-pill {
-  background: rgba(212, 175, 55, 0.12);
-  border: 1px solid rgba(212, 175, 55, 0.35);
-  color: #f3e5ab;
-  font-size: 0.75rem;
-  padding: 0.5rem 0.75rem;
-  border-radius: 6px;
-  margin: 0.45rem 0;
-}
-
-.folio-copy-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-}
-
-.btn-copy-folio {
-  background: rgba(212, 175, 55, 0.15);
-  border: 1px solid #d4af37;
-  color: #f3e5ab;
-  padding: 0.35rem 0.75rem;
-  border-radius: 4px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.btn-copy-folio:hover {
-  background: #d4af37;
-  color: #060508;
 }

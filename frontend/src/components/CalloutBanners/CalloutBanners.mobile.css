@@ -1,6 +1,71 @@
 /* ==========================================================================
-   CALLOUTBANNERS.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (380x800 en adelante)
+   CALLOUTSBANNER.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (360px - 768px)
    ========================================================================== */
 @media (max-width: 768px) {
-  /* Reglas móviles de CalloutBanners */
+  .callouts-section {
+    padding: 3rem 1rem;
+  }
+
+  .callouts-container {
+    gap: 1.75rem;
+  }
+
+  .callout-card,
+  .callout-reversed {
+    grid-template-columns: 1fr;
+    border-radius: 10px;
+  }
+
+  .callout-reversed .callout-logo-pane {
+    order: 1;
+    border-left: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .callout-reversed .callout-info-pane {
+    order: 2;
+  }
+
+  .callout-logo-pane {
+    border-right: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    padding: 1.65rem 1.2rem;
+  }
+
+  .callout-logo-img {
+    max-height: 105px;
+  }
+
+  .callout-info-pane {
+    padding: 1.45rem 1.15rem;
+  }
+
+  .callout-badge {
+    font-size: 0.66rem;
+    letter-spacing: 1.4px;
+  }
+
+  .callout-title {
+    font-size: 1.3rem;
+  }
+
+  .callout-desc {
+    font-size: 0.86rem;
+    margin-bottom: 1.35rem;
+  }
+
+  .callout-buttons {
+    flex-direction: column;
+    gap: 0.7rem;
+    width: 100%;
+  }
+
+  .btn-callout-primary,
+  .btn-callout-secondary {
+    width: 100%;
+    min-height: 44px;
+    padding: 0.8rem 1rem;
+    text-align: center;
+    box-sizing: border-box;
+  }
 }

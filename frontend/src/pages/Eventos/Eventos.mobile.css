@@ -1,6 +1,111 @@
 /* ==========================================================================
-   EVENTOS.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (380x800 en adelante)
+   EVENTOS.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (380x800 en adelante hasta 768px)
    ========================================================================== */
 @media (max-width: 768px) {
-  /* Reglas móviles de Eventos */
+  .eventos-page-root {
+    padding-top: 5.4rem; /* Sincronizado debajo del Navbar móvil */
+    padding-bottom: 3rem;
+  }
+
+  .eventos-wrapper {
+    padding: 0 1rem;
+  }
+
+  .eventos-header {
+    margin-bottom: 1.8rem;
+  }
+
+  .eventos-pre-tag {
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+  }
+
+  .eventos-header h1 {
+    font-size: 2rem;
+  }
+
+  .eventos-cache-badge {
+    width: 100%;
+    text-align: center;
+    border-radius: 8px;
+    padding: 0.6rem 0.85rem;
+    margin-bottom: 1.6rem;
+    box-sizing: border-box;
+  }
+
+  .section-title-wrap {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .section-title-wrap h2 {
+    font-size: 1.55rem;
+  }
+
+  /* Salones y espacios en 1 sola columna */
+  .espacios-grid,
+  .cotizador-grid,
+  .form-double-col {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .espacios-grid {
+    margin-bottom: 2.5rem;
+  }
+
+  .espacio-card-body {
+    padding: 1.2rem;
+  }
+
+  .espacio-specs {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* Cotizador MICE y resumen apilados */
+  .cotizador-section {
+    padding: 1.2rem;
+  }
+
+  /* Evita el auto-zoom del teclado móvil en iOS y Android */
+  .eventos-input-group input,
+  .eventos-input-group select,
+  .eventos-input-group textarea {
+    font-size: 16px;
+  }
+
+  .resumen-card {
+    position: static;
+    top: auto;
+    padding: 1.25rem;
+  }
+
+  .resumen-total strong {
+    font-size: 1.45rem;
+  }
+
+  /* Confirmación final */
+  .cotizacion-exitosa-card {
+    padding: 1.5rem 0.5rem;
+  }
+
+  .cotizacion-exitosa-card h3 {
+    font-size: 1.75rem;
+  }
+
+  .folio-voucher-box {
+    padding: 1.1rem;
+  }
+
+  .folio-voucher-box strong {
+    font-size: 1.35rem;
+    word-break: break-all;
+  }
+
+  .btn-nueva-cotizacion {
+    width: 100%;
+    padding: 0.85rem 1rem;
+  }
 }

@@ -1,6 +1,109 @@
 /* ==========================================================================
-   GALERIA.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (380x800 en adelante)
+   GALERIA.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (380x800 en adelante hasta 768px)
    ========================================================================== */
 @media (max-width: 768px) {
-  /* Reglas móviles de Galeria */
+  .galeria-page-root {
+    padding-top: 5.4rem; /* Sincronizado debajo del Navbar móvil */
+    padding-bottom: 3rem;
+  }
+
+  .galeria-wrapper {
+    padding: 0 1rem;
+  }
+
+  .galeria-header {
+    margin-bottom: 1.8rem;
+  }
+
+  .galeria-pre-title {
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+  }
+
+  .galeria-header h1 {
+    font-size: 2rem;
+  }
+
+  .galeria-cache-badge {
+    width: 100%;
+    text-align: center;
+    border-radius: 8px;
+    padding: 0.6rem 0.85rem;
+    margin-bottom: 1.6rem;
+    box-sizing: border-box;
+  }
+
+  /* Filtros deslizables horizontalmente */
+  .galeria-filters-row {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.8rem;
+    scrollbar-width: none;
+  }
+
+  .galeria-filters-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .btn-filter-tag {
+    flex-shrink: 0;
+    padding: 0.5rem 1rem;
+    font-size: 0.74rem;
+  }
+
+  .galeria-masonry-grid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .galeria-card-overlay {
+    padding: 1.1rem;
+  }
+
+  .galeria-card-overlay h4 {
+    font-size: 1.25rem;
+  }
+
+  /* Lightbox optimizado para pantalla vertical */
+  .lightbox-backdrop {
+    padding: 0.75rem 0.65rem;
+  }
+
+  .lightbox-content-box {
+    max-height: 92vh;
+  }
+
+  .lightbox-image-stage {
+    height: 240px;
+  }
+
+  .lightbox-img-full {
+    object-fit: contain;
+  }
+
+  .lightbox-nav-btn {
+    top: 120px;
+    width: 34px;
+    height: 34px;
+  }
+
+  .lightbox-nav-btn.prev {
+    left: 10px;
+  }
+
+  .lightbox-nav-btn.next {
+    right: 10px;
+  }
+
+  .lightbox-caption {
+    padding: 1rem 1.1rem;
+    overflow-y: auto;
+  }
+
+  .lightbox-caption h3 {
+    font-size: 1.35rem;
+  }
 }

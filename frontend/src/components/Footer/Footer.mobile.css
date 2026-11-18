@@ -1,6 +1,67 @@
 /* ==========================================================================
-   FOOTER.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (380x800 en adelante)
+   FOOTER.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (380x800 en adelante hasta 768px)
    ========================================================================== */
 @media (max-width: 768px) {
-  /* Reglas móviles de Footer */
+  footer.gfa-footer-root {
+    margin-top: 3.5rem;
+  }
+
+  .gfa-footer-inner {
+    width: 100%;
+    padding: 3rem 1rem 2rem;
+  }
+
+  .gfa-footer-columns {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding-bottom: 2.5rem;
+  }
+
+  .gfa-col-brand {
+    grid-column: span 1;
+  }
+
+  .gfa-col-brand h3 {
+    font-size: 1.55rem;
+  }
+
+  .gfa-col-brand p {
+    max-width: 100%;
+    font-size: 0.82rem;
+  }
+
+  .gfa-btn-concierge {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  /* Marcas de Grupo Posadas y Distintivos en móvil */
+  .gfa-corporate-brands-row {
+    padding: 2rem 0 1.6rem;
+  }
+
+  .gfa-brands-pills-wrap {
+    gap: 0.65rem;
+  }
+
+  .gfa-brand-item {
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    padding: 0.35rem 0.65rem;
+  }
+
+  .gfa-awards-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem 0;
+  }
+
+  .gfa-footer-bottom-bar {
+    flex-direction: column;
+    text-align: center;
+    padding-top: 1.4rem;
+    gap: 0.6rem;
+  }
 }

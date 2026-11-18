@@ -1,6 +1,75 @@
 /* ==========================================================================
-   FIESTACARD.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (380x800 en adelante)
+   FIESTACARD.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (360px - 768px)
    ========================================================================== */
 @media (max-width: 768px) {
-  /* Reglas móviles de FiestaCard */
+  .fiesta-card-container {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 205px;
+    padding: 18px 16px;
+    border-radius: 14px;
+    gap: 0.85rem;
+    box-sizing: border-box;
+  }
+
+  .card-logo {
+    font-size: 0.92rem;
+    letter-spacing: 1.4px;
+  }
+
+  .card-chip {
+    width: 36px;
+    height: 26px;
+  }
+
+  /* Evita que los 16 dígitos desborden en 360px */
+  .card-number {
+    font-size: clamp(0.95rem, 4.4vw, 1.18rem);
+    letter-spacing: 1.6px;
+    margin: 8px 0;
+    white-space: nowrap;
+  }
+
+  .card-footer {
+    padding-right: 0;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 0.65rem;
+  }
+
+  .card-holder {
+    flex: 1 1 55%;
+    min-width: 0;
+  }
+
+  .card-label {
+    font-size: 0.58rem;
+  }
+
+  .card-name {
+    font-size: 0.84rem;
+  }
+
+  .card-exp {
+    font-size: 0.8rem;
+  }
+
+  /* Balance integrado sin posición absoluta para nunca encimarse con el nombre */
+  .card-balance-badge {
+    position: static;
+    width: 100%;
+    text-align: left;
+    border-top: 1px solid rgba(197, 168, 128, 0.2);
+    padding-top: 0.55rem;
+    margin-top: 0.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .card-balance-amount {
+    font-size: 0.98rem;
+  }
 }

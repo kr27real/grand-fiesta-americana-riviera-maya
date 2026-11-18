@@ -1,13 +1,20 @@
+/* ==========================================================================
+   LOGINMODAL.CSS - MODAL ACCESO Y REGISTRO FIESTA REWARDS (ESCRITORIO / PC)
+   Paleta: Obsidiana (#121016 / #0B0910), Dorado Arena (#D4AF37), Lila (#DCD9E3)
+   ========================================================================== */
+
 .login-modal-overlay {
   position: fixed;
   inset: 0;
   background-color: rgba(10, 10, 10, 0.85);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 99999;
   padding: 1.5rem;
+  box-sizing: border-box;
 }
 
 .login-modal-container {
@@ -23,11 +30,18 @@
   padding: 2.2rem;
   color: #f5f5f5;
   animation: fadeInModal 0.25s ease-out;
+  box-sizing: border-box;
 }
 
 @keyframes fadeInModal {
-  from { opacity: 0; transform: translateY(-12px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(-12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .login-modal-close {
@@ -42,6 +56,7 @@
   line-height: 1;
   transition: color 0.2s;
 }
+
 .login-modal-close:hover {
   color: #d4af37;
 }
@@ -64,7 +79,7 @@
 }
 
 .login-title {
-  font-family: 'Cinzel', serif, 'Times New Roman';
+  font-family: 'Cinzel', 'Cormorant Garamond', serif;
   color: #d4af37;
   font-size: 1.5rem;
   font-weight: 600;
@@ -109,11 +124,16 @@
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  min-width: 0;
 }
 
 .form-row-2col {
   display: flex;
   gap: 0.75rem;
+}
+
+.form-row-2col .form-group {
+  flex: 1;
 }
 
 .form-label {
@@ -127,6 +147,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .link-btn {
@@ -159,8 +180,9 @@
   background: #1a1721;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 7px;
-  color: #fff;
+  color: #ffffff;
   font-size: 0.9rem;
+  font-family: inherit;
   transition: border-color 0.2s, box-shadow 0.2s;
   box-sizing: border-box;
 }
@@ -190,6 +212,7 @@ select.form-input {
   display: flex;
   align-items: center;
 }
+
 .toggle-pwd-btn:hover {
   color: #d4af37;
 }
@@ -213,12 +236,13 @@ select.form-input {
 .checkbox-container input[type="checkbox"] {
   accent-color: #d4af37;
   margin-top: 2px;
+  flex-shrink: 0;
 }
 
 .checkbox-label {
   font-size: 0.78rem;
   color: #a4a1b0;
-  line-height: 1.3;
+  line-height: 1.35;
 }
 
 .strength-meter-container {
@@ -322,6 +346,7 @@ select.form-input {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
 .captcha-input {
@@ -337,77 +362,4 @@ select.form-input {
   font-weight: 700;
   letter-spacing: 0.4em;
   padding-left: 0.85rem;
-}
-/* ==========================================================================
-   OPTIMIZACIÓN RESPONSIVA PARA LOGIN Y REGISTRO FIESTA REWARDS (MÓVIL)
-   ========================================================================== */
-@media (max-width: 640px) {
-  .login-modal-overlay {
-    padding: 0.75rem;
-    align-items: flex-start;
-    padding-top: 1.5rem;
-  }
-
-  .login-modal-container {
-    padding: 1.5rem 1.15rem;
-    max-height: 92vh;
-    border-radius: 12px;
-  }
-
-  .login-modal-close {
-    top: 0.7rem;
-    right: 0.9rem;
-    font-size: 1.65rem;
-  }
-
-  .login-title {
-    font-size: 1.28rem;
-  }
-
-  .login-subtitle {
-    font-size: 0.8rem;
-  }
-
-  /* Apilar campos dobles de registro en 1 columna */
-  .form-row-2col {
-    flex-direction: column;
-    gap: 0.85rem;
-  }
-
-  /* Evita el auto-zoom del teclado móvil en iOS/Android */
-  .form-input,
-  select.form-input {
-    font-size: 16px;
-    padding-top: 0.7rem;
-    padding-bottom: 0.7rem;
-  }
-
-  /* Ajuste flexible del Captcha en pantallas de 360px */
-  .captcha-wrapper {
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-
-  .captcha-badge {
-    font-size: 1rem;
-    letter-spacing: 3px;
-    padding: 0.45rem 0.7rem;
-  }
-
-  .captcha-input {
-    flex: 1 1 120px;
-    min-width: 0;
-    font-size: 16px;
-  }
-
-  .form-row-remember {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .btn-gold-submit {
-    padding: 0.9rem;
-    font-size: 0.9rem;
-  }
 }

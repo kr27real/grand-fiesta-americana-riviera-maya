@@ -1,20 +1,31 @@
+/* ==========================================================================
+   DESTINO.CSS - RIVIERA CANCÚN Y ATRACCIONES (ESCRITORIO / PC)
+   Paleta: Dorado Arena (#D4AF37 / #FFE082), Lila (#B39DDB), Obsidiana (#0A0A0D)
+   ========================================================================== */
+
 .destino-page-wrapper {
   background-color: #0a0a0d;
   color: #ffffff;
   min-height: 100vh;
   font-family: 'Montserrat', sans-serif;
+  padding-top: 4rem;
   padding-bottom: 5rem;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .destino-container {
   max-width: 1300px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  box-sizing: border-box;
 }
 
-/* 1. Header Editorial */
+/* --------------------------------------------------------------------------
+   1. HEADER EDITORIAL
+   -------------------------------------------------------------------------- */
 .destino-hero-section {
-  padding: 4.5rem 0 2.5rem 0;
+  padding: 4.5rem 0 2.5rem;
   text-align: center;
 }
 
@@ -34,7 +45,7 @@
   font-weight: 800;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  margin-bottom: 0.4rem;
+  margin: 0 0 0.4rem;
 }
 
 .destino-subtitle {
@@ -43,14 +54,14 @@
   font-weight: 300;
   font-style: italic;
   max-width: 850px;
-  margin: 0 auto 1.5rem auto;
+  margin: 0 auto 1.5rem;
 }
 
 .gold-divider-center {
   width: 60px;
   height: 2px;
   background: linear-gradient(90deg, transparent, #d4af37, transparent);
-  margin: 0 auto 2.2rem auto;
+  margin: 0 auto 2.2rem;
 }
 
 .destino-editorial-text {
@@ -65,9 +76,11 @@
   gap: 1.1rem;
 }
 
-/* 2. Sección del Mapa */
+/* --------------------------------------------------------------------------
+   2. SECCIÓN DEL MAPA Y UBICACIÓN
+   -------------------------------------------------------------------------- */
 .destino-map-section {
-  padding: 1.5rem 0 3.5rem 0;
+  padding: 1.5rem 0 3.5rem;
 }
 
 .location-info-card {
@@ -78,6 +91,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1.2rem;
   margin-bottom: 1.5rem;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
 }
@@ -97,7 +111,7 @@
   color: #ffffff;
   font-size: 1.1rem;
   font-weight: 700;
-  margin-bottom: 0.2rem;
+  margin: 0 0 0.2rem;
 }
 
 .location-badge p {
@@ -121,6 +135,7 @@
   letter-spacing: 0.5px;
   transition: all 0.25s ease;
   flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .btn-open-googlemaps:hover {
@@ -135,7 +150,9 @@
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.8);
 }
 
-/* 3. Atracciones */
+/* --------------------------------------------------------------------------
+   3. ATRACCIONES CERCANAS
+   -------------------------------------------------------------------------- */
 .destino-attractions-section {
   padding: 3rem 0;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
@@ -152,6 +169,7 @@
   font-size: clamp(1.5rem, 2.6vw, 2.1rem);
   font-weight: 800;
   letter-spacing: 1px;
+  margin: 0;
 }
 
 .attractions-grid {
@@ -219,7 +237,7 @@
   color: #ffffff;
   font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 0.4rem;
+  margin: 0 0 0.4rem;
 }
 
 .attraction-sub {
@@ -234,7 +252,7 @@
   font-size: 0.86rem;
   line-height: 1.6;
   font-weight: 300;
-  margin-bottom: 1.6rem;
+  margin: 0 0 1.6rem;
   flex-grow: 1;
 }
 
@@ -261,9 +279,11 @@
   color: #0d0d0d;
 }
 
-/* 4. Galería */
+/* --------------------------------------------------------------------------
+   4. GALERÍA DEL DESTINO
+   -------------------------------------------------------------------------- */
 .destino-gallery-section {
-  padding: 2.5rem 0 3.5rem 0;
+  padding: 2.5rem 0 3.5rem;
 }
 
 .destino-gallery-grid {
@@ -303,16 +323,19 @@
   text-align: center;
 }
 
-/* Modal */
+/* --------------------------------------------------------------------------
+   5. MODAL DE DETALLE DE ATRACCIÓN
+   -------------------------------------------------------------------------- */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.88);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 300;
+  z-index: 10000;
   padding: 1rem;
 }
 
@@ -325,14 +348,15 @@
   overflow: hidden;
   position: relative;
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9);
+  box-sizing: border-box;
 }
 
 .close-attraction-btn {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: rgba(13, 13, 13, 0.8);
-  border: none;
+  background: rgba(13, 13, 13, 0.85);
+  border: 1px solid rgba(212, 175, 55, 0.35);
   color: #ffffff;
   width: 36px;
   height: 36px;
@@ -348,6 +372,7 @@
   width: 100%;
   height: 250px;
   object-fit: cover;
+  display: block;
 }
 
 .modal-attraction-content {
@@ -368,7 +393,7 @@
   color: #ffffff;
   font-size: 1.4rem;
   font-weight: 800;
-  margin-bottom: 0.4rem;
+  margin: 0 0 0.4rem;
 }
 
 .modal-attraction-sub {
@@ -396,25 +421,23 @@
   display: inline-block;
 }
 
-@media (max-width: 900px) {
+/* Ajuste intermedio para tablets (769px - 960px) */
+@media (max-width: 960px) and (min-width: 769px) {
   .location-info-card {
     flex-direction: column;
     text-align: center;
     gap: 1.2rem;
   }
+
   .location-badge {
     flex-direction: column;
   }
+
   .attractions-grid {
     grid-template-columns: 1fr;
   }
+
   .destino-gallery-grid {
     grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 600px) {
-  .destino-gallery-grid {
-    grid-template-columns: 1fr;
   }
 }

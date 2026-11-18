@@ -1,36 +1,129 @@
-﻿.fiesta-card-container {
+﻿/* ==========================================================================
+   FIESTACARD.CSS - TARJETA DIGITAL FIESTA REWARDS (ESCRITORIO / PC)
+   Paleta: Obsidiana (#0A0A0A / #181512), Dorado Arena (#C5A880 / #D4AF37)
+   ========================================================================== */
+
+.fiesta-card-container {
   width: 100%;
   max-width: 420px;
-  height: 240px;
-  background: linear-gradient(135deg, #181512 0%, #0A0A0A 100%);
-  border: 1px solid #C5A880;
+  min-height: 240px;
+  background: linear-gradient(135deg, #181512 0%, #0a0a0a 100%);
+  border: 1px solid #c5a880;
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(197, 168, 128, 0.05);
   position: relative;
   overflow: hidden;
-  color: #FFFFFF;
+  color: #ffffff;
   font-family: 'Montserrat', sans-serif;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  box-sizing: border-box;
 }
+
 .fiesta-card-container::before {
   content: '';
-  position: absolute; top: 0; left: -50%; width: 50%; height: 100%;
-  background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
   transform: skewX(-25deg);
   animation: shine 6s infinite;
+  pointer-events: none;
 }
-@keyframes shine { 0% { left: -50%; } 20% { left: 150%; } 100% { left: 150%; } }
-.card-header { display: flex; justify-content: space-between; align-items: center; }
-.card-logo { font-size: 1.1rem; color: #C5A880; font-weight: 700; letter-spacing: 2px; }
-.card-chip { width: 42px; height: 30px; background: linear-gradient(135deg, #D4AF37, #AA8022); border-radius: 6px; }
-.card-number { font-size: 1.4rem; letter-spacing: 3px; font-weight: 600; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); margin: 16px 0; }
-.card-footer { display: flex; justify-content: space-between; align-items: flex-end; }
-.card-holder { display: flex; flex-direction: column; }
-.card-label { font-size: 0.65rem; color: #A0A0A0; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 2px; }
-.card-name { font-size: 1rem; font-weight: 600; text-transform: uppercase; }
-.card-exp { font-size: 0.9rem; font-weight: 600; }
-.card-balance-badge { position: absolute; bottom: 24px; right: 24px; text-align: right; }
-.card-balance-amount { color: #C5A880; font-size: 1.1rem; font-weight: 800; }
+
+@keyframes shine {
+  0% { left: -50%; }
+  20% { left: 150%; }
+  100% { left: 150%; }
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.card-logo {
+  font-size: 1.1rem;
+  color: #c5a880;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.card-chip {
+  width: 42px;
+  height: 30px;
+  background: linear-gradient(135deg, #d4af37, #aa8022);
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.card-number {
+  font-size: 1.35rem;
+  letter-spacing: 3px;
+  font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  margin: 16px 0;
+  white-space: nowrap;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  padding-right: 110px; /* Reserva espacio limpio para .card-balance-badge */
+}
+
+.card-holder {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.card-label {
+  font-size: 0.65rem;
+  color: #a0a0a0;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.card-name {
+  font-size: 0.96rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.card-exp {
+  font-size: 0.9rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.card-balance-badge {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  text-align: right;
+}
+
+.card-balance-amount {
+  color: #c5a880;
+  font-size: 1.1rem;
+  font-weight: 800;
+  display: block;
+}

@@ -1,6 +1,115 @@
 /* ==========================================================================
-   SPA.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (380x800 en adelante)
+   SPA.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (380x800 en adelante hasta 768px)
    ========================================================================== */
 @media (max-width: 768px) {
-  /* Reglas móviles de Spa */
+  .spa-page-wrapper {
+    padding-bottom: 3rem;
+  }
+
+  .spa-page-container {
+    padding: 0 1rem;
+  }
+
+  /* 1. Hero Slider adaptado al viewport móvil */
+  .spa-hero-slider {
+    height: 55vh;
+    min-height: 390px;
+    max-height: 460px;
+  }
+
+  .spa-hero-content {
+    padding: 4.5rem 2.4rem 0;
+  }
+
+  .spa-hero-content h1 {
+    font-size: 1.85rem;
+    letter-spacing: 1px;
+  }
+
+  .spa-hero-content p {
+    font-size: 0.92rem;
+  }
+
+  .spa-slider-nav {
+    width: 34px;
+    height: 34px;
+  }
+
+  .spa-slider-nav.prev {
+    left: 0.65rem;
+  }
+
+  .spa-slider-nav.next {
+    right: 0.65rem;
+  }
+
+  /* 2. Intro y Natura Bissé en columna centrada */
+  .spa-intro-section {
+    padding: 2.8rem 0 2.2rem;
+  }
+
+  .spa-main-title {
+    font-size: 1.55rem;
+  }
+
+  .spa-editorial-body {
+    font-size: 0.88rem;
+    margin-bottom: 2rem;
+  }
+
+  .natura-bisse-callout {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.4rem 1.1rem;
+    gap: 0.9rem;
+  }
+
+  /* 3. Tratamientos y galería en 1 sola columna */
+  .spa-treatments-section {
+    padding: 2.2rem 0 2.8rem;
+  }
+
+  .treatments-grid,
+  .spa-gallery-grid,
+  .spa-inputs-row {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .treatment-card {
+    padding: 1.35rem 1.15rem;
+  }
+
+  .treatment-card-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.85rem;
+  }
+
+  .btn-book-treatment {
+    width: 100%;
+    text-align: center;
+    min-height: 44px;
+  }
+
+  /* 4. Modal de reservación Spa móvil sin auto-zoom */
+  .modal-backdrop {
+    padding: 0.75rem 0.65rem 2rem;
+    align-items: flex-start;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .modal-spa-content {
+    width: 100%;
+    max-width: 100%;
+    padding: 1.4rem 1.1rem;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  .spa-input-group input,
+  .spa-input-group select {
+    font-size: 16px;
+  }
 }

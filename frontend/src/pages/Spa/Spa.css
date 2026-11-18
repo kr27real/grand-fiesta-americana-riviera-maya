@@ -1,18 +1,28 @@
+/* ==========================================================================
+   SPA.CSS - FEEL HARMONY SPA BY NATURA BISSÉ (ESCRITORIO / PC)
+   Paleta: Dorado Arena (#D4AF37 / #FFE082), Lila (#B39DDB), Obsidiana (#0A0A0D)
+   ========================================================================== */
+
 .spa-page-wrapper {
   background-color: #0a0a0d;
   color: #ffffff;
   min-height: 100vh;
   font-family: 'Montserrat', sans-serif;
   padding-bottom: 4rem;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .spa-page-container {
   max-width: 1300px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  box-sizing: border-box;
 }
 
-/* 1. Hero Slider */
+/* --------------------------------------------------------------------------
+   1. HERO SLIDER
+   -------------------------------------------------------------------------- */
 .spa-hero-slider {
   position: relative;
   width: 100%;
@@ -64,7 +74,7 @@
   font-weight: 800;
   letter-spacing: 1.5px;
   text-transform: uppercase;
-  margin-bottom: 0.8rem;
+  margin: 0 0 0.8rem;
   text-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
 }
 
@@ -72,6 +82,7 @@
   color: #e2d9ec;
   font-size: clamp(0.95rem, 1.8vw, 1.2rem);
   font-weight: 300;
+  margin: 0;
 }
 
 .spa-slider-nav {
@@ -105,9 +116,11 @@
   right: 1.5rem;
 }
 
-/* 2. Intro & Natura Bissé */
+/* --------------------------------------------------------------------------
+   2. INTRO & NATURA BISSÉ
+   -------------------------------------------------------------------------- */
 .spa-intro-section {
-  padding: 4.5rem 0 3.5rem 0;
+  padding: 4.5rem 0 3.5rem;
   text-align: center;
 }
 
@@ -127,18 +140,19 @@
   font-weight: 800;
   letter-spacing: 1.5px;
   text-transform: uppercase;
+  margin: 0;
 }
 
 .gold-divider-center {
   width: 60px;
   height: 2px;
   background: linear-gradient(90deg, transparent, #d4af37, transparent);
-  margin: 0.8rem auto 2rem auto;
+  margin: 0.8rem auto 2rem;
 }
 
 .spa-editorial-body {
   max-width: 900px;
-  margin: 0 auto 3rem auto;
+  margin: 0 auto 3rem;
   color: #cbd5e1;
   font-size: 0.94rem;
   line-height: 1.85;
@@ -171,7 +185,7 @@
   color: #ffe082;
   font-size: 1.15rem;
   font-weight: 700;
-  margin-bottom: 0.35rem;
+  margin: 0 0 0.35rem;
 }
 
 .natura-text p {
@@ -181,9 +195,11 @@
   margin: 0;
 }
 
-/* 3. Tratamientos */
+/* --------------------------------------------------------------------------
+   3. TRATAMIENTOS
+   -------------------------------------------------------------------------- */
 .spa-treatments-section {
-  padding: 3rem 0 4rem 0;
+  padding: 3rem 0 4rem;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
@@ -198,6 +214,7 @@
   font-size: clamp(1.5rem, 2.6vw, 2.1rem);
   font-weight: 800;
   letter-spacing: 1px;
+  margin: 0;
 }
 
 .treatments-grid {
@@ -226,6 +243,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
   margin-bottom: 0.6rem;
 }
 
@@ -243,13 +261,14 @@
   display: flex;
   align-items: center;
   gap: 0.35rem;
+  white-space: nowrap;
 }
 
 .treatment-name {
   color: #ffffff;
   font-size: 1.25rem;
   font-weight: 700;
-  margin-bottom: 0.3rem;
+  margin: 0 0 0.3rem;
 }
 
 .treatment-partner {
@@ -265,7 +284,7 @@
   font-size: 0.88rem;
   line-height: 1.65;
   font-weight: 300;
-  margin-bottom: 1.8rem;
+  margin: 0 0 1.8rem;
   flex-grow: 1;
 }
 
@@ -273,6 +292,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   padding-top: 1.2rem;
 }
@@ -306,6 +326,7 @@
   text-transform: uppercase;
   letter-spacing: 0.5px;
   transition: all 0.25s ease;
+  white-space: nowrap;
 }
 
 .btn-book-treatment:hover {
@@ -313,9 +334,11 @@
   color: #ffffff;
 }
 
-/* 4. Galería */
+/* --------------------------------------------------------------------------
+   4. GALERÍA
+   -------------------------------------------------------------------------- */
 .spa-gallery-section {
-  padding: 2rem 0 3rem 0;
+  padding: 2rem 0 3rem;
 }
 
 .spa-gallery-grid {
@@ -355,16 +378,19 @@
   text-align: center;
 }
 
-/* Modal */
+/* --------------------------------------------------------------------------
+   5. MODAL DE RESERVACIÓN SPA
+   -------------------------------------------------------------------------- */
 .modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: rgba(0, 0, 0, 0.88);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 300;
+  z-index: 10000;
   padding: 1rem;
 }
 
@@ -377,6 +403,7 @@
   padding: 2.4rem;
   position: relative;
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9);
+  box-sizing: border-box;
 }
 
 .close-spa-modal {
@@ -406,7 +433,7 @@
   color: #ffffff;
   font-size: 1.35rem;
   font-weight: 800;
-  margin: 0.35rem 0 0.2rem 0;
+  margin: 0.35rem 0 0.2rem;
 }
 
 .treatment-modal-sub {
@@ -422,6 +449,7 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 1rem;
+  min-width: 0;
 }
 
 .spa-input-group label {
@@ -431,7 +459,10 @@
   margin-bottom: 0.35rem;
 }
 
-.spa-input-group input, .spa-input-group select {
+.spa-input-group input,
+.spa-input-group select {
+  width: 100%;
+  box-sizing: border-box;
   background: #1c1c22;
   border: 1px solid rgba(179, 157, 219, 0.25);
   color: #ffffff;
@@ -442,7 +473,8 @@
   outline: none;
 }
 
-.spa-input-group input:focus, .spa-input-group select:focus {
+.spa-input-group input:focus,
+.spa-input-group select:focus {
   border-color: #d4af37;
 }
 
@@ -475,7 +507,6 @@
   color: #ffffff;
 }
 
-/* Success */
 .spa-success-pane {
   text-align: center;
   padding: 1rem 0.5rem;
@@ -504,24 +535,18 @@
   text-transform: uppercase;
 }
 
-@media (max-width: 900px) {
+/* Ajuste intermedio para tablets (769px - 960px) */
+@media (max-width: 960px) and (min-width: 769px) {
   .treatments-grid {
     grid-template-columns: 1fr;
   }
+
   .spa-gallery-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
   .natura-bisse-callout {
     flex-direction: column;
     text-align: center;
-  }
-}
-
-@media (max-width: 600px) {
-  .spa-gallery-grid {
-    grid-template-columns: 1fr;
-  }
-  .spa-inputs-row {
-    grid-template-columns: 1fr;
   }
 }

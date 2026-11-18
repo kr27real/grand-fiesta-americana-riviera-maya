@@ -56,219 +56,30 @@ iframe {
 ::-webkit-scrollbar-thumb:hover {
   background: #d4af37;
 }
+
 /* ========================================================
-   ADAPTACIÓN AUTOMÁTICA MÓVIL GLOBAL (<= 768px)
+   REGLAS BASE DE CONTENCIÓN MÓVIL (<= 768px)
    ======================================================== */
 @media (max-width: 768px) {
-  /* 1. Evita que cualquier contenedor o tarjeta desborde la pantalla */
   section,
   article,
   main,
-  form,
-  [class*="-container"],
-  [class*="-wrapper"],
-  [class*="-card"],
-  [class*="-grid"],
-  [class*="-layout"],
-  [class*="-box"] {
-    max-width: 100% !important;
+  form {
+    max-width: 100%;
   }
 
-  /* 2. Fuerza 1 sola columna en todos los grids de páginas, formularios y modales */
-  [class*="-grid"],
-  [class*="-layout"],
-  [class*="-split"],
-  [class*="-columns"],
-  [class*="-matrix"] {
-    grid-template-columns: 1fr !important;
-    gap: 1rem !important;
-  }
-
-  /* 3. Reduce paddings laterales excesivos de escritorio */
-  [class*="-page"],
-  [class*="-root"],
-  [class*="-wrapper"],
-  [class*="-container"] {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
-
-  /* 4. Desactiva sticky en resúmenes laterales para que fluyan hacia abajo */
-  [class*="-summary"],
-  [class*="-sidebar"],
-  [class*="-sticky"] {
-    position: static !important;
-    width: 100% !important;
-  }
-
-  /* 5. Permite deslizar tablas horizontalmente sin romper la vista */
   table {
-    display: block !important;
-    width: 100% !important;
-    overflow-x: auto !important;
+    display: block;
+    width: 100%;
+    overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
 
-  /* 6. Modales adaptados al alto y ancho de celular */
-  [class*="-modal"] {
-    width: 95vw !important;
-    max-height: 90vh !important;
-    overflow-y: auto !important;
-  }
-}
-/* ==========================================================================
-   SISTEMA RESPONSIVO INTEGRAL PARA TODAS LAS VISTAS (TABLET Y MÓVIL)
-   Coloquio Académico - Grand Fiesta Americana Riviera Cancún
-   ========================================================================== */
-
-/* 1. TABLETS Y PANTALLAS MEDIANAS (<= 960px): Apilar layouts principales */
-@media (max-width: 960px) {
-  .checkout-layout-grid,
-  .contacto-main-grid,
-  .cotizador-grid,
-  .suite-ibe-card,
-  .hero-9-3-layout,
-  .room-table-with-summary,
-  .modal-split-layout,
-  .billetera-grid-layout,
-  .facturacion-layout,
-  .rewards-hub-top-grid,
-  .wallet-hero-breakdown,
-  .callout-card,
-  .callout-reversed,
-  .room-showcase-card {
-    grid-template-columns: 1fr !important;
-    flex-direction: column !important;
-  }
-
-  .resort-mosaic-grid {
-    grid-template-columns: 1fr !important;
-    height: auto !important;
-  }
-
-  .mosaic-side-grid {
-    grid-template-columns: 1fr 1fr !important;
-  }
-
-  .gfa-footer-columns,
-  .perfil-metrics-grid,
-  .rewards-tiers-selector,
-  .wallet-pillars-grid,
-  .facilities-3-cols {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
-
-  /* Evitar que tarjetas laterales se queden pegadas tapando el scroll en móvil */
-  [class*="summary"],
-  [class*="sidebar"],
-  [class*="sticky"] {
-    position: static !important;
-    top: auto !important;
-    width: 100% !important;
-  }
-}
-
-/* 2. TELÉFONOS MÓVILES (<= 640px): 1 Columna pura y ajuste táctil */
-@media (max-width: 640px) {
-  /* Todas las cuadrículas de tarjetas, formularios y detalles a 1 sola columna */
-  .amenities-grid,
-  .booking-bar-container,
-  .dining-grid,
-  .gfa-footer-columns,
-  .offers-grid,
-  .services-grid,
-  .voucher-matrix-grid,
-  .form-row-2,
-  .form-row-3,
-  .form-row-duo,
-  .phone-split-container,
-  .voucher-grid-details,
-  .msi-pills-grid,
-  .attractions-grid,
-  .destino-gallery-grid,
-  .espacios-grid,
-  .form-double-col,
-  .exp-cards-grid,
-  .galeria-masonry-grid,
-  .rooms-grid-layout,
-  .card-footer-buttons,
-  .mosaic-side-grid,
-  .house-rules-grid,
-  .modal-gallery-highlights,
-  .rts-dates-box,
-  .facilities-3-cols,
-  .services-strip-grid,
-  .home-rooms-grid,
-  .home-room-actions,
-  .amenities-showcase-grid,
-  .dining-grid-layout,
-  .ofertas-cards-grid,
-  .perfil-metrics-grid,
-  .baucher-detalles-grid,
-  .tarjeta-bancaria-item,
-  .tickets-grid-historial,
-  .rewards-tiers-selector,
-  .rewards-benefits-grid,
-  .hub-directory-grid,
-  .wallet-pillars-grid,
-  .acomp-inline-form,
-  .restaurantes-grid-layout,
-  .rest-form-grid,
-  .treatments-grid,
-  .spa-gallery-grid,
-  .spa-inputs-row {
-    grid-template-columns: 1fr !important;
-    gap: 1rem !important;
-  }
-
-  /* Banners horizontales y tarjetas de tarjeta bancaria a columna vertical */
-  .awards-flex-banner,
-  .security-status-banner,
-  .tarjeta-bancaria-item,
-  .voucher-top-bar,
-  .voucher-hero-content {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 0.75rem !important;
-  }
-
-  /* Tarjeta 3D de pago y modales ajustados al ancho real del teléfono */
-  .new-card-3d-wrapper {
-    width: 100% !important;
-    max-width: 100% !important;
-    min-width: 0 !important;
-  }
-
-  /* Padding lateral cómodo en todas las páginas */
-  [class*="-page"],
-  [class*="-root"],
-  [class*="-wrapper"],
-  [class*="-container"] {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
-
-  /* Compensar altura del Navbar fijo en la parte superior */
-  main,
-  [class*="-page-root"],
-  [class*="-page"] {
-    padding-top: 95px !important;
-  }
-
-  /* Tablas financieras y comparativas deslizables con el dedo */
-  table {
-    display: block !important;
-    width: 100% !important;
-    overflow-x: auto !important;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  /* Botones de ancho completo en formularios y tarjetas móviles */
-  .card-footer-buttons button,
-  .card-footer-buttons a,
-  .home-room-actions button,
-  .home-room-actions a {
-    width: 100% !important;
-    justify-content: center !important;
+  [class*="-modal-overlay"],
+  [class*="-backdrop"] {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 }

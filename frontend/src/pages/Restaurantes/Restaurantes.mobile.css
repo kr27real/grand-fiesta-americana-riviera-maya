@@ -1,6 +1,105 @@
 /* ==========================================================================
-   RESTAURANTES.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (380x800 en adelante)
+   RESTAURANTES.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (380x800 en adelante hasta 768px)
    ========================================================================== */
 @media (max-width: 768px) {
-  /* Reglas móviles de Restaurantes */
+  .restaurantes-page-root {
+    padding-top: 5.4rem; /* Sincronizado debajo del Navbar móvil */
+    padding-bottom: 3rem;
+  }
+
+  .restaurantes-container {
+    padding: 0 1rem;
+  }
+
+  .restaurantes-header {
+    margin-bottom: 1.8rem;
+  }
+
+  .restaurantes-pre-title {
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+  }
+
+  .restaurantes-header h1 {
+    font-size: 2rem;
+  }
+
+  .restaurantes-cache-badge {
+    width: 100%;
+    text-align: center;
+    border-radius: 8px;
+    padding: 0.6rem 0.85rem;
+    margin-bottom: 1.6rem;
+    box-sizing: border-box;
+  }
+
+  /* Filtros deslizables horizontalmente con el dedo */
+  .restaurantes-filters-row {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.5rem;
+    margin-bottom: 2rem;
+    scrollbar-width: none;
+  }
+
+  .restaurantes-filters-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .btn-filter-pill {
+    flex-shrink: 0;
+    padding: 0.5rem 1rem;
+    font-size: 0.74rem;
+  }
+
+  /* Cuadrícula de restaurantes y formularios en 1 columna */
+  .restaurantes-grid-layout,
+  .rest-form-grid {
+    grid-template-columns: 1fr;
+    gap: 1.3rem;
+  }
+
+  .restaurante-body-content {
+    padding: 1.2rem;
+  }
+
+  .restaurante-nombre {
+    font-size: 1.45rem;
+  }
+
+  /* Modal de reservación de mesa adaptado al ancho móvil y sin auto-zoom */
+  .rest-modal-backdrop {
+    padding: 0.75rem 0.65rem 2rem;
+    align-items: flex-start;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .rest-modal-window {
+    width: 100%;
+    max-width: 100%;
+    max-height: none;
+    overflow: visible;
+    padding: 1.35rem 1rem;
+    margin: 0 auto;
+    box-sizing: border-box;
+  }
+
+  .rest-input-group input,
+  .rest-input-group select,
+  .rest-input-group textarea {
+    font-size: 16px;
+  }
+
+  .voucher-line {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2rem;
+  }
+
+  .voucher-line strong {
+    text-align: left;
+  }
 }

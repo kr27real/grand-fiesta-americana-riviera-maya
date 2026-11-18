@@ -1330,19 +1330,24 @@
 }
 
 /* --------------------------------------------------------------------------
-   6. MODALES (VOUCHER Y TARJETAS BANCARIAS)
+   6. MODALES (VOUCHER Y TARJETAS BANCARIAS - SIN SCROLL HORIZONTAL)
    -------------------------------------------------------------------------- */
 .baucher-modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(6, 5, 8, 0.92);
+  width: 100%;
+  height: 100dvh;
+  background: rgba(6, 5, 8, 0.94);
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding: 1.5rem 1rem;
+  padding: 2rem 1rem 3rem;
   z-index: 10000;
   overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
   scrollbar-width: none;
 }
 
@@ -1484,29 +1489,62 @@
 .baucher-modal-actions,
 .modal-tarjeta-buttons {
   display: flex;
+  align-items: stretch;
   gap: 12px;
   margin-top: 22px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.btn-imprimir-baucher,
+.btn-cerrar-baucher,
+.btn-cancelar-tarjeta {
+  min-width: 0;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 6px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  box-sizing: border-box;
+  white-space: nowrap;
 }
 
 .btn-imprimir-baucher {
-  flex: 1;
-  background: #c5a880;
-  color: #0a0a0a;
-  border: none;
-  padding: 12px;
-  border-radius: 6px;
-  font-weight: 700;
-  cursor: pointer;
+  flex: 1.4;
+  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
+  color: #060508;
+  border: 1px solid rgba(243, 229, 171, 0.35);
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
+}
+
+.btn-imprimir-baucher:hover {
+  background: linear-gradient(135deg, #f3e5ab 0%, #d4af37 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
 }
 
 .btn-cerrar-baucher,
 .btn-cancelar-tarjeta {
-  background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #ffffff;
-  padding: 12px 20px;
-  border-radius: 6px;
-  cursor: pointer;
+  flex: 1;
+  background: #17141f;
+  border: 1px solid rgba(197, 168, 128, 0.35);
+  color: #e2e8f0;
+}
+
+.btn-cerrar-baucher:hover,
+.btn-cancelar-tarjeta:hover {
+  border-color: #c5a880;
+  background: rgba(197, 168, 128, 0.12);
+  color: #f3e5ab;
 }
 
 .modal-tarjeta-title {
@@ -1657,6 +1695,8 @@
 
   .baucher-modal-overlay {
     position: static !important;
+    height: auto !important;
+    overflow: visible !important;
     background: #ffffff !important;
   }
 
