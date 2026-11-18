@@ -26,8 +26,6 @@ import ConciergeVirtual from './pages/ConciergeVirtual/ConciergeVirtual';
 import NotFound from './pages/NotFound/NotFound';
 
 import './index.css';
-import './index.mobile.css';
-
 // Resetea el scroll al inicio cada vez que cambia la ruta
 function AutoScrollTop() {
   const { pathname } = useLocation();
