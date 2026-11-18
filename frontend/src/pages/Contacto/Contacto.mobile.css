@@ -1,0 +1,80 @@
+/* ==========================================================================
+   CONTACTO.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (380x800 en adelante hasta 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .contacto-page-root {
+    padding-top: 5.4rem; /* Sincronizado exactamente con el Navbar móvil */
+    padding-bottom: 3rem;
+  }
+
+  .contacto-wrapper {
+    padding: 0 1rem;
+  }
+
+  .contacto-header-intro {
+    margin-bottom: 2rem;
+  }
+
+  .contacto-header-intro h1 {
+    font-size: 2.1rem;
+    line-height: 1.18;
+  }
+
+  .contacto-header-intro p {
+    font-size: 0.86rem;
+  }
+
+  /* Alertas y banners */
+  .db-offline-alert {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.8rem;
+    padding: 1rem;
+  }
+
+  .btn-retry-db {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .socio-identified-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 0.85rem 1rem;
+  }
+
+  /* Formulario y inputs sin auto-zoom */
+  .contacto-form-card {
+    padding: 1.25rem;
+  }
+
+  .form-row-duo,
+  .phone-split-container {
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .form-group-block input,
+  .form-group-block select,
+  .form-group-block textarea {
+    font-size: 16px; /* Previene zoom automático de teclado en iOS/Android */
+  }
+
+  /* Historial de tickets en móvil */
+  .tickets-history-box {
+    margin-top: 3rem;
+    padding: 1.25rem;
+  }
+
+  .ticket-item-row {
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .ticket-item-date {
+    align-self: flex-start;
+  }
+}

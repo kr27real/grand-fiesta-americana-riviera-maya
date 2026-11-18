@@ -1,6 +1,7 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronUp } from 'lucide-react';
 import './ScrollToTopButton.css';
+import './ScrollToTopButton.mobile.css';
 
 export default function ScrollToTopButton() {
   const [visible, setVisible] = useState(false);

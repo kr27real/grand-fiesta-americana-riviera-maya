@@ -1,0 +1,202 @@
+/* ==========================================================================
+   HABITACIONES.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (380x800 en adelante hasta 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .posadas-rooms-page {
+    padding-top: 5.4rem;
+    padding-bottom: 3rem;
+  }
+
+  .posadas-container {
+    padding: 0 1rem;
+  }
+
+  /* 1. Subnav sticky sincronizado debajo del Navbar móvil */
+  .booking-subnav-sticky {
+    top: 5.4rem;
+    margin-bottom: 1.1rem;
+  }
+
+  .subnav-links {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .subnav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .subnav-actions {
+    width: 100%;
+    padding-bottom: 0.55rem;
+  }
+
+  /* 2. Píldoras y cabecera del resort en 380x800 */
+  .resort-title-bar {
+    gap: 1rem;
+  }
+
+  .resort-badges-line {
+    gap: 0.45rem;
+  }
+
+  .diamond-pill,
+  .all-inclusive-pill,
+  .sustainable-pill {
+    height: auto;
+    min-height: 25px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.64rem;
+    white-space: normal;
+  }
+
+  .header-cta-cluster {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .header-cta-cluster .btn-bb-search {
+    flex: 1;
+    width: auto !important;
+  }
+
+  /* 3. Grid Hero 9/3 apilado y Mosaico fotográfico compacto */
+  .hero-9-3-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .resort-mosaic-grid {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .mosaic-main-photo {
+    height: 215px;
+  }
+
+  .mosaic-side-grid {
+    height: 175px;
+  }
+
+  /* 4. Barra de búsqueda y filtros táctiles sin auto-zoom */
+  .posadas-bb-card {
+    padding: 1rem;
+    gap: 0.85rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bb-col,
+  .bb-action {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .bb-col input,
+  .bb-col select,
+  .filter-dropdown select {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    font-size: 16px;
+  }
+
+  .filters-flex {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-dropdown {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .filter-dropdown select {
+    max-width: 62%;
+  }
+
+  /* 5. Cuadrícula de suites, tabla comparativa, servicios y normas en 1 columna */
+  .rooms-grid-layout,
+  .room-table-with-summary,
+  .facilities-3-cols,
+  .house-rules-grid,
+  .card-footer-buttons,
+  .rts-dates-box {
+    grid-template-columns: 1fr;
+  }
+
+  .rt-sticky-summary {
+    position: static;
+  }
+
+  .floating-specs-bar {
+    font-size: 0.7rem;
+    padding: 1rem 0.8rem 0.45rem;
+  }
+
+  .card-content-box {
+    padding: 1.2rem;
+  }
+
+  .room-name {
+    min-height: auto;
+    font-size: 1.4rem;
+  }
+
+  /* 6. Modal Split-View en móvil */
+  .modal-sheet {
+    max-height: 94vh;
+  }
+
+  .modal-split-layout {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+    min-height: auto;
+  }
+
+  .modal-left-gallery .modal-slider-main {
+    min-height: 210px;
+    height: 210px;
+  }
+
+  .modal-gallery-highlights {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-right-details,
+  .modal-right-details .modal-sheet-body {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .modal-sheet-head {
+    padding: 1rem 2.4rem 0.75rem 1rem;
+  }
+
+  .modal-sheet-body {
+    padding: 1rem;
+  }
+
+  .rate-block-option {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .rbo-right {
+    text-align: left;
+  }
+
+  .modal-sheet-foot {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    padding: 0.85rem 1rem;
+  }
+
+  .modal-sheet-foot .btn-card-primary {
+    width: 100%;
+    justify-content: center;
+  }
+}

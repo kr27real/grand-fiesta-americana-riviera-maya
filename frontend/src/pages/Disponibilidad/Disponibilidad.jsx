@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { fetchSuites } from '../../services/api';
 import { 
@@ -7,6 +7,7 @@ import {
   Bed, Maximize2, Award, Flame, ChevronDown, ChevronUp, DollarSign
 } from 'lucide-react';
 import './Disponibilidad.css';
+import './Disponibilidad.mobile.css';
 
 const SUITES_FALLBACK = [
   {

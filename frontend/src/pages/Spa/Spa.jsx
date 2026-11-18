@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Award, Clock, Heart, Calendar, CheckCircle2, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import './Spa.css';
+import './Spa.mobile.css';
 
 const heroSlides = [
   {

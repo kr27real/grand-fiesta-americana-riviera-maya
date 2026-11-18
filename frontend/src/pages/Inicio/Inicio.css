@@ -1,10 +1,11 @@
 ﻿/* ==========================================================================
-   INICIO.CSS - PALETA LILA, DORADO Y NEGRO OBSIDIANA
-   Lila: #C084FC | #A855F7 | #E9D5FF
-   Dorado: #D4AF37 | #C7AF8B | #F3E5AB
-   Negro: #060508 | #0D0B14 | #130F1E | #1A1429
+   INICIO.CSS - GRAND FIESTA AMERICANA RIVIERA CANCÚN (ESCRITORIO / PC)
+   Paleta: Lila (#C084FC / #E9D5FF), Dorado (#D4AF37 / #F3E5AB), Obsidiana (#060508)
    ========================================================================== */
 
+/* --------------------------------------------------------------------------
+   0. BASE, CONTENEDORES Y UTILIDADES
+   -------------------------------------------------------------------------- */
 .posadas-home-page {
   background-color: #060508;
   color: #f1f5f9;
@@ -17,12 +18,14 @@
   max-width: 1240px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  box-sizing: border-box;
 }
 
 .posadas-container-narrow {
   max-width: 860px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  box-sizing: border-box;
 }
 
 .text-gold {
@@ -42,7 +45,7 @@
 
 .section-serif-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 2.9rem;
+  font-size: clamp(2.1rem, 3.2vw, 2.9rem);
   color: #f3e5ab;
   margin: 0;
   font-weight: 500;
@@ -83,139 +86,19 @@
 }
 
 /* --------------------------------------------------------------------------
-   1. HERO SLIDER & CAPAS
+   1. CONTENEDOR HERO & BOOKING BAR
    -------------------------------------------------------------------------- */
 .posadas-hero-wrap {
   position: relative;
   width: 100%;
-  margin-top: 5rem; /* Libra el navbar fijo */
-  margin-bottom: 4rem; /* Deja espacio para que la booking bar descanse holgadamente */
-}
-.hero-slide-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
+  margin-top: 6.8rem; /* Despeje exacto del Navbar fijo en PC */
+  margin-bottom: 1.5rem;
 }
 
-.hero-slide {
-  position: absolute;
-  inset: 0;
-  background-size: cover;
-  background-position: center;
-  opacity: 0;
-  transition: opacity 1.3s cubic-bezier(0.16, 1, 0.3, 1);
-  display: flex;
-  align-items: center;
-}
-
-.hero-slide.active {
-  opacity: 1;
-  z-index: 1;
-}
-
-.hero-overlay-gradient {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg, 
-    rgba(6, 5, 8, 0.45) 0%, 
-    rgba(26, 14, 43, 0.55) 60%, 
-    #060508 100%
-  );
-}
-
-.hero-caption-box {
-  position: relative;
-  z-index: 2;
-  max-width: 880px;
-  padding-bottom: 6rem;
-}
-
-.hero-eyebrow {
-  color: #c084fc;
-  font-size: 0.8rem;
-  letter-spacing: 3.5px;
-  text-transform: uppercase;
-  font-weight: 700;
-  display: block;
-  margin-bottom: 0.8rem;
-  text-shadow: 0 0 15px rgba(192, 132, 252, 0.4);
-}
-
-.hero-main-title {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 4.2rem;
-  color: #ffffff;
-  margin: 0 0 1rem;
-  line-height: 1.1;
-  text-shadow: 0 4px 25px rgba(0, 0, 0, 0.8);
-}
-
-@media (max-width: 768px) {
-  .hero-main-title {
-    font-size: 2.8rem;
-  }
-}
-
-.hero-sub-title {
-  color: #e9d5ff;
-  font-size: 1.25rem;
-  line-height: 1.6;
-  margin: 0;
-  font-weight: 300;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
-}
-
-/* CONTROLES DEL HERO SLIDER */
-.hero-controls-bar {
-  position: absolute;
-  bottom: 8.5rem;
-  left: 0;
-  width: 100%;
-  z-index: 3;
-}
-
-.hero-controls-flex {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 1rem;
-}
-
-.slider-arrows button,
-.btn-autoplay-toggle {
-  background: rgba(19, 15, 30, 0.75);
-  border: 1px solid rgba(192, 132, 252, 0.35);
-  color: #f3e5ab;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: all 0.25s ease;
-}
-
-.slider-arrows button:hover,
-.btn-autoplay-toggle:hover {
-  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
-  color: #060508;
-  border-color: #d4af37;
-  transform: scale(1.08);
-  box-shadow: 0 0 18px rgba(212, 175, 55, 0.4);
-}
-
-/* --------------------------------------------------------------------------
-   2. BOOKING BAR FLOTANTE
-   -------------------------------------------------------------------------- */
 .posadas-hero-booking-bar {
-  position: absolute;
-  bottom: -2.8rem;
-  left: 0;
+  position: relative;
   width: 100%;
+  margin: 0 auto 2.5rem;
   z-index: 4;
 }
 
@@ -259,6 +142,8 @@
   font-size: 0.85rem;
   outline: none;
   font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -289,20 +174,20 @@
 }
 
 /* --------------------------------------------------------------------------
-   3. CINTA DE BENEFICIOS & HOSPITALIDAD
+   2. CINTA DE BENEFICIOS & INTRODUCCIÓN EDITORIAL
    -------------------------------------------------------------------------- */
 .posadas-services-strip {
   background: #0b0814;
   border-top: 1px solid rgba(192, 132, 252, 0.12);
   border-bottom: 1px solid rgba(192, 132, 252, 0.12);
-  padding: 5.5rem 0 2.5rem;
+  padding: 2.6rem 0;
   margin-bottom: 3.5rem;
 }
 
 .services-strip-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.8rem;
 }
 
 .service-strip-item {
@@ -313,6 +198,7 @@
 
 .service-strip-item svg {
   color: #d4af37;
+  flex-shrink: 0;
   filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.3));
 }
 
@@ -329,16 +215,13 @@
   color: #cbd5e1;
 }
 
-/* --------------------------------------------------------------------------
-   4. INTRODUCCIÓN EDITORIAL & ALERTA
-   -------------------------------------------------------------------------- */
 .posadas-editorial-section {
   padding: 2.5rem 0 4rem;
 }
 
 .editorial-main-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 3.4rem;
+  font-size: clamp(2.3rem, 3.8vw, 3.4rem);
   color: #f3e5ab;
   margin: 0.4rem 0 1.5rem;
   font-weight: 500;
@@ -365,6 +248,7 @@
 
 .opening-alert-box svg {
   color: #c084fc;
+  flex-shrink: 0;
 }
 
 .opening-alert-box strong {
@@ -381,25 +265,25 @@
 }
 
 /* --------------------------------------------------------------------------
-   5. HABITACIONES EN PORTADA
+   3. SECCIONES Y TARJETAS UNIFICADAS (SUITES, AMENIDADES Y GASTRONOMÍA)
    -------------------------------------------------------------------------- */
-.posadas-section-rooms {
-  padding: 3rem 0;
+.posadas-section-rooms,
+.posadas-amenities-section,
+.posadas-dining-section {
+  padding: 3.5rem 0;
 }
 
-.home-rooms-grid {
+.home-rooms-grid,
+.amenities-showcase-grid,
+.dining-grid-layout {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 2.2rem;
 }
 
-@media (max-width: 992px) {
-  .home-rooms-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.home-room-card {
+.home-room-card,
+.amenity-showcase-card,
+.dining-card {
   background: #110d1f;
   border: 1px solid rgba(192, 132, 252, 0.2);
   border-radius: 8px;
@@ -409,62 +293,97 @@
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s, box-shadow 0.3s;
 }
 
-.home-room-card:hover {
+.dining-card {
+  border-color: rgba(212, 175, 55, 0.25);
+}
+
+.home-room-card:hover,
+.amenity-showcase-card:hover,
+.dining-card:hover {
   transform: translateY(-6px);
   border-color: #d4af37;
   box-shadow: 0 20px 45px rgba(0, 0, 0, 0.8), 0 0 20px rgba(212, 175, 55, 0.2);
 }
 
-.home-room-img-box {
+.home-room-img-box,
+.dining-img-wrap {
   position: relative;
   aspect-ratio: 16 / 9;
 }
 
-.home-room-img-box img {
+.amenity-showcase-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.home-room-img-box img,
+.dining-img-wrap img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.6s ease;
 }
 
-.home-room-card:hover .home-room-img-box img {
+.home-room-card:hover .home-room-img-box img,
+.dining-card:hover .dining-img-wrap img {
   transform: scale(1.06);
 }
 
-.home-room-cat {
+.home-room-cat,
+.dining-badge {
   position: absolute;
-  top: 14px;
   left: 14px;
   background: rgba(13, 9, 23, 0.9);
-  border: 1px solid #d4af37;
-  color: #f3e5ab;
   font-size: 0.68rem;
   font-weight: 700;
-  text-transform: uppercase;
   padding: 0.3rem 0.7rem;
   border-radius: 3px;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.6px;
 }
 
-.home-room-body {
+.home-room-cat {
+  top: 14px;
+  border: 1px solid #d4af37;
+  color: #f3e5ab;
+  text-transform: uppercase;
+}
+
+.dining-badge {
+  bottom: 12px;
+  border: 1px solid #c084fc;
+  color: #e9d5ff;
+}
+
+.home-room-body,
+.amenity-card-info,
+.dining-text {
   padding: 1.6rem;
   display: flex;
   flex-direction: column;
   flex: 1;
 }
 
-.home-room-body h3 {
+.home-room-body h3,
+.amenity-card-info h4,
+.dining-text h3 {
   font-family: 'Cormorant Garamond', serif;
-  font-size: 1.65rem;
+  font-size: 1.6rem;
   color: #f3e5ab;
-  margin: 0 0 0.6rem;
+  margin: 0 0 0.55rem;
+}
+
+.home-room-body p,
+.amenity-card-info p,
+.dining-text p {
+  color: #cbd5e1;
+  font-size: 0.84rem;
+  line-height: 1.58;
+  margin: 0;
 }
 
 .home-room-body p {
-  color: #cbd5e1;
-  font-size: 0.84rem;
-  line-height: 1.55;
-  margin: 0 0 1.4rem;
+  margin-bottom: 1.4rem;
   flex: 1;
 }
 
@@ -530,140 +449,7 @@
 }
 
 /* --------------------------------------------------------------------------
-   6. AMENIDADES & EXPERIENCIAS SHOWCASE
-   -------------------------------------------------------------------------- */
-.posadas-amenities-section {
-  padding: 4rem 0;
-}
-
-.amenities-showcase-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2.2rem;
-}
-
-@media (max-width: 992px) {
-  .amenities-showcase-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-.amenity-showcase-card {
-  background: #110d1f;
-  border: 1px solid rgba(192, 132, 252, 0.15);
-  border-radius: 8px;
-  overflow: hidden;
-  transition: transform 0.3s ease, border-color 0.3s ease;
-}
-
-.amenity-showcase-card:hover {
-  transform: translateY(-5px);
-  border-color: #c084fc;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7);
-}
-
-.amenity-showcase-card img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
-}
-
-.amenity-card-info {
-  padding: 1.6rem;
-}
-
-.amenity-card-info h4 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.55rem;
-  color: #f3e5ab;
-  margin: 0 0 0.5rem;
-}
-
-.amenity-card-info p {
-  color: #cbd5e1;
-  font-size: 0.84rem;
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* --------------------------------------------------------------------------
-   7. GASTRONOMÍA & RESTAURANTES
-   -------------------------------------------------------------------------- */
-.posadas-dining-section {
-  padding: 4rem 0;
-}
-
-.dining-grid-layout {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2.2rem;
-}
-
-@media (max-width: 992px) {
-  .dining-grid-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-.dining-card {
-  background: #110d1f;
-  border: 1px solid rgba(212, 175, 55, 0.25);
-  border-radius: 8px;
-  overflow: hidden;
-  transition: transform 0.3s, border-color 0.3s;
-}
-
-.dining-card:hover {
-  transform: translateY(-5px);
-  border-color: #d4af37;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.8);
-}
-
-.dining-img-wrap {
-  position: relative;
-  aspect-ratio: 16 / 9;
-}
-
-.dining-img-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.dining-badge {
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  background: rgba(13, 9, 23, 0.9);
-  border: 1px solid #c084fc;
-  color: #e9d5ff;
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 0.3rem 0.7rem;
-  border-radius: 3px;
-  letter-spacing: 0.5px;
-}
-
-.dining-text {
-  padding: 1.6rem;
-}
-
-.dining-text h3 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.65rem;
-  color: #f3e5ab;
-  margin: 0 0 0.5rem;
-}
-
-.dining-text p {
-  color: #cbd5e1;
-  font-size: 0.84rem;
-  line-height: 1.55;
-  margin: 0;
-}
-
-/* --------------------------------------------------------------------------
-   8. PREGUNTAS FRECUENTES (FAQ ACORDEÓN)
+   4. PREGUNTAS FRECUENTES (FAQ ACORDEÓN) & RECONOCIMIENTOS
    -------------------------------------------------------------------------- */
 .posadas-faq-section {
   padding: 4.5rem 0;
@@ -701,6 +487,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 1rem;
   color: #ffffff;
   font-size: 0.96rem;
   font-weight: 700;
@@ -716,6 +503,7 @@
 
 .faq-icon {
   color: #c084fc;
+  flex-shrink: 0;
   transition: transform 0.3s;
 }
 
@@ -735,9 +523,6 @@
   margin: 0;
 }
 
-/* --------------------------------------------------------------------------
-   9. DISTINTIVOS INSTITUCIONALES (FORBES & FIESTA REWARDS)
-   -------------------------------------------------------------------------- */
 .posadas-awards-callout {
   padding: 4.5rem 0 2rem;
 }
@@ -746,12 +531,6 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 2.2rem;
-}
-
-@media (max-width: 768px) {
-  .awards-flex-banner {
-    grid-template-columns: 1fr;
-  }
 }
 
 .award-item {
@@ -773,6 +552,7 @@
   width: 110px;
   height: auto;
   border-radius: 4px;
+  flex-shrink: 0;
 }
 
 .award-item h4 {
@@ -787,4 +567,18 @@
   font-size: 0.82rem;
   line-height: 1.55;
   margin: 0;
+}
+
+/* Ajuste intermedio para laptops pequeñas / tablets horizontales (769px - 1024px) */
+@media (max-width: 1024px) and (min-width: 769px) {
+  .services-strip-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .home-rooms-grid,
+  .amenities-showcase-grid,
+  .dining-grid-layout {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
 }

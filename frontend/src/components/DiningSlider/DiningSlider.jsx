@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight, UtensilsCrossed, Clock } from 'lucide-react';
 import './DiningSlider.css';
+import './DiningSlider.mobile.css';
 
 const restaurants = [
   {

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Calendar, Tag, Loader2, Sparkles, ArrowRight, ShieldCheck, Percent } from 'lucide-react';
 import { fetchOfertas } from '../../services/api';
 import './Ofertas.css';
+import './Ofertas.mobile.css';
 
 // Catálogo institucional oficial de respaldo
 const OFERTAS_FALLBACK = [

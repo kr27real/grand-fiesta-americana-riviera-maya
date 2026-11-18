@@ -1,6 +1,7 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import './PageLoader.css';
+import './PageLoader.mobile.css';
 
 export default function PageLoader() {
   const [visible, setVisible] = useState(false);

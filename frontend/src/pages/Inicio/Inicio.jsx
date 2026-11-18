@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchSuites } from '../../services/api';
 import HeroSlider from '../../components/HeroSlider/HeroSlider';
@@ -7,6 +7,7 @@ import {
   Award, MessageSquare, Sparkles, ArrowRight, ChevronDown 
 } from 'lucide-react';
 import './Inicio.css';
+import './Inicio.mobile.css';
 
 export default function Inicio() {
   const navigate = useNavigate();

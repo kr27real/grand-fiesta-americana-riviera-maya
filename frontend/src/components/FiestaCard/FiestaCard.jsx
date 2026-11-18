@@ -1,5 +1,6 @@
-﻿import React from 'react';
+import React from 'react';
 import './FiestaCard.css';
+import './FiestaCard.mobile.css';
 
 const FiestaCard = ({ saldoDisponible, lineaCredito, numeroEnmascarado, titular, expiracion, puntosRewards }) => {
   return (

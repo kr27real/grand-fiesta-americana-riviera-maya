@@ -1,5 +1,5 @@
 ﻿/* ==========================================================================
-   CONTACTO.CSS - GRAND FIESTA AMERICANA RIVIERA CANCÚN
+   CONTACTO.CSS - GRAND FIESTA AMERICANA RIVIERA CANCÚN (ESCRITORIO / PC)
    Paleta: Lila (#C084FC), Dorado Arena (#D4AF37 / #C7AF8B), Obsidiana (#060508)
    ========================================================================== */
 
@@ -8,19 +8,21 @@
   color: #f1f5f9;
   min-height: 100vh;
   font-family: 'Montserrat', sans-serif;
-  padding-top: 9.5rem; /* Margen para librar el navbar fijo */
+  padding-top: 7.2rem; /* Despeje exacto al ras bajo el Navbar institucional en PC */
   padding-bottom: 5rem;
+  box-sizing: border-box;
 }
 
 .contacto-wrapper {
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  box-sizing: border-box;
 }
 
-/* ==========================================================================
-   BLOQUE 1: ENCABEZADO EDITORIAL
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   1. ENCABEZADO EDITORIAL
+   -------------------------------------------------------------------------- */
 .contacto-header-intro {
   text-align: center;
   max-width: 860px;
@@ -54,9 +56,9 @@
   margin: 0;
 }
 
-/* ==========================================================================
-   BLOQUE 2: ALERTAS Y BANNERS DE SOCIO
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   2. ALERTAS Y BANNERS DE SOCIO
+   -------------------------------------------------------------------------- */
 .db-offline-alert {
   background: rgba(239, 68, 68, 0.12);
   border: 1px solid #ef4444;
@@ -132,9 +134,9 @@
   font-weight: 600;
 }
 
-/* ==========================================================================
-   BLOQUE 3: CUADRÍCULA PRINCIPAL (CANALES DIRECTOS Y FORMULARIO)
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   3. CUADRÍCULA PRINCIPAL (CANALES DIRECTOS Y FORMULARIO)
+   -------------------------------------------------------------------------- */
 .contacto-main-grid {
   display: grid;
   grid-template-columns: 1fr 1.3fr;
@@ -142,13 +144,6 @@
   align-items: flex-start;
 }
 
-@media (max-width: 960px) {
-  .contacto-main-grid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* Columna Izquierda: Tarjetas de Información */
 .contacto-info-column {
   display: flex;
   flex-direction: column;
@@ -225,9 +220,9 @@
   line-height: 1.5;
 }
 
-/* ==========================================================================
-   BLOQUE 4: TARJETA DEL FORMULARIO DE CONTACTO
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   4. TARJETA DEL FORMULARIO DE CONTACTO
+   -------------------------------------------------------------------------- */
 .contacto-form-card {
   background: #110d1c;
   border: 1px solid rgba(199, 175, 139, 0.35);
@@ -267,12 +262,6 @@
   gap: 1.1rem;
 }
 
-@media (max-width: 600px) {
-  .form-row-duo {
-    grid-template-columns: 1fr;
-  }
-}
-
 .form-group-block {
   display: flex;
   flex-direction: column;
@@ -298,6 +287,8 @@
   font-size: 0.86rem;
   outline: none;
   font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
 
@@ -354,9 +345,9 @@
   box-shadow: none;
 }
 
-/* ==========================================================================
-   BLOQUE 5: CONFIRMACIÓN Y VOUCHER DEL TICKET
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   5. CONFIRMACIÓN Y VOUCHER DEL TICKET
+   -------------------------------------------------------------------------- */
 .alert-feedback-ok {
   text-align: center;
   padding: 2.5rem 1rem;
@@ -393,9 +384,9 @@
   margin: 0 auto 1.8rem auto;
 }
 
-/* ==========================================================================
-   BLOQUE 6: HISTORIAL DE TICKETS PREVIOS
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   6. HISTORIAL DE TICKETS PREVIOS
+   -------------------------------------------------------------------------- */
 .tickets-history-box {
   margin-top: 4.5rem;
   background: #090610;
@@ -432,12 +423,6 @@
   justify-content: space-between;
   align-items: flex-start;
   gap: 1rem;
-}
-
-@media (max-width: 640px) {
-  .ticket-item-row {
-    flex-direction: column;
-  }
 }
 
 .ticket-item-top {
@@ -486,9 +471,6 @@
   white-space: nowrap;
 }
 
-/* ==========================================================================
-   BLOQUE 7: ANIMACIONES Y ADAPTACIÓN EN MÓVILES (<= 640px)
-   ========================================================================== */
 .animate-spin {
   animation: spin 1s linear infinite;
 }
@@ -498,21 +480,9 @@
   to { transform: rotate(360deg); }
 }
 
-@media (max-width: 640px) {
-  .contacto-page-root {
-    padding-top: 8rem;
-  }
-
-  .phone-split-container {
+/* Ajuste intermedio para tablets (769px - 960px) */
+@media (max-width: 960px) {
+  .contacto-main-grid {
     grid-template-columns: 1fr;
-  }
-
-  .db-offline-alert {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .btn-retry-db {
-    margin-left: 0;
   }
 }

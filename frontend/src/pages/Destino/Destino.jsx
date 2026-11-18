@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { MapPin, Compass, Waves, Sun, Navigation, ArrowRight, X } from 'lucide-react';
 import './Destino.css';
+import './Destino.mobile.css';
 
 const attractions = [
   {

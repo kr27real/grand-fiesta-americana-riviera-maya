@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Pause, Play } from 'lucide-react';
 import './HeroSlider.css';
+import './HeroSlider.mobile.css';
 
 const slides = [
   {

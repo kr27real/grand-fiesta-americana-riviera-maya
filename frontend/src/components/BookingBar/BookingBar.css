@@ -1,3 +1,8 @@
+/* ==========================================================================
+   BOOKINGBAR.CSS - BARRA DE RESERVACIÓN RÁPIDA (MÁSCARA DE COTIZACIÓN)
+   Paleta Oficial: Dorado Arena (#D4AF37), Lila (#B39DDB), Obsidiana (#121212)
+   ========================================================================== */
+
 .booking-mask-wrapper {
   max-width: 1240px;
   margin: -2.5rem auto 2.5rem auto;
@@ -41,7 +46,9 @@
   color: #d4af37;
 }
 
-.bm-select, .bm-input-date, .bm-guests-toggle {
+.bm-select,
+.bm-input-date,
+.bm-guests-toggle {
   background: transparent;
   border: none;
   color: #ffffff;
@@ -69,6 +76,7 @@
   padding: 0.2rem 0;
 }
 
+/* Panel Desplegable de Huéspedes */
 .bm-dropdown-panel {
   position: absolute;
   top: 105%;
@@ -103,6 +111,7 @@
   padding: 0.2rem 0.5rem;
 }
 
+/* Columna de Acción y Botón Submit */
 .bm-col-action {
   border-right: none;
   background: #0d0d0d;
@@ -176,6 +185,7 @@
   outline: none;
 }
 
+/* Cinta Promocional Hotel + Avión */
 .bm-air-strip {
   background: rgba(13, 13, 13, 0.92);
   border: 1px solid rgba(179, 157, 219, 0.25);
@@ -206,15 +216,72 @@
   text-decoration: underline;
 }
 
+/* ==========================================================================
+   SISTEMA RESPONSIVO (TABLET & MÓVIL)
+   ========================================================================== */
 @media (max-width: 992px) {
   .booking-bar-container {
     grid-template-columns: 1fr;
   }
+
   .bm-col {
     border-right: none;
     border-bottom: 1px solid rgba(179, 157, 219, 0.15);
   }
+
   .bm-col-action {
     border-radius: 0 0 8px 8px;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-slider-master {
+    height: 78vh;
+    min-height: 520px;
+    max-height: 660px;
+  }
+
+  .hero-content-wrapper {
+    left: 1rem;
+    right: 1rem;
+    top: auto;
+    bottom: 4.6rem;
+    transform: none;
+    padding-right: 0;
+    max-width: 100%;
+  }
+
+  .hero-content-glass {
+    padding: 1.05rem 1.15rem;
+  }
+
+  .hero-eyebrow-pill {
+    font-size: 0.6rem;
+    letter-spacing: 1.8px;
+    margin-bottom: 0.4rem;
+  }
+
+  .hero-display-title {
+    font-size: 1.65rem;
+    line-height: 1.15;
+    margin-bottom: 0.5rem;
+  }
+
+  .hero-description-text {
+    font-size: 0.8rem;
+    line-height: 1.45;
+  }
+
+  .hero-control-cockpit {
+    bottom: 1.1rem;
+    right: 50%;
+    transform: translateX(50%);
+    padding: 0.35rem 0.65rem;
+    gap: 0.35rem;
+  }
+
+  .cockpit-btn {
+    width: 30px;
+    height: 30px;
   }
 }

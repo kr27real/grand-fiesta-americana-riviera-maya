@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   MapPin, Phone, MessageSquare, Clock, Send, 
   CheckCircle2, Loader2, Award, AlertTriangle, RefreshCw, FileText 
@@ -10,6 +10,7 @@ import {
   obtenerTicketsUsuarioApi 
 } from '../../services/api';
 import './Contacto.css';
+import './Contacto.mobile.css';
 
 export default function Contacto() {
   const [usuarioSesion] = useState(() => {

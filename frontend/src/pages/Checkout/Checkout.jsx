@@ -6,6 +6,7 @@ import {
   Printer, CheckCircle2, AlertCircle, Lock, ChevronRight, ArrowLeft, Tag, Award
 } from 'lucide-react';
 import './Checkout.css';
+import './Checkout.mobile.css';
 
 const API_BASE = 'http://localhost:5000/api';
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Award, Gift, Car, ArrowRight } from 'lucide-react';
 import './CalloutBanners.css';
+import './CalloutBanners.mobile.css';
 
 const callouts = [
   {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, Users, MapPin, Tag, Plane, Search } from 'lucide-react';
 import './BookingBar.css';
+import './BookingBar.mobile.css';
 
 export default function BookingBar() {
   const [destino, setDestino] = useState('Grand Fiesta Americana Riviera Cancún');

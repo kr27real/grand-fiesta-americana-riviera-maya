@@ -1,5 +1,5 @@
-﻿import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { buscarReservacionPorFolioApi } from '../../services/api';
 import { 
   Printer, Search, CheckCircle2, ArrowLeft, ShieldCheck, 
@@ -7,6 +7,7 @@ import {
   Sparkles, CreditCard, Loader2 
 } from 'lucide-react';
 import './BusquedaReserva.css';
+import './BusquedaReserva.mobile.css';
 
 export default function BusquedaReserva() {
   const [folioInput, setFolioInput] = useState('');
@@ -14,6 +15,17 @@ export default function BusquedaReserva() {
   const [reserva, setReserva] = useState(null);
   const [cargando, setCargando] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const location = useLocation();
+
+  // Prellenar automáticamente si se navega desde Checkout, PerfilSocio o enlace con query params
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const folioParam = location.state?.folio || params.get('folio');
+    const emailParam = location.state?.email || params.get('email');
+
+    if (folioParam) setFolioInput(folioParam.toUpperCase());
+    if (emailParam) setEmailInput(emailParam);
+  }, [location]);
 
   // Formateador robusto para fechas de SQL Server
   const formatearFecha = (fechaStr) => {
@@ -287,6 +299,17 @@ export default function BusquedaReserva() {
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=130x130&data=GFA-RESERVA:${reserva.folio_confirmacion}`}
                   alt="QR Acceso"
                   className="qr-code-img"
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = `data:image/svg+xml;utf8,${encodeURIComponent(
+                      `<svg xmlns="http://www.w3.org/2000/svg" width="130" height="130" viewBox="0 0 130 130">
+                        <rect width="130" height="130" rx="8" fill="#14101a" stroke="#d4af37" stroke-width="2"/>
+                        <text x="65" y="55" fill="#d4af37" font-family="Arial" font-size="11" font-weight="bold" text-anchor="middle">PASE DIGITAL</text>
+                        <text x="65" y="75" fill="#ffffff" font-family="monospace" font-size="11" text-anchor="middle">${reserva.folio_confirmacion}</text>
+                        <text x="65" y="95" fill="#94a3b8" font-family="Arial" font-size="9" text-anchor="middle">SQL VERIFIED</text>
+                      </svg>`
+                    )}`;
+                  }}
                 />
                 <div className="qr-validation-text">
                   <div className="validation-status">

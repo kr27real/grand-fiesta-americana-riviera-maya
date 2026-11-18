@@ -1,0 +1,171 @@
+/* ==========================================================================
+   INICIO.MOBILE.CSS - ESTILOS EXCLUSIVOS MÓVIL (380x800 en adelante hasta 768px)
+   ========================================================================== */
+@media (max-width: 768px) {
+  .posadas-container,
+  .posadas-container-narrow {
+    padding: 0 1rem;
+  }
+
+  /* 1. Despeje superior exacto y Booking Bar táctil sin desbordamiento */
+  .posadas-hero-wrap {
+    margin-top: 5.4rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .posadas-hero-booking-bar {
+    position: relative;
+    bottom: auto;
+    margin-top: 1.25rem;
+    margin-bottom: 2rem;
+    z-index: 10;
+  }
+
+  .hero-bb-card {
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    align-items: end;
+  }
+
+  .bb-input-cell {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .bb-input-cell label {
+    font-size: 0.64rem;
+    letter-spacing: 0.7px;
+    white-space: nowrap;
+  }
+
+  .bb-input-cell input,
+  .bb-input-cell select {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 0.62rem 0.65rem;
+    font-size: 16px; /* Previene auto-zoom de teclado móvil */
+  }
+
+  .hero-bb-card .btn-bb-submit {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-width: 0;
+    padding: 0.88rem;
+    margin-top: 0.25rem;
+  }
+
+  /* 2. Cinta de beneficios y bloque editorial */
+  .posadas-services-strip {
+    padding: 1.85rem 0;
+    margin-bottom: 2rem;
+  }
+
+  .services-strip-grid {
+    grid-template-columns: 1fr;
+    gap: 1.1rem;
+  }
+
+  .posadas-editorial-section {
+    padding: 1.5rem 0 2.5rem;
+  }
+
+  .section-head-flex {
+    margin-bottom: 1.6rem;
+    padding-bottom: 0.9rem;
+  }
+
+  .section-serif-title,
+  .editorial-main-title {
+    font-size: 1.95rem;
+    line-height: 1.18;
+  }
+
+  .editorial-lead-text {
+    font-size: 0.9rem;
+    line-height: 1.7;
+    margin-bottom: 1.75rem;
+  }
+
+  .opening-alert-box {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1.1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+  }
+
+  /* 3. Grillas de Suites, Amenidades y Gastronomía en 1 columna */
+  .posadas-section-rooms,
+  .posadas-amenities-section,
+  .posadas-dining-section,
+  .posadas-faq-section {
+    padding: 2.2rem 0;
+  }
+
+  .home-rooms-grid,
+  .amenities-showcase-grid,
+  .dining-grid-layout {
+    grid-template-columns: 1fr;
+    gap: 1.4rem;
+  }
+
+  .home-room-body,
+  .amenity-card-info,
+  .dining-text {
+    padding: 1.2rem;
+  }
+
+  .home-room-actions {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+
+  /* 4. FAQ Acordeón y Reconocimientos */
+  .faq-question-btn {
+    padding: 1.05rem 1.15rem;
+    font-size: 0.86rem;
+  }
+
+  .faq-answer-content {
+    padding: 0 1.15rem 1.15rem;
+  }
+
+  .posadas-awards-callout {
+    padding: 2.5rem 0 1.5rem;
+  }
+
+  .awards-flex-banner {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .award-item {
+    padding: 1.2rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+  }
+
+  .award-item img {
+    width: 90px;
+  }
+}
+
+/* Teléfonos compactos (380px - 420px): inputs de fecha apilados a ancho completo */
+@media (max-width: 420px) {
+  .hero-bb-card {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+    padding: 0.95rem;
+  }
+
+  .bb-input-cell input,
+  .bb-input-cell select {
+    padding: 0.58rem 0.75rem;
+  }
+}

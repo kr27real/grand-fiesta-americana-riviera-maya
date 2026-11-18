@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Bed, Users, Maximize2, ArrowRight } from 'lucide-react';
 import './RoomsSlider.css';
+import './RoomsSlider.mobile.css';
 
 const rooms = [
   {

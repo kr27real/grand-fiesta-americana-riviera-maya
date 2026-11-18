@@ -1,10 +1,11 @@
-﻿import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   Clock, Shirt, UtensilsCrossed, Loader2, Sparkles, 
   CalendarCheck, ArrowRight, X, CheckCircle2, ShieldCheck, Wine 
 } from 'lucide-react';
 import { fetchRestaurantes } from '../../services/api';
 import './Restaurantes.css';
+import './Restaurantes.mobile.css';
 
 // 6 Centros gastronómicos oficiales de Grand Fiesta Americana Riviera Cancún
 const RESTAURANTES_DEFAULT = [

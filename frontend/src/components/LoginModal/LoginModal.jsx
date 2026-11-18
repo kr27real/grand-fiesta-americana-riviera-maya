@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Eye, EyeOff, ShieldCheck, UserCheck, RefreshCw, Lock, Mail, Phone, Globe, Award, CheckCircle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './LoginModal.css';
+import './LoginModal.mobile.css';
 
 const generarCaptcha = () => {
   const caracteres = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';

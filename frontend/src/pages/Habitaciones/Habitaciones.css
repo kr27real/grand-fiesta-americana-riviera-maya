@@ -1,117 +1,27 @@
 ﻿/* ==========================================================================
-   HABITACIONES.CSS - GRAND FIESTA AMERICANA RIVIERA CANCÚN
-   Paleta Oficial: Dorado Arena (#D4AF37 / #C7AF8B), Lila (#C084FC), Obsidiana (#060508)
+   HABITACIONES.CSS - GRAND FIESTA AMERICANA RIVIERA CANCÚN (ESCRITORIO / PC)
+   Paleta: Dorado Arena (#D4AF37 / #C7AF8B / #F3E5AB), Lila (#C084FC), Obsidiana (#060508)
    ========================================================================== */
 
-/* ==========================================================================
-   BLOQUE 1: CONTENEDOR GENERAL Y ESTRUCTURA DE PÁGINA
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   1. CONTENEDOR GENERAL Y ESTRUCTURA DE PÁGINA
+   -------------------------------------------------------------------------- */
 .posadas-rooms-page {
   background-color: #060508;
   color: #f1f5f9;
   min-height: 100vh;
   font-family: 'Montserrat', sans-serif;
-  padding-top: 9.5rem; /* Margen para librar el navbar institucional fijo */
+  padding-top: 8.5rem; /* Aumentado para dar espacio suficiente bajo el header fijo en PC */
   padding-bottom: 5rem;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .posadas-container {
   max-width: 1280px;
   margin: 0 auto;
   padding: 0 1.5rem;
-}
-
-.posadas-container-narrow {
-  max-width: 880px;
-  margin: 0 auto;
-  text-align: center;
-  padding: 0 1.5rem;
-}
-
-/* ==========================================================================
-   BLOQUE 2: BARRA DE BÚSQUEDA RÁPIDA (BOOKING BAR)
-   ========================================================================== */
-.posadas-bb-section {
-  margin-bottom: 3.5rem;
-}
-
-.posadas-bb-card {
-  background: #100d1a;
-  border: 1px solid rgba(199, 175, 139, 0.35);
-  border-radius: 8px;
-  padding: 1.2rem 1.8rem;
-  display: flex;
-  align-items: flex-end;
-  gap: 1.2rem;
-  flex-wrap: wrap;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-}
-
-.bb-col {
-  flex: 1;
-  min-width: 150px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
-.bb-col label {
-  font-size: 0.68rem;
-  color: #c7af8b;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.bb-col input,
-.bb-col select {
-  background: #181324;
-  border: 1px solid rgba(199, 175, 139, 0.3);
-  color: #ffffff;
-  padding: 0.65rem 0.85rem;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  outline: none;
-  font-family: inherit;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.bb-col input:focus,
-.bb-col select:focus {
-  border-color: #d4af37;
-  box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
-}
-
-.bb-action {
-  min-width: 200px;
-}
-
-.btn-bb-search {
-  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
-  color: #060508;
-  border: none;
-  padding: 0.75rem 1.4rem;
-  font-size: 0.8rem;
-  font-weight: 800;
-  letter-spacing: 1px;
-  border-radius: 4px;
-  cursor: pointer;
-  width: 100%;
-  transition: opacity 0.2s, transform 0.2s;
-}
-
-.btn-bb-search:hover {
-  opacity: 0.92;
-  transform: translateY(-1px);
-}
-
-/* ==========================================================================
-   BLOQUE 3: ENCABEZADO EDITORIAL
-   ========================================================================== */
-.posadas-intro-section {
-  margin-bottom: 2.5rem;
+  box-sizing: border-box;
 }
 
 .brand-eyebrow {
@@ -121,791 +31,101 @@
   text-transform: uppercase;
   font-weight: 700;
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.45rem;
   text-shadow: 0 0 12px rgba(192, 132, 252, 0.35);
 }
 
 .editorial-title {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  font-size: clamp(2rem, 3.8vw, 3.35rem);
   color: #f3e5ab;
-  margin: 0 0 0.3rem;
+  margin: 0 0 0.25rem;
   font-weight: 500;
   letter-spacing: -0.5px;
+  line-height: 1.14;
 }
 
 .editorial-subtitle {
   font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1.3rem, 2vw, 1.65rem);
-  color: #cbd5e1;
-  font-weight: 400;
-  font-style: italic;
-  margin: 0 0 1.5rem;
-}
-
-.editorial-paragraph {
-  color: #94a3b8;
-  font-size: clamp(0.85rem, 1.2vw, 0.95rem);
-  line-height: 1.8;
-  margin: 0;
-}
-
-/* ==========================================================================
-   BLOQUE 4: FILTROS ISOTOPE
-   ========================================================================== */
-.posadas-filters-section {
-  background: #0d0a14;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 1rem 0;
-  margin-bottom: 3.5rem;
-}
-
-.filters-flex {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1.5rem;
-  flex-wrap: wrap;
-}
-
-.filter-dropdown {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-}
-
-.filter-dropdown label {
-  font-size: 0.75rem;
-  color: #94a3b8;
-  text-transform: uppercase;
-  font-weight: 600;
-}
-
-.filter-dropdown select {
-  background: #171322;
-  border: 1px solid rgba(199, 175, 139, 0.3);
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
   color: #f3e5ab;
-  padding: 0.45rem 1rem;
-  border-radius: 4px;
-  font-size: 0.82rem;
-  outline: none;
-  cursor: pointer;
-  transition: border-color 0.2s;
+  font-weight: 500;
+  margin: 0 0 1.2rem;
 }
 
-.filter-dropdown select:focus {
-  border-color: #d4af37;
-}
-
-/* ==========================================================================
-   BLOQUE 5: CUADRÍCULA DE TARJETAS (GRID 3 COLUMNAS)
-   ========================================================================== */
-.posadas-loader,
-.posadas-error {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  padding: 2rem;
-  border-radius: 6px;
-  margin-bottom: 2rem;
-  font-size: 0.9rem;
-}
-
-.posadas-loader {
-  background: rgba(199, 175, 139, 0.1);
-  color: #f3e5ab;
-  border: 1px solid rgba(199, 175, 139, 0.25);
-}
-
-.posadas-error {
-  background: rgba(239, 68, 68, 0.15);
-  color: #fca5a5;
-  border: 1px solid rgba(239, 68, 68, 0.4);
-}
-
-.rooms-grid-layout {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-}
-
-@media (max-width: 1080px) {
-  .rooms-grid-layout {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 680px) {
-  .rooms-grid-layout {
-    grid-template-columns: 1fr;
-  }
-}
-
-.room-luxury-card {
-  background: #110e1a;
-  border: 1px solid rgba(199, 175, 139, 0.22);
-  border-radius: 6px;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s, box-shadow 0.3s;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-}
-
-.room-luxury-card:hover {
-  transform: translateY(-5px);
-  border-color: #d4af37;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 15px rgba(212, 175, 55, 0.2);
-}
-
-.room-luxury-card.room-unfit {
-  opacity: 0.55;
-  filter: grayscale(40%);
-}
-
-.card-media-box {
-  position: relative;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  background: #000;
-}
-
-.card-media-box img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.6s ease;
-}
-
-.room-luxury-card:hover .card-media-box img {
-  transform: scale(1.05);
-}
-
-.badge-adults-only {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: rgba(185, 28, 28, 0.9);
-  color: #fff;
-  font-size: 0.65rem;
-  font-weight: 800;
+.seccion-subtitulo {
+  color: #d4af37;
+  font-size: 1rem;
+  letter-spacing: 1.5px;
   text-transform: uppercase;
-  padding: 0.25rem 0.6rem;
-  border-radius: 3px;
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  letter-spacing: 0.5px;
-  z-index: 2;
+  margin: 0 0 1rem;
 }
 
-.floating-specs-bar {
-  list-style: none;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  margin: 0;
-  padding: 1.2rem 1rem 0.5rem;
-  background: linear-gradient(180deg, transparent 0%, rgba(6, 5, 8, 0.95) 100%);
+/* --------------------------------------------------------------------------
+   2. SUBNAVEGACIÓN STICKY (ANCLAS INTERNAS)
+   -------------------------------------------------------------------------- */
+.booking-subnav-sticky {
+  background: rgba(11, 9, 18, 0.96);
+  backdrop-filter: blur(10px);
+  border-top: 1px solid rgba(212, 175, 55, 0.18);
+  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
+  margin-bottom: 1.6rem;
+  position: sticky;
+  top: 0 rem; /* Sincronizado con padding-top para evitar saltos o huecos */
+  z-index: 40;
+}
+
+.subnav-flex {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.75rem;
-  color: #f1f5f9;
-  z-index: 2;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-.floating-specs-bar li {
+.subnav-links {
   display: flex;
-  align-items: center;
   gap: 0.35rem;
 }
 
-.card-content-box {
-  padding: 1.5rem;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-.room-name {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.55rem;
-  color: #f3e5ab;
-  margin: 0 0 1rem;
-  line-height: 1.25;
-  min-height: 58px;
-}
-
-.rate-from-box {
-  margin-bottom: 1.5rem;
-}
-
-.rate-caption {
-  font-size: 0.7rem;
-  color: #94a3b8;
-  text-transform: uppercase;
-  display: block;
-  letter-spacing: 0.5px;
-}
-
-.rate-amount {
-  font-size: 1.45rem;
-  font-weight: 700;
-  color: #ffffff;
-}
-
-.rate-amount small {
-  font-size: 0.75rem;
-  color: #c7af8b;
-  font-weight: 500;
-  margin-right: 0.2rem;
-}
-
-.card-footer-buttons {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.8rem;
-  margin-top: auto;
-}
-
-.btn-card-outline {
+.subnav-links button {
   background: transparent;
-  border: 1px solid rgba(199, 175, 139, 0.4);
-  color: #c7af8b;
-  padding: 0.65rem;
-  font-size: 0.78rem;
-  font-weight: 700;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.btn-card-outline:hover {
-  background: rgba(199, 175, 139, 0.12);
-  border-color: #c7af8b;
-}
-
-.btn-card-primary {
-  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
-  color: #060508;
   border: none;
-  padding: 0.65rem;
-  font-size: 0.78rem;
-  font-weight: 800;
-  border-radius: 4px;
-  cursor: pointer;
-  letter-spacing: 0.5px;
-  transition: opacity 0.2s;
-}
-
-.btn-card-primary:hover {
-  opacity: 0.92;
-}
-
-.btn-card-primary.disabled {
-  background: #231f2e !important;
-  color: #64748b !important;
-  cursor: not-allowed;
-}
-
-/* ==========================================================================
-   BLOQUE 6: BANNER INFERIOR FIESTA REWARDS
-   ========================================================================== */
-.posadas-fr-callout {
-  margin-top: 4.5rem;
-}
-
-.fr-callout-inner {
-  background: #110d1a;
-  border: 1px solid #d4af37;
-  border-radius: 6px;
-  padding: 2.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 2rem;
-  flex-wrap: wrap;
-}
-
-.fr-info h3 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 2.2rem;
-  color: #f3e5ab;
-  margin: 0.3rem 0 0.5rem;
-}
-
-.fr-info p {
+  border-bottom: 2px solid transparent;
   color: #94a3b8;
-  font-size: 0.88rem;
-  margin: 0;
-  max-width: 650px;
-  line-height: 1.6;
-}
-
-.fr-actions {
-  display: flex;
-  gap: 1rem;
-}
-
-.btn-fr-join {
-  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
-  color: #060508;
-  border: none;
-  padding: 0.8rem 1.6rem;
-  border-radius: 4px;
-  font-weight: 800;
-  font-size: 0.82rem;
+  padding: 0.85rem 0.9rem;
+  font-size: 0.78rem;
+  font-weight: 600;
   cursor: pointer;
-}
-
-.btn-fr-more {
-  background: transparent;
-  border: 1px solid #d4af37;
-  color: #f3e5ab;
-  padding: 0.8rem 1.6rem;
-  border-radius: 4px;
-  font-weight: 700;
-  font-size: 0.82rem;
-  cursor: pointer;
-}
-
-/* ==========================================================================
-   BLOQUE 7: MODAL FICHA TÉCNICA (CONTENEDOR MAESTRO)
-   ========================================================================== */
-.modal-backdrop-luxury {
-  position: fixed;
-  inset: 0;
-  background: rgba(6, 5, 8, 0.88);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-  padding: clamp(0.5rem, 2vw, 1.5rem);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-.modal-sheet {
-  background: #110d1c;
-  border: 1px solid rgba(199, 175, 139, 0.4);
-  border-radius: 10px;
-  width: 100%;
-  max-width: min(920px, 95vw);
-  max-height: 90vh; /* Control estricto de altura */
-  position: relative;
-  overflow: hidden; /* El scroll vive en el body, no en el modal completo */
-  box-shadow: 0 25px 65px rgba(0, 0, 0, 0.9), 0 0 25px rgba(192, 132, 252, 0.12);
-  display: flex;
-  flex-direction: column;
-}
-
-.modal-close-icon {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: rgba(13, 9, 23, 0.85);
-  border: 1px solid rgba(199, 175, 139, 0.4);
-  color: #f3e5ab;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 20;
+  white-space: nowrap;
   transition: all 0.2s ease;
 }
 
-.modal-close-icon:hover {
-  background: #c7af8b;
-  color: #060508;
-  transform: scale(1.08);
-}
-
-/* ==========================================================================
-   BLOQUE 8: SLIDER DENTRO DEL MODAL Y MINIATURAS
-   ========================================================================== */
-.modal-slider-wrap {
-  width: 100%;
-  background: #060508;
-  border-bottom: 1px solid rgba(199, 175, 139, 0.25);
-  display: flex;
-  flex-direction: column;
-  flex-shrink: 0;
-}
-
-.modal-slider-main {
-  position: relative;
-  width: 100%;
-  height: clamp(210px, 36vh, 380px);
-  overflow: hidden;
-  background: #000;
-}
-
-.modal-slider-main img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.modal-slider-nav {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(13, 9, 23, 0.7);
-  border: 1px solid rgba(199, 175, 139, 0.4);
+.subnav-links button:hover,
+.subnav-links button.active {
   color: #f3e5ab;
-  width: clamp(32px, 4vw, 40px);
-  height: clamp(32px, 4vw, 40px);
-  border-radius: 50%;
+  border-bottom-color: #d4af37;
+}
+
+.subnav-actions {
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 5;
-  transition: all 0.2s;
+  gap: 0.85rem;
 }
 
-.modal-slider-nav:hover {
-  background: #c7af8b;
-  color: #060508;
-  border-color: #c7af8b;
-}
-
-.modal-slider-nav.prev {
-  left: 12px;
-}
-
-.modal-slider-nav.next {
-  right: 12px;
-}
-
-.modal-photo-caption {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: linear-gradient(180deg, transparent 0%, rgba(6, 5, 8, 0.95) 100%);
-  padding: 1rem 1.2rem 0.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: clamp(0.72rem, 1.2vw, 0.85rem);
-  color: #f3e5ab;
-  pointer-events: none;
-}
-
-.modal-photo-caption small {
-  color: #cbd5e1;
-  font-weight: 600;
-}
-
-.modal-thumbnails-strip {
-  display: flex;
-  gap: 0.6rem;
-  padding: 0.6rem 1.2rem;
-  background: #090610;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.modal-thumbnails-strip::-webkit-scrollbar {
-  height: 4px;
-}
-
-.modal-thumbnails-strip::-webkit-scrollbar-thumb {
-  background: rgba(199, 175, 139, 0.3);
-  border-radius: 2px;
-}
-
-.modal-thumb-btn {
-  background: transparent;
-  border: 2px solid transparent;
-  border-radius: 4px;
-  padding: 0;
-  cursor: pointer;
-  width: clamp(55px, 9vw, 75px);
-  height: clamp(38px, 6vw, 50px);
-  flex-shrink: 0;
-  overflow: hidden;
-  transition: all 0.2s;
-  opacity: 0.55;
-}
-
-.modal-thumb-btn img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-.modal-thumb-btn:hover {
-  opacity: 0.9;
-}
-
-.modal-thumb-btn.active-thumb {
-  border-color: #d4af37;
-  opacity: 1;
-  transform: scale(1.05);
-}
-
-/* ==========================================================================
-   BLOQUE 9: CABECERA Y CHIPS DE LA SUITE EN EL MODAL
-   ========================================================================== */
-.modal-sheet-head {
-  padding: clamp(0.9rem, 2vw, 1.4rem) clamp(1rem, 2.5vw, 2rem) 0.8rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  flex-shrink: 0;
-}
-
-.modal-sheet-head h2 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(1.5rem, 3vw, 2.1rem);
-  color: #f3e5ab;
-  margin: 0.2rem 0 0.5rem;
-  line-height: 1.2;
-}
-
-.modal-tags {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.modal-tags span {
-  background: #181324;
-  color: #c7af8b;
-  font-size: clamp(0.68rem, 1.1vw, 0.75rem);
-  padding: 0.25rem 0.65rem;
-  border-radius: 3px;
-  border: 1px solid rgba(199, 175, 139, 0.25);
-  white-space: nowrap;
-}
-
-/* ==========================================================================
-   BLOQUE 10: TABS-NAV RESPONSIVE (PESTAÑAS CON SCROLL HORIZONTAL)
-   ========================================================================== */
-.modal-tabs-nav {
-  display: flex;
-  align-items: center;
-  background: #090610;
-  border-bottom: 1px solid rgba(199, 175, 139, 0.25);
-  padding: 0 0.8rem;
-  overflow-x: auto;
-  overflow-y: hidden;
-  white-space: nowrap;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  gap: 0.25rem;
-  flex-shrink: 0;
-  position: relative;
-}
-
-.modal-tabs-nav::-webkit-scrollbar {
-  display: none;
-}
-
-.modal-tabs-nav button {
-  position: relative;
-  background: transparent;
-  border: none;
-  color: #94a3b8;
-  font-family: 'Montserrat', sans-serif;
-  font-size: clamp(0.72rem, 1.15vw, 0.82rem);
-  font-weight: 600;
-  letter-spacing: 0.4px;
-  padding: 0.95rem clamp(0.75rem, 1.4vw, 1.25rem);
-  cursor: pointer;
-  white-space: nowrap;
-  flex-shrink: 0;
-  transition: all 0.25s ease;
-  outline: none;
-  border-radius: 4px 4px 0 0;
-}
-
-.modal-tabs-nav button:hover {
-  color: #f3e5ab;
-  background: rgba(192, 132, 252, 0.06);
-}
-
-.modal-tabs-nav button.active {
-  color: #f3e5ab;
-  font-weight: 700;
-  background: rgba(199, 175, 139, 0.08);
-}
-
-.modal-tabs-nav button.active::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 2.5px;
-  background: linear-gradient(90deg, #d4af37 0%, #c7af8b 100%);
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-  border-radius: 2px 2px 0 0;
-}
-
-/* ==========================================================================
-   BLOQUE 11: CONTENIDO TEXTUAL CON SCROLL INDEPENDIENTE & AMENIDADES
-   ========================================================================== */
-.modal-sheet-body {
-  padding: 1.4rem clamp(1rem, 2.5vw, 2rem) 2.2rem;
-  overflow-y: auto; /* Scroll contenido para que el pie nunca tape texto */
-  max-height: 250px;
-  color: #cbd5e1;
-  font-size: clamp(0.82rem, 1.2vw, 0.88rem);
-  line-height: 1.65;
-  flex: 1;
-}
-
-.modal-sheet-body::-webkit-scrollbar {
-  width: 5px;
-}
-
-.modal-sheet-body::-webkit-scrollbar-thumb {
-  background: rgba(199, 175, 139, 0.35);
-  border-radius: 3px;
-}
-
-.modal-pane-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-}
-
-/* Chips de amenidades destacadas */
-.amenidades-badges-box {
-  background: #171224;
-  border: 1px solid rgba(199, 175, 139, 0.25);
-  border-left: 3px solid #d4af37;
-  padding: 1rem 1.2rem;
-  border-radius: 6px;
-  margin-top: 1rem;
-}
-
-.amenidades-label {
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: #d4af37;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  display: block;
-  margin-bottom: 0.6rem;
-}
-
-.amenidades-chips-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.amenidad-chip {
-  background: #0f0b18;
-  border: 1px solid rgba(192, 132, 252, 0.25);
-  color: #f3e5ab;
-  font-size: 0.76rem;
-  font-weight: 500;
-  padding: 0.35rem 0.75rem;
-  border-radius: 20px;
+.price-match-tag {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  line-height: 1.2;
+  font-size: 0.75rem;
+  color: #c7af8b;
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-.chip-bullet {
-  color: #c084fc;
-  font-size: 0.9rem;
-}
-
-/* ==========================================================================
-   BLOQUE 12: PIE DE PÁGINA DEL MODAL (FIJO Y VISIBLE)
-   ========================================================================== */
-.modal-sheet-foot {
-  background: #09080e;
-  padding: 1rem clamp(1rem, 2.5vw, 2rem);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid rgba(199, 175, 139, 0.25);
-  gap: 1rem;
-  flex-shrink: 0; /* Impide colapso o superposición */
-  z-index: 10;
-}
-
-.modal-rate-indicator small {
-  display: block;
-  font-size: 0.65rem;
-  color: #94a3b8;
-  text-transform: uppercase;
-}
-
-.modal-rate-indicator strong {
-  font-size: clamp(1.2rem, 2.2vw, 1.45rem);
-  color: #ffffff;
-}
-
-.modal-sheet-foot .btn-card-primary {
-  padding: 0.75rem 1.4rem;
-  font-size: clamp(0.75rem, 1.1vw, 0.85rem);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  flex-shrink: 0;
-}
-
-/* ==========================================================================
-   BLOQUE 13: RESPONSIVIDAD PARA DISPOSITIVOS MÓVILES (<= 640px)
-   ========================================================================== */
-@media (max-width: 640px) {
-  .posadas-rooms-page {
-    padding-top: 8rem;
-  }
-
-  .modal-sheet {
-    max-height: 96vh;
-    border-radius: 8px;
-  }
-
-  .modal-slider-main {
-    height: 200px;
-  }
-
-  .modal-tabs-nav {
-    padding: 0 0.5rem;
-    gap: 0.15rem;
-  }
-
-  .modal-tabs-nav button {
-    padding: 0.85rem 0.8rem;
-    font-size: 0.75rem;
-  }
-
-  .modal-sheet-foot {
-    flex-direction: column;
-    align-items: stretch;
-    text-align: center;
-  }
-
-  .modal-rate-indicator {
-    margin-bottom: 0.2rem;
-  }
-
-  .modal-sheet-foot .btn-card-primary {
-    width: 100%;
-  }
-}
-/* ==========================================================================
-   BLOQUE 14: GALERÍA MOSAICO HERO, RATING, TARIFAS COMPARABLES Y HOUSE RULES
-   ========================================================================== */
+/* --------------------------------------------------------------------------
+   3. CABECERA DEL RESORT, PÍLDORAS ALINEADAS, MOSAICO 9/3 Y BANNER TITANIUM
+   -------------------------------------------------------------------------- */
 .resort-showcase-header {
   margin-bottom: 2.2rem;
 }
@@ -921,19 +141,35 @@
 
 .resort-badges-line {
   display: flex;
-  gap: 0.6rem;
-  margin-bottom: 0.5rem;
+  align-items: center;
   flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-bottom: 0.65rem;
+}
+
+.diamond-pill,
+.all-inclusive-pill,
+.sustainable-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  height: 26px;
+  padding: 0 0.7rem;
+  border-radius: 4px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.8px;
+  white-space: nowrap;
+  box-sizing: border-box;
 }
 
 .diamond-pill {
   background: rgba(212, 175, 55, 0.15);
   border: 1px solid #d4af37;
   color: #f3e5ab;
-  font-size: 0.68rem;
   font-weight: 800;
-  padding: 0.25rem 0.65rem;
-  border-radius: 4px;
   letter-spacing: 1px;
 }
 
@@ -941,66 +177,81 @@
   background: rgba(192, 132, 252, 0.12);
   border: 1px solid rgba(192, 132, 252, 0.4);
   color: #e9d5ff;
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 0.25rem 0.65rem;
-  border-radius: 4px;
-  letter-spacing: 0.8px;
+}
+
+.sustainable-pill {
+  background: rgba(74, 222, 128, 0.12);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  color: #86efac;
 }
 
 .resort-address-line {
   display: flex;
   align-items: center;
   gap: 0.4rem;
+  flex-wrap: wrap;
   color: #94a3b8;
   font-size: 0.82rem;
-  margin: 0.3rem 0 0 0;
+  margin: 0.35rem 0 0;
+  line-height: 1.45;
 }
 
-.resort-rating-box {
+.link-map-inline {
+  background: none;
+  border: none;
+  color: #d4af37;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+  text-align: left;
+}
+
+.header-cta-cluster {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
-  background: #110e1a;
-  border: 1px solid rgba(212, 175, 55, 0.3);
-  padding: 0.65rem 1rem;
-  border-radius: 8px;
+  gap: 0.65rem;
+  flex-shrink: 0;
 }
 
-.rating-text {
-  text-align: right;
+.btn-icon-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #141020;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s;
+  flex-shrink: 0;
 }
 
-.rating-text strong {
-  display: block;
-  color: #f3e5ab;
-  font-size: 0.9rem;
+.btn-icon-circle:hover,
+.btn-icon-circle.saved {
+  transform: scale(1.06);
+  border-color: #d4af37;
 }
 
-.rating-text small {
-  color: #94a3b8;
-  font-size: 0.72rem;
+/* Grid Asimétrico 9/3 */
+.hero-9-3-layout {
+  display: grid;
+  grid-template-columns: 2.35fr 1fr;
+  gap: 14px;
+  margin-bottom: 1.2rem;
 }
 
-.rating-score-badge {
-  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
-  color: #060508;
-  font-weight: 900;
-  font-size: 1.15rem;
-  padding: 0.55rem 0.75rem;
-  border-radius: 8px 8px 8px 2px;
-}
-
-/* Mosaico Fotográfico */
 .resort-mosaic-grid {
   display: grid;
   grid-template-columns: 1.35fr 1fr;
   gap: 10px;
-  height: 340px;
+  height: 100%;
+  min-height: 390px;
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid rgba(212, 175, 55, 0.25);
-  margin-bottom: 1.2rem;
 }
 
 .mosaic-main-photo,
@@ -1017,6 +268,7 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.45s ease;
+  display: block;
 }
 
 .mosaic-main-photo:hover img,
@@ -1037,463 +289,15 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(180deg, transparent 0%, rgba(6, 5, 8, 0.9) 100%);
+  background: linear-gradient(180deg, transparent 0%, rgba(6, 5, 8, 0.92) 100%);
   color: #f3e5ab;
-  padding: 1.2rem 0.8rem 0.5rem;
+  padding: 1.2rem 0.8rem 0.55rem;
   font-size: 0.78rem;
   font-weight: 600;
 }
 
 .mosaic-sub-caption {
   font-size: 0.68rem;
-}
-
-.popular-facilities-strip {
-  display: flex;
-  gap: 0.8rem;
-  flex-wrap: wrap;
-}
-
-.facility-pill {
-  background: #100d1a;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
-  padding: 0.55rem 0.9rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.78rem;
-  color: #e2e8f0;
-}
-
-/* Badges y Precios Tachados */
-.badge-high-demand {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: rgba(212, 175, 55, 0.92);
-  color: #060508;
-  font-size: 0.65rem;
-  font-weight: 800;
-  padding: 0.25rem 0.6rem;
-  border-radius: 3px;
-  z-index: 2;
-}
-
-.rate-strikethrough {
-  display: block;
-  font-size: 0.76rem;
-  color: #94a3b8;
-  text-decoration: line-through;
-  margin-top: 2px;
-}
-
-.rate-tax-hint {
-  display: block;
-  font-size: 0.68rem;
-  color: #4ade80;
-  margin-top: 3px;
-}
-
-/* Selector de Bloques Tarifarios en Modal */
-.rate-blocks-selector {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.rate-block-option {
-  background: #171324;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 12px 16px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 14px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.rate-block-option:hover,
-.rate-block-option.selected {
-  border-color: #d4af37;
-  background: rgba(212, 175, 55, 0.09);
-}
-
-.rbo-badge {
-  display: inline-block;
-  font-size: 0.62rem;
-  font-weight: 800;
-  color: #d4af37;
-  letter-spacing: 0.8px;
-  margin-bottom: 3px;
-}
-
-.rbo-left h4 {
-  margin: 0 0 6px 0;
-  color: #ffffff;
-  font-size: 0.9rem;
-}
-
-.rbo-left ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  font-size: 0.72rem;
-  color: #cbd5e1;
-}
-
-.rbo-right {
-  text-align: right;
-  flex-shrink: 0;
-}
-
-.rbo-right strong {
-  display: block;
-  color: #f3e5ab;
-  font-size: 1rem;
-}
-
-.rbo-right small {
-  display: block;
-  font-size: 0.66rem;
-  color: #94a3b8;
-}
-
-.rbo-radio {
-  display: inline-block;
-  margin-top: 4px;
-  font-size: 0.7rem;
-  font-weight: 700;
-  color: #d4af37;
-}
-
-/* Normas del Resort */
-.resort-house-rules-section {
-  margin-top: 3.5rem;
-}
-
-.house-rules-box {
-  background: #100d1a;
-  border: 1px solid rgba(199, 175, 139, 0.25);
-  border-radius: 8px;
-  padding: 2rem;
-}
-
-.house-rules-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.2rem;
-  margin-top: 1.2rem;
-}
-
-.rule-row {
-  background: #161224;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 6px;
-  padding: 1rem 1.2rem;
-}
-
-.rule-row strong {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  color: #f3e5ab;
-  font-size: 0.84rem;
-  margin-bottom: 0.35rem;
-}
-
-.rule-row span {
-  font-size: 0.78rem;
-  color: #94a3b8;
-  line-height: 1.5;
-}
-
-@media (max-width: 860px) {
-  .resort-mosaic-grid {
-    grid-template-columns: 1fr;
-    height: auto;
-  }
-  .mosaic-main-photo {
-    height: 220px;
-  }
-  .mosaic-side-grid {
-    height: 180px;
-  }
-  .house-rules-grid,
-  .rate-block-option {
-    grid-template-columns: 1fr;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .rbo-right {
-    text-align: left;
-  }
-}
-/* ==========================================================================
-   BLOQUE 15: MODAL SPLIT-VIEW LUXURY (2 COLUMNAS SIN CORTES)
-   ========================================================================== */
-.modal-sheet-wide {
-  max-width: min(1140px, 96vw) !important;
-  max-height: 88vh !important;
-}
-
-.modal-split-layout {
-  display: grid;
-  grid-template-columns: 1.05fr 1.15fr;
-  height: 100%;
-  min-height: 540px;
-  max-height: 88vh;
-  overflow: hidden;
-}
-
-.modal-left-gallery {
-  background: #08060c;
-  border-right: 1px solid rgba(199, 175, 139, 0.2);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.modal-left-gallery .modal-slider-wrap {
-  flex: 1;
-  border-bottom: none;
-}
-
-.modal-left-gallery .modal-slider-main {
-  height: 330px;
-}
-
-.modal-gallery-highlights {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  padding: 0.9rem 1.2rem;
-  background: #0d0a14;
-  border-top: 1px solid rgba(199, 175, 139, 0.18);
-}
-
-.mgh-item {
-  background: #141020;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 6px;
-  padding: 0.55rem 0.7rem;
-}
-
-.mgh-item small {
-  display: block;
-  font-size: 0.6rem;
-  color: #94a3b8;
-  letter-spacing: 0.8px;
-  margin-bottom: 2px;
-}
-
-.mgh-item strong {
-  font-size: 0.78rem;
-  color: #f3e5ab;
-}
-
-.modal-right-details {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  max-height: 88vh;
-  overflow: hidden;
-}
-
-.modal-right-details .modal-sheet-head {
-  padding: 1.2rem 2.6rem 0.85rem 1.5rem;
-}
-
-.modal-right-details .modal-sheet-head h2 {
-  font-size: 1.65rem;
-}
-
-.tag-gold-vip {
-  background: rgba(212, 175, 55, 0.16) !important;
-  border-color: #d4af37 !important;
-  color: #f3e5ab !important;
-  font-weight: 700;
-}
-
-.modal-right-details .modal-tabs-nav {
-  padding: 0 1rem;
-  gap: 0.15rem;
-}
-
-.modal-right-details .modal-tabs-nav button {
-  padding: 0.75rem 0.7rem;
-  font-size: 0.74rem;
-}
-
-.modal-right-details .modal-sheet-body {
-  max-height: none !important;
-  flex: 1 1 auto;
-  overflow-y: auto;
-  padding: 1.15rem 1.5rem 1.5rem;
-}
-
-.modal-right-details .modal-sheet-foot {
-  padding: 0.9rem 1.5rem;
-}
-
-@media (max-width: 920px) {
-  .modal-split-layout {
-    grid-template-columns: 1fr;
-    overflow-y: auto;
-  }
-  .modal-left-gallery .modal-slider-main {
-    height: 220px;
-  }
-  .modal-right-details {
-    max-height: none;
-    overflow: visible;
-  }
-  .modal-right-details .modal-sheet-body {
-    overflow-y: visible;
-  }
-}
-.modal-left-gallery .modal-slider-wrap {
-  display: flex;
-  flex-direction: column;
-}
-.modal-left-gallery .modal-slider-main {
-  flex: 1 1 auto !important;
-  height: auto !important;
-  min-height: 360px;
-}
-/* ==========================================================================
-   BLOQUE 16: ESTRUCTURA INTEGRAL BOOKING LUXURY (9/3, TABLA, RESUMEN Y FAQ)
-   ========================================================================== */
-.booking-subnav-sticky {
-  background: #0b0912;
-  border-bottom: 1px solid rgba(212, 175, 55, 0.25);
-  margin-bottom: 1.8rem;
-  position: sticky;
-  top: 78px;
-  z-index: 40;
-}
-
-.subnav-flex {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.subnav-links {
-  display: flex;
-  gap: 0.4rem;
-  overflow-x: auto;
-}
-
-.subnav-links button {
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
-  color: #94a3b8;
-  padding: 0.85rem 0.9rem;
-  font-size: 0.78rem;
-  font-weight: 600;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.2s;
-}
-
-.subnav-links button:hover,
-.subnav-links button.active {
-  color: #f3e5ab;
-  border-bottom-color: #d4af37;
-}
-
-.subnav-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.price-match-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.75rem;
-  color: #c7af8b;
-  font-weight: 600;
-}
-
-.btn-subnav-cta {
-  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
-  color: #060508;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  font-size: 0.76rem;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.sustainable-pill {
-  background: rgba(74, 222, 128, 0.12);
-  border: 1px solid rgba(74, 222, 128, 0.35);
-  color: #86efac;
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 0.25rem 0.6rem;
-  border-radius: 4px;
-}
-
-.link-map-inline {
-  background: none;
-  border: none;
-  color: #d4af37;
-  font-size: 0.8rem;
-  font-weight: 700;
-  cursor: pointer;
-  text-decoration: underline;
-  padding: 0;
-}
-
-.header-cta-cluster {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-}
-
-.btn-icon-circle {
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: #141020;
-  border: 1px solid rgba(212, 175, 55, 0.35);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.btn-icon-circle:hover {
-  transform: scale(1.06);
-  border-color: #d4af37;
-}
-
-/* GRID 9/3 HERO */
-.hero-9-3-layout {
-  display: grid;
-  grid-template-columns: 2.35fr 1fr;
-  gap: 14px;
-  margin-bottom: 1.2rem;
-}
-
-.hero-col-9 .resort-mosaic-grid {
-  height: 100%;
-  min-height: 350px;
-  margin-bottom: 0;
 }
 
 .hero-col-3 {
@@ -1507,7 +311,7 @@
   background: #100d1a;
   border: 1px solid rgba(212, 175, 55, 0.28);
   border-radius: 8px;
-  padding: 1rem;
+  padding: 1rem 1.1rem;
 }
 
 .src-top {
@@ -1530,12 +334,21 @@
   font-size: 0.72rem;
 }
 
+.rating-score-badge {
+  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
+  color: #060508;
+  font-weight: 900;
+  font-size: 1.15rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px 8px 8px 2px;
+}
+
 .src-quote {
   font-size: 0.76rem;
   color: #cbd5e1;
   font-style: italic;
-  line-height: 1.45;
-  margin: 0 0 0.45rem 0;
+  line-height: 1.48;
+  margin: 0 0 0.45rem;
 }
 
 .src-author {
@@ -1591,7 +404,7 @@
   color: #d4af37;
 }
 
-/* BANNER TITANIUM GENIUS */
+/* Banner Titanium Genius */
 .titanium-genius-banner {
   background: linear-gradient(90deg, #171226 0%, #100d1a 100%);
   border: 1px solid #d4af37;
@@ -1613,11 +426,11 @@
   padding: 0.2rem 0.55rem;
   border-radius: 3px;
   letter-spacing: 0.8px;
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.35rem;
 }
 
 .titanium-genius-banner h4 {
-  margin: 0 0 0.2rem 0;
+  margin: 0 0 0.2rem;
   color: #f3e5ab;
   font-size: 0.92rem;
 }
@@ -1640,9 +453,116 @@
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+  user-select: none;
 }
 
-/* CHIPS DE FILTRO RÁPIDO */
+.tgb-switch-pill input[type="checkbox"] {
+  accent-color: #d4af37;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   4. BOOKING BAR Y BARRA DE FILTROS
+   -------------------------------------------------------------------------- */
+.posadas-bb-section {
+  margin-bottom: 2.2rem;
+}
+
+.posadas-bb-card {
+  background: #100d1a;
+  border: 1px solid rgba(199, 175, 139, 0.35);
+  border-radius: 8px;
+  padding: 1.2rem 1.6rem;
+  display: flex;
+  align-items: flex-end;
+  gap: 1.1rem;
+  flex-wrap: wrap;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+}
+
+.bb-col {
+  flex: 1;
+  min-width: 145px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.bb-col label {
+  font-size: 0.68rem;
+  color: #c7af8b;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.bb-col input,
+.bb-col select {
+  background: #181324;
+  border: 1px solid rgba(199, 175, 139, 0.3);
+  color: #ffffff;
+  padding: 0.65rem 0.85rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  outline: none;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.bb-col input:focus,
+.bb-col select:focus {
+  border-color: #d4af37;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+.bb-action {
+  min-width: 210px;
+}
+
+.btn-bb-search {
+  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
+  color: #060508;
+  border: none;
+  padding: 0.78rem 0.6rem;      /* Reducimos un poco el padding lateral para ganar espacio */
+  font-size: 0.68rem;          /* Letra optimizada para que el texto largo respire holgadamente */
+  font-weight: 800;
+  letter-spacing: 0.3px;       /* Espaciado ajustado */
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  transition: opacity 0.2s, transform 0.2s;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.btn-bb-search:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.posadas-filters-section {
+  background: #0d0a14;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 1rem 0;
+  margin-bottom: 2.8rem;
+}
+
+.filters-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
 .quick-filter-chips {
   display: flex;
   gap: 0.6rem;
@@ -1653,7 +573,7 @@
   background: #161224;
   border: 1px solid rgba(199, 175, 139, 0.3);
   color: #cbd5e1;
-  padding: 0.45rem 0.9rem;
+  padding: 0.48rem 0.95rem;
   border-radius: 20px;
   font-size: 0.76rem;
   font-weight: 600;
@@ -1668,9 +588,270 @@
   color: #f3e5ab;
 }
 
-/* TABLA COMPARATIVA + RESUMEN LATERAL */
-.booking-room-table-section {
-  margin-top: 4rem;
+.filter-dropdown {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.filter-dropdown label {
+  font-size: 0.74rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.filter-dropdown select {
+  background: #171322;
+  border: 1px solid rgba(199, 175, 139, 0.3);
+  color: #f3e5ab;
+  padding: 0.48rem 0.9rem;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  outline: none;
+  cursor: pointer;
+}
+
+/* --------------------------------------------------------------------------
+   5. CUADRÍCULA DE TARJETAS DE SUITES
+   -------------------------------------------------------------------------- */
+.posadas-loader,
+.posadas-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  border-radius: 6px;
+  margin-bottom: 2rem;
+  font-size: 0.9rem;
+}
+
+.posadas-loader {
+  background: rgba(199, 175, 139, 0.1);
+  color: #f3e5ab;
+  border: 1px solid rgba(199, 175, 139, 0.25);
+}
+
+.posadas-error {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+.rooms-grid-layout {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+}
+
+.room-luxury-card {
+  background: #110e1a;
+  border: 1px solid rgba(199, 175, 139, 0.22);
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.room-luxury-card:hover,
+.room-luxury-card.highlighted-card {
+  transform: translateY(-5px);
+  border-color: #d4af37;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 15px rgba(212, 175, 55, 0.2);
+}
+
+.room-luxury-card.room-unfit {
+  opacity: 0.55;
+  filter: grayscale(40%);
+}
+
+.card-media-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #000;
+}
+
+.card-media-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.room-luxury-card:hover .card-media-box img {
+  transform: scale(1.05);
+}
+
+.media-selected-pill {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(212, 175, 55, 0.94);
+  color: #060508;
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+  z-index: 2;
+}
+
+.badge-adults-only {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(185, 28, 28, 0.92);
+  color: #ffffff;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  z-index: 2;
+}
+
+.floating-specs-bar {
+  list-style: none;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  margin: 0;
+  padding: 1.2rem 0.9rem 0.5rem;
+  background: linear-gradient(180deg, transparent 0%, rgba(6, 5, 8, 0.95) 100%);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.74rem;
+  color: #f1f5f9;
+  z-index: 2;
+  box-sizing: border-box;
+}
+
+.floating-specs-bar li {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.card-content-box {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.room-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.55rem;
+  color: #f3e5ab;
+  margin: 0 0 1rem;
+  line-height: 1.25;
+  min-height: 58px;
+}
+
+.rate-from-box {
+  margin-bottom: 1.5rem;
+}
+
+.rate-caption {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  display: block;
+  letter-spacing: 0.5px;
+}
+
+.rate-strikethrough {
+  display: block;
+  font-size: 0.76rem;
+  color: #94a3b8;
+  text-decoration: line-through;
+  margin-top: 2px;
+}
+
+.rate-amount {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.rate-amount small {
+  font-size: 0.75rem;
+  color: #c7af8b;
+  font-weight: 500;
+  margin-right: 0.2rem;
+}
+
+.rate-tax-hint {
+  display: block;
+  font-size: 0.68rem;
+  color: #4ade80;
+  margin-top: 3px;
+}
+
+.card-footer-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  margin-top: auto;
+}
+
+.btn-card-outline {
+  background: transparent;
+  border: 1px solid rgba(199, 175, 139, 0.4);
+  color: #c7af8b;
+  padding: 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-card-outline:hover {
+  background: rgba(199, 175, 139, 0.12);
+  border-color: #c7af8b;
+}
+
+.btn-card-primary {
+  background: linear-gradient(135deg, #d4af37 0%, #aa8212 100%);
+  color: #060508;
+  border: none;
+  padding: 0.65rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  border-radius: 4px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: opacity 0.2s;
+}
+
+.btn-card-primary:hover {
+  opacity: 0.92;
+}
+
+.btn-card-primary.disabled {
+  background: #231f2e !important;
+  color: #64748b !important;
+  cursor: not-allowed;
+}
+
+/* --------------------------------------------------------------------------
+   6. TABLA COMPARATIVA, RESUMEN STICKY, SERVICIOS Y NORMAS / FAQ
+   -------------------------------------------------------------------------- */
+.booking-room-table-section,
+.resort-facilities-full,
+.resort-house-rules-section {
+  margin-top: 3.5rem;
 }
 
 .room-table-with-summary {
@@ -1683,6 +864,7 @@
 
 .rt-main-table-wrap {
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   border: 1px solid rgba(212, 175, 55, 0.3);
   border-radius: 8px;
   background: #0f0c18;
@@ -1690,6 +872,7 @@
 
 .luxury-rooms-table {
   width: 100%;
+  min-width: 720px;
   border-collapse: collapse;
   font-size: 0.8rem;
 }
@@ -1743,18 +926,17 @@
   color: #94a3b8;
 }
 
-.rt-suite-specs span {
+.rt-suite-specs span,
+.occ-icons {
   display: flex;
   align-items: center;
   gap: 0.35rem;
 }
 
 .occ-icons {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
   color: #e2e8f0;
   font-weight: 600;
+  white-space: nowrap;
 }
 
 .rt-plan-badge {
@@ -1783,6 +965,7 @@
   display: block;
   font-size: 0.95rem;
   color: #f3e5ab;
+  white-space: nowrap;
 }
 
 .rt-price-cell small,
@@ -1813,9 +996,9 @@
   background: #120e1d;
   border: 1px solid #d4af37;
   border-radius: 8px;
-  padding: 1.2rem;
+  padding: 1.25rem;
   position: sticky;
-  top: 135px;
+  top: 158px;
 }
 
 .rt-sticky-summary h4 {
@@ -1828,7 +1011,7 @@
 .rts-plan-name {
   font-size: 0.76rem;
   color: #c7af8b;
-  margin: 0 0 0.85rem 0;
+  margin: 0 0 0.85rem;
 }
 
 .rts-dates-box {
@@ -1866,6 +1049,7 @@
 .rts-price-lines div {
   display: flex;
   justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .rts-total {
@@ -1884,11 +1068,6 @@
   margin-top: 0.6rem;
 }
 
-/* SERVICIOS 3 COLUMNAS Y FAQ */
-.resort-facilities-full {
-  margin-top: 3.5rem;
-}
-
 .facilities-3-cols {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1896,20 +1075,22 @@
   margin-top: 1rem;
 }
 
-.fac-category-card {
+.fac-category-card,
+.house-rules-box {
   background: #100d1a;
-  border: 1px solid rgba(199, 175, 139, 0.22);
+  border: 1px solid rgba(199, 175, 139, 0.25);
   border-radius: 8px;
-  padding: 1.2rem;
+  padding: 1.5rem;
 }
 
-.fac-category-card h4 {
+.fac-category-card h4,
+.faq-heading {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   color: #f3e5ab;
-  font-size: 0.92rem;
-  margin: 0 0 0.75rem 0;
+  font-size: 0.94rem;
+  margin: 0 0 0.85rem;
 }
 
 .fac-category-card ul {
@@ -1923,19 +1104,39 @@
   color: #cbd5e1;
 }
 
+.house-rules-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem;
+  margin-top: 1.2rem;
+}
+
+.rule-row {
+  background: #161224;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 1rem 1.2rem;
+}
+
+.rule-row strong {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #f3e5ab;
+  font-size: 0.84rem;
+  margin-bottom: 0.35rem;
+}
+
+.rule-row span {
+  font-size: 0.78rem;
+  color: #94a3b8;
+  line-height: 1.5;
+}
+
 .resort-faq-wrap {
   margin-top: 2rem;
   padding-top: 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.faq-heading {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #f3e5ab;
-  font-size: 0.95rem;
-  margin: 0 0 1rem 0;
 }
 
 .faq-list {
@@ -1959,6 +1160,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.8rem;
   color: #f1f5f9;
   font-size: 0.82rem;
   font-weight: 600;
@@ -1974,24 +1176,432 @@
   line-height: 1.55;
 }
 
-/* Ajuste altura imagen izquierda modal */
-.modal-left-gallery .modal-slider-wrap {
+/* --------------------------------------------------------------------------
+   7. MODAL FICHA TÉCNICA SPLIT-VIEW
+   -------------------------------------------------------------------------- */
+.modal-backdrop-luxury {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 5, 8, 0.88);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: clamp(0.5rem, 2vw, 1.5rem);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.modal-sheet,
+.modal-sheet-wide {
+  background: #110d1c;
+  border: 1px solid rgba(199, 175, 139, 0.4);
+  border-radius: 10px;
+  width: 100%;
+  max-width: min(1140px, 96vw);
+  max-height: 88vh;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 25px 65px rgba(0, 0, 0, 0.9), 0 0 25px rgba(192, 132, 252, 0.12);
   display: flex;
   flex-direction: column;
 }
-.modal-left-gallery .modal-slider-main {
-  flex: 1 1 auto !important;
-  height: auto !important;
-  min-height: 360px;
+
+.modal-close-icon {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(13, 9, 23, 0.85);
+  border: 1px solid rgba(199, 175, 139, 0.4);
+  color: #f3e5ab;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+  transition: all 0.2s ease;
 }
 
-@media (max-width: 980px) {
-  .hero-9-3-layout,
-  .room-table-with-summary,
-  .facilities-3-cols {
-    grid-template-columns: 1fr;
-  }
-  .rt-sticky-summary {
-    position: static;
+.modal-close-icon:hover {
+  background: #c7af8b;
+  color: #060508;
+}
+
+.modal-split-layout {
+  display: grid;
+  grid-template-columns: 1.05fr 1.15fr;
+  height: 100%;
+  min-height: 540px;
+  max-height: 88vh;
+  overflow: hidden;
+}
+
+.modal-left-gallery {
+  background: #08060c;
+  border-right: 1px solid rgba(199, 175, 139, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.modal-slider-wrap {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-slider-main {
+  position: relative;
+  width: 100%;
+  flex: 1;
+  min-height: 330px;
+  overflow: hidden;
+  background: #000;
+}
+
+.modal-slider-main img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.modal-slider-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(13, 9, 23, 0.75);
+  border: 1px solid rgba(199, 175, 139, 0.4);
+  color: #f3e5ab;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+}
+
+.modal-slider-nav.prev { left: 12px; }
+.modal-slider-nav.next { right: 12px; }
+
+.modal-photo-caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(180deg, transparent 0%, rgba(6, 5, 8, 0.95) 100%);
+  padding: 1rem 1.2rem 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #f3e5ab;
+  pointer-events: none;
+  box-sizing: border-box;
+}
+
+.modal-thumbnails-strip {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.6rem 1.2rem;
+  background: #090610;
+  overflow-x: auto;
+}
+
+.modal-thumb-btn {
+  background: transparent;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  padding: 0;
+  cursor: pointer;
+  width: 68px;
+  height: 46px;
+  flex-shrink: 0;
+  overflow: hidden;
+  opacity: 0.55;
+}
+
+.modal-thumb-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-thumb-btn.active-thumb {
+  border-color: #d4af37;
+  opacity: 1;
+}
+
+.modal-gallery-highlights {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 0.9rem 1.2rem;
+  background: #0d0a14;
+  border-top: 1px solid rgba(199, 175, 139, 0.18);
+}
+
+.mgh-item {
+  background: #141020;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 0.55rem 0.7rem;
+}
+
+.mgh-item small {
+  display: block;
+  font-size: 0.6rem;
+  color: #94a3b8;
+  letter-spacing: 0.8px;
+  margin-bottom: 2px;
+}
+
+.mgh-item strong {
+  font-size: 0.78rem;
+  color: #f3e5ab;
+}
+
+.modal-right-details {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-height: 88vh;
+  overflow: hidden;
+}
+
+.modal-sheet-head {
+  padding: 1.2rem 2.6rem 0.85rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.modal-sheet-head h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.65rem;
+  color: #f3e5ab;
+  margin: 0.2rem 0 0.5rem;
+  line-height: 1.2;
+}
+
+.modal-tags {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+}
+
+.modal-tags span {
+  background: #181324;
+  color: #c7af8b;
+  font-size: 0.72rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 3px;
+  border: 1px solid rgba(199, 175, 139, 0.25);
+}
+
+.tag-gold-vip {
+  background: rgba(212, 175, 55, 0.16) !important;
+  border-color: #d4af37 !important;
+  color: #f3e5ab !important;
+  font-weight: 700;
+}
+
+.modal-tabs-nav {
+  display: flex;
+  align-items: center;
+  background: #090610;
+  border-bottom: 1px solid rgba(199, 175, 139, 0.25);
+  padding: 0 1rem;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: none;
+  gap: 0.15rem;
+  flex-shrink: 0;
+}
+
+.modal-tabs-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.modal-tabs-nav button {
+  position: relative;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.8rem 0.75rem;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.modal-tabs-nav button.active {
+  color: #f3e5ab;
+  font-weight: 700;
+  background: rgba(199, 175, 139, 0.08);
+}
+
+.modal-tabs-nav button.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2.5px;
+  background: #d4af37;
+}
+
+.modal-sheet-body {
+  padding: 1.2rem 1.5rem 1.5rem;
+  overflow-y: auto;
+  color: #cbd5e1;
+  font-size: 0.85rem;
+  line-height: 1.65;
+  flex: 1;
+}
+
+.amenidades-badges-box {
+  background: #171224;
+  border: 1px solid rgba(199, 175, 139, 0.25);
+  border-left: 3px solid #d4af37;
+  padding: 1rem 1.2rem;
+  border-radius: 6px;
+  margin-top: 1rem;
+}
+
+.amenidades-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #d4af37;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: block;
+  margin-bottom: 0.6rem;
+}
+
+.amenidades-chips-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.amenidad-chip {
+  background: #0f0b18;
+  border: 1px solid rgba(192, 132, 252, 0.25);
+  color: #f3e5ab;
+  font-size: 0.74rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.rate-blocks-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.rate-block-option {
+  background: #171324;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.rate-block-option.selected {
+  border-color: #d4af37;
+  background: rgba(212, 175, 55, 0.09);
+}
+
+.rbo-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  color: #d4af37;
+  margin-bottom: 3px;
+}
+
+.rbo-left h4 {
+  margin: 0 0 6px;
+  color: #ffffff;
+  font-size: 0.88rem;
+}
+
+.rbo-left ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.72rem;
+  color: #cbd5e1;
+}
+
+.rbo-right {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.rbo-right strong {
+  display: block;
+  color: #f3e5ab;
+  font-size: 0.98rem;
+}
+
+.rbo-right small {
+  display: block;
+  font-size: 0.66rem;
+  color: #94a3b8;
+}
+
+.rbo-radio {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #d4af37;
+}
+
+.modal-sheet-foot {
+  background: #09080e;
+  padding: 0.9rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(199, 175, 139, 0.25);
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.modal-rate-indicator small {
+  display: block;
+  font-size: 0.65rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.modal-rate-indicator strong {
+  font-size: 1.35rem;
+  color: #ffffff;
+}
+
+/* Ajuste intermedio para laptops compactas (769px - 1080px) */
+@media (max-width: 1080px) and (min-width: 769px) {
+  .rooms-grid-layout {
+    grid-template-columns: repeat(2, 1fr);
   }
 }

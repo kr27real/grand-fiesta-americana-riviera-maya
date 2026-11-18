@@ -1,6 +1,7 @@
 import React from 'react';
 import { Sparkles } from 'lucide-react';
 import './IntroSection.css';
+import './IntroSection.mobile.css';
 
 export default function IntroSection() {
   return (

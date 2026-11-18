@@ -1,4 +1,4 @@
-﻿const API_BASE_URL = 'http://localhost:5000/api';
+﻿const API_BASE_URL = '/api';
 
 async function parseResponse(res) {
   const data = await res.json().catch(() => ({}));
@@ -170,7 +170,7 @@ export const fetchReservationByFolio = async (folio, email) => {
   if (folio) params.append('folio', folio);
   if (email) params.append('email', email);
 
-  const res = await fetch(`http://localhost:5000/api/reservaciones/buscar?${params.toString()}`);
+  const res = await fetch(`${API_BASE_URL}/reservaciones/buscar?${params.toString()}`);
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
     throw new Error(err.error || 'No se encontró la reservación');
@@ -181,10 +181,32 @@ export const fetchReservationByFolio = async (folio, email) => {
 
 // Obtener Fiesta Americana CARD oficial del usuario
 export const fetchFiestaCard = async (usuarioId) => {
-  const res = await fetch(`http://localhost:5000/api/tarjeta-fiesta/${usuarioId}`);
+  const res = await fetch(`${API_BASE_URL}/tarjeta-fiesta/${usuarioId}`);
   if (!res.ok) throw new Error('Error al consultar Fiesta Card');
   const json = await res.json();
   return json.data;
 };
 
+// 8. Billetera Digital / Tarjetas Guardadas
+export async function obtenerBilleteraUsuarioApi(usuarioId) {
+  return parseResponse(await fetch(`${API_BASE_URL}/billetera/${usuarioId}`, {
+    headers: getAuthHeaders()
+  }));
+}
 
+export async function agregarTarjetaBilleteraApi(datosTarjeta) {
+  const res = await fetch(`${API_BASE_URL}/billetera`, {
+    method: 'POST',
+    headers: getAuthHeaders(),
+    body: JSON.stringify(datosTarjeta)
+  });
+  return parseResponse(res);
+}
+
+export async function eliminarTarjetaBilleteraApi(tarjetaId) {
+  const res = await fetch(`${API_BASE_URL}/billetera/${tarjetaId}`, {
+    method: 'DELETE',
+    headers: getAuthHeaders()
+  });
+  return parseResponse(res);
+}

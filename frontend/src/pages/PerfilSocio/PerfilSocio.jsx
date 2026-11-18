@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FiestaCard from '../../components/FiestaCard/FiestaCard';
 import './PerfilSocio.css';
+import './PerfilSocio.mobile.css';
 
 const API_BASE = 'http://localhost:5000/api';
 
@@ -1765,11 +1766,26 @@ const handleCanjearCupon = (e) => {
               <div className="baucher-linea-punteada"></div>
 
               <div className="baucher-desglose">
-                <div className="b-line"><span>Tarifa Hospedaje:</span> <span>${(parseFloat(reservaBaucher.total_general) * 0.77).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</span></div>
-                <div className="b-line"><span>IVA (16%):</span> <span>${(parseFloat(reservaBaucher.total_general) * 0.16).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</span></div>
-                <div className="b-line"><span>ISH Impuesto Sobre Hospedaje (5%):</span> <span>${(parseFloat(reservaBaucher.total_general) * 0.05).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</span></div>
-                <div className="b-line"><span>Derecho de Saneamiento Ambiental:</span> <span>${(parseFloat(reservaBaucher.total_general) * 0.02).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</span></div>
-                <div className="b-total-row"><span>TOTAL PAGADO:</span> <span className="b-total-gold">${parseFloat(reservaBaucher.total_general).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</span></div>
+                <div className="b-line">
+                  <span>Tarifa Hospedaje:</span>
+                  <span>${Number(reservaBaucher.subtotal ?? parseFloat(reservaBaucher.total_general) * 0.77).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN</span>
+                </div>
+                <div className="b-line">
+                  <span>IVA (16%):</span>
+                  <span>${Number(reservaBaucher.iva ?? parseFloat(reservaBaucher.total_general) * 0.16).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN</span>
+                </div>
+                <div className="b-line">
+                  <span>ISH Hospedaje (5%):</span>
+                  <span>${Number(reservaBaucher.ishe ?? parseFloat(reservaBaucher.total_general) * 0.05).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN</span>
+                </div>
+                <div className="b-line">
+                  <span>Saneamiento Ambiental:</span>
+                  <span>${Number(reservaBaucher.saneamiento_ambiental ?? parseFloat(reservaBaucher.total_general) * 0.02).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN</span>
+                </div>
+                <div className="b-total-row">
+                  <span>TOTAL PAGADO:</span>
+                  <span className="b-total-gold">${parseFloat(reservaBaucher.total_general).toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} MXN</span>
+                </div>
               </div>
 
               <div className="baucher-qr-sim">

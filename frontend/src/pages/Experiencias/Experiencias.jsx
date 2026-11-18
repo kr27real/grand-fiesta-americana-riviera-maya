@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   fetchExperiencias, 
   reservarExperienciaApi 
@@ -8,6 +8,7 @@ import {
   AlertTriangle, RefreshCw, Loader2, ArrowRight, X, ShieldCheck 
 } from 'lucide-react';
 import './Experiencias.css';
+import './Experiencias.mobile.css';
 
 // Catálogo maestro de experiencias para alta disponibilidad
 const EXPERIENCIAS_DEFAULT = [

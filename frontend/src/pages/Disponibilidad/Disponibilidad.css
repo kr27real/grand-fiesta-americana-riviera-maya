@@ -1,25 +1,34 @@
-﻿/* PALETA OFICIAL: ARENA (#C7AF8B), CHAMPAGNE (#F3E5AB), OBSIDIANA (#060508) */
+﻿/* ==========================================================================
+   DISPONIBILIDAD.CSS - MOTOR IBE GRAND FIESTA AMERICANA (ESCRITORIO / PC)
+   Paleta: Arena (#C7AF8B / #D4AF37), Champagne (#F3E5AB), Lila (#C084FC), Obsidiana (#060508)
+   ========================================================================== */
 
 .ibe-flow-page {
   background-color: #060508;
   color: #f1f5f9;
   min-height: 100vh;
   font-family: 'Montserrat', sans-serif;
-  padding-top: 10.5rem; /* Despeje necesario bajo la doble barra del navbar institucional */
+  padding-top: 7.2rem; /* Despeje exacto al ras bajo el Navbar institucional en PC */
   padding-bottom: 5rem;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .ibe-container {
   max-width: 1240px;
   margin: 0 auto;
   padding: 0 1.5rem;
+  box-sizing: border-box;
 }
 
-/* 1. STEPPER BREADCRUMB (BARRA DE ETAPAS DEL EMBUDO) */
+/* --------------------------------------------------------------------------
+   1. STEPPER BREADCRUMB Y SELECTOR DE DIVISA
+   -------------------------------------------------------------------------- */
 .ibe-stepper-header {
   background: #0d0a15;
-  border-bottom: 1px solid rgba(199, 175, 139, 0.2);
-  padding: 1.2rem 0;
+  border-top: 1px solid rgba(199, 175, 139, 0.15);
+  border-bottom: 1px solid rgba(199, 175, 139, 0.25);
+  padding: 1.1rem 0;
   margin-bottom: 2rem;
 }
 
@@ -83,426 +92,6 @@
   font-size: 1rem;
 }
 
-/* 2. CONSOLA DE BÚSQUEDA Y MODIFICACIÓN DE FECHAS */
-.ibe-search-bar-wrap {
-  margin-bottom: 3rem;
-}
-
-.ibe-search-bar-card {
-  background: #110e1c;
-  border: 1px solid rgba(199, 175, 139, 0.35);
-  border-radius: 8px;
-  padding: 1.4rem 1.8rem;
-  display: flex;
-  align-items: flex-end;
-  gap: 1.2rem;
-  flex-wrap: wrap;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
-}
-
-.search-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  flex: 1;
-  min-width: 150px;
-}
-
-.search-field label {
-  font-size: 0.68rem;
-  color: #c7af8b;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.search-field input,
-.search-field select {
-  background: #191428;
-  border: 1px solid rgba(199, 175, 139, 0.3);
-  color: #ffffff;
-  padding: 0.65rem 0.85rem;
-  border-radius: 4px;
-  font-size: 0.85rem;
-  outline: none;
-  font-family: inherit;
-  transition: border-color 0.2s;
-}
-
-.search-field input:focus,
-.search-field select:focus {
-  border-color: #c7af8b;
-}
-
-.stay-nights-badge {
-  background: #1a162b;
-  border: 1px solid #c7af8b;
-  color: #f3e5ab;
-  padding: 0.6rem 1rem;
-  border-radius: 4px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 40px;
-}
-
-.btn-search-update {
-  background: #c7af8b;
-  color: #060508;
-  border: none;
-  padding: 0.75rem 1.6rem;
-  border-radius: 4px;
-  font-weight: 800;
-  font-size: 0.82rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  letter-spacing: 0.5px;
-  transition: background 0.2s;
-}
-
-.btn-search-update:hover {
-  background: #deb887;
-}
-
-/* 3. TOOLBAR Y ESTADOS DE CARGA */
-.ibe-results-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  padding-bottom: 1.2rem;
-  margin-bottom: 2.5rem;
-  flex-wrap: wrap;
-  gap: 1.2rem;
-}
-
-.ibe-results-toolbar h2 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 2.4rem;
-  color: #f3e5ab;
-  margin: 0 0 0.3rem;
-  letter-spacing: -0.5px;
-}
-
-.ibe-results-toolbar p {
-  color: #94a3b8;
-  font-size: 0.88rem;
-  margin: 0;
-}
-
-.toggle-aptas {
-  font-size: 0.8rem;
-  color: #cbd5e1;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  cursor: pointer;
-}
-
-.ibe-loading-box {
-  text-align: center;
-  padding: 4rem 1rem;
-}
-
-.ibe-spinner {
-  width: 48px;
-  height: 48px;
-  border: 3px solid rgba(199, 175, 139, 0.2);
-  border-top-color: #c7af8b;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto 1.5rem;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-.ibe-error-box {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid #ef4444;
-  color: #fca5a5;
-  padding: 1rem 1.4rem;
-  border-radius: 6px;
-  margin-bottom: 2rem;
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  font-size: 0.88rem;
-}
-
-/* 4. TARJETAS DE SUITE EN DISPONIBILIDAD (LAYOUT 3 COLUMNAS IBE) */
-.suites-inventory-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 2.2rem;
-}
-
-.suite-ibe-card {
-  background: #110d1a;
-  border: 1px solid rgba(199, 175, 139, 0.25);
-  border-radius: 8px;
-  overflow: hidden;
-  display: grid;
-  grid-template-columns: 320px 1fr 280px;
-  gap: 1.8rem;
-  align-items: stretch;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
-  transition: border-color 0.25s, transform 0.25s;
-}
-
-@media (max-width: 992px) {
-  .suite-ibe-card {
-    grid-template-columns: 1fr;
-  }
-}
-
-.suite-ibe-card:hover {
-  border-color: rgba(199, 175, 139, 0.6);
-  transform: translateY(-3px);
-}
-
-.suite-ibe-card.unfit {
-  opacity: 0.55;
-  filter: grayscale(40%);
-}
-
-/* COLUMNA 1: MEDIA */
-.suite-ibe-media {
-  position: relative;
-  min-height: 250px;
-  background: #000;
-}
-
-.suite-ibe-media img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.media-cat-pill {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  background: rgba(6, 5, 8, 0.9);
-  border: 1px solid #c7af8b;
-  color: #f3e5ab;
-  font-size: 0.68rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  padding: 0.25rem 0.6rem;
-  border-radius: 3px;
-  letter-spacing: 0.5px;
-}
-
-.media-footer-pills {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: linear-gradient(180deg, transparent 0%, rgba(6, 5, 8, 0.95) 100%);
-  padding: 1rem 1rem 0.6rem;
-  display: flex;
-  gap: 0.8rem;
-  font-size: 0.72rem;
-  color: #cbd5e1;
-}
-
-/* COLUMNA 2: DETALLES Y PLANES TARIFARIOS */
-.suite-ibe-details {
-  padding: 1.6rem 0;
-  display: flex;
-  flex-direction: column;
-}
-
-.suite-title-row {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  margin-bottom: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.suite-title-row h3 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 1.85rem;
-  color: #f3e5ab;
-  margin: 0;
-  line-height: 1.2;
-}
-
-.unfit-tag {
-  background: rgba(239, 68, 68, 0.15);
-  border: 1px solid #ef4444;
-  color: #fca5a5;
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 0.2rem 0.5rem;
-  border-radius: 3px;
-}
-
-.suite-desc {
-  color: #94a3b8;
-  font-size: 0.84rem;
-  line-height: 1.5;
-  margin-bottom: 1.4rem;
-}
-
-/* OPCIONES DE PLANES TARIFARIOS (ALL-INCLUSIVE, FIESTA REWARDS, VIP) */
-.rate-plans-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.7rem;
-}
-
-.rates-group-title {
-  font-size: 0.72rem;
-  color: #c7af8b;
-  text-transform: uppercase;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  margin-bottom: 0.2rem;
-}
-
-.rate-plan-option {
-  background: #171324;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 6px;
-  padding: 0.9rem 1.1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.rate-plan-option:hover {
-  border-color: rgba(199, 175, 139, 0.4);
-}
-
-.rate-plan-option.active {
-  background: rgba(199, 175, 139, 0.08);
-  border-color: #c7af8b;
-}
-
-.plan-radio-col {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.8rem;
-}
-
-.plan-radio-col strong {
-  font-size: 0.88rem;
-  color: #ffffff;
-  display: block;
-}
-
-.plan-badge {
-  display: inline-block;
-  background: rgba(34, 197, 94, 0.15);
-  color: #86efac;
-  font-size: 0.68rem;
-  font-weight: 700;
-  padding: 0.15rem 0.45rem;
-  border-radius: 3px;
-  margin: 0.25rem 0;
-}
-
-.plan-desc {
-  font-size: 0.75rem;
-  color: #94a3b8;
-  margin: 0;
-  line-height: 1.4;
-}
-
-.plan-price-col {
-  text-align: right;
-  min-width: 130px;
-}
-
-.plan-night-price {
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: #ffffff;
-  display: block;
-}
-
-.plan-price-col small {
-  font-size: 0.7rem;
-  color: #94a3b8;
-}
-
-/* COLUMNA 3: ACCIÓN Y TOTAL ESTANCIA */
-.suite-ibe-action-col {
-  background: #0d0a14;
-  border-left: 1px solid rgba(255, 255, 255, 0.06);
-  padding: 1.6rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.action-top {
-  display: flex;
-  flex-direction: column;
-}
-
-.label-total {
-  font-size: 0.7rem;
-  color: #94a3b8;
-  text-transform: uppercase;
-  display: block;
-}
-
-.figure-total {
-  font-size: 1.65rem;
-  color: #ffffff;
-  display: block;
-  margin: 0.2rem 0;
-}
-
-.taxes-notice {
-  font-size: 0.7rem;
-  color: #64748b;
-  display: block;
-}
-
-.btn-advance-checkout {
-  background: #c7af8b;
-  color: #060508;
-  border: none;
-  padding: 0.9rem;
-  border-radius: 4px;
-  font-weight: 800;
-  font-size: 0.85rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-  letter-spacing: 0.5px;
-  transition: background 0.2s;
-}
-
-.btn-advance-checkout:hover {
-  background: #deb887;
-}
-
-.btn-unfit {
-  background: #252033 !important;
-  color: #64748b !important;
-  cursor: not-allowed;
-}
-/* ==========================================================================
-   ESTILOS COMPLEMENTARIOS MOTOR BE5 (DIVISA, CUPONES, IMPUESTOS Y ESCASEZ)
-   ========================================================================== */
-
 .currency-switcher {
   display: flex;
   align-items: center;
@@ -530,7 +119,63 @@
   text-decoration: underline;
 }
 
-/* Campo Código Promocional */
+/* --------------------------------------------------------------------------
+   2. CONSOLA DE BÚSQUEDA, MODIFICACIÓN DE FECHAS Y CUPÓN PROMOCIONAL
+   -------------------------------------------------------------------------- */
+.ibe-search-bar-wrap {
+  margin-bottom: 3rem;
+}
+
+.ibe-search-bar-card {
+  background: #110e1c;
+  border: 1px solid rgba(199, 175, 139, 0.35);
+  border-radius: 8px;
+  padding: 1.4rem 1.8rem;
+  display: flex;
+  align-items: flex-end;
+  gap: 1.1rem;
+  flex-wrap: wrap;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
+}
+
+.search-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 140px;
+}
+
+.search-field label {
+  font-size: 0.68rem;
+  color: #c7af8b;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.search-field input,
+.search-field select {
+  background: #191428;
+  border: 1px solid rgba(199, 175, 139, 0.3);
+  color: #ffffff;
+  padding: 0.65rem 0.85rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  outline: none;
+  font-family: inherit;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.search-field input:focus,
+.search-field select:focus {
+  border-color: #c7af8b;
+}
+
 .promo-input-group {
   display: flex;
   gap: 0.4rem;
@@ -581,10 +226,182 @@
   color: #fca5a5;
 }
 
-/* Suite Preseleccionada & Escasez */
+.stay-nights-badge {
+  background: #1a162b;
+  border: 1px solid #c7af8b;
+  color: #f3e5ab;
+  padding: 0.6rem 1rem;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.btn-search-update {
+  background: #c7af8b;
+  color: #060508;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  font-weight: 800;
+  font-size: 0.82rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  letter-spacing: 0.5px;
+  transition: background 0.2s;
+  white-space: nowrap;
+}
+
+.btn-search-update:hover {
+  background: #deb887;
+}
+
+/* --------------------------------------------------------------------------
+   3. TOOLBAR Y ESTADOS DE CARGA
+   -------------------------------------------------------------------------- */
+.ibe-results-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 1.2rem;
+  margin-bottom: 2.5rem;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+}
+
+.ibe-results-toolbar h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 2.4rem;
+  color: #f3e5ab;
+  margin: 0 0 0.3rem;
+  letter-spacing: -0.5px;
+}
+
+.ibe-results-toolbar p {
+  color: #94a3b8;
+  font-size: 0.88rem;
+  margin: 0;
+}
+
+.toggle-aptas {
+  font-size: 0.8rem;
+  color: #cbd5e1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.toggle-aptas input[type="checkbox"] {
+  accent-color: #d4af37;
+  width: 16px;
+  height: 16px;
+}
+
+.ibe-loading-box {
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.ibe-spinner {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(199, 175, 139, 0.2);
+  border-top-color: #c7af8b;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1.5rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.ibe-error-box {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+  padding: 1rem 1.4rem;
+  border-radius: 6px;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 0.88rem;
+}
+
+/* --------------------------------------------------------------------------
+   4. TARJETAS DE SUITE EN DISPONIBILIDAD (LAYOUT 3 COLUMNAS IBE)
+   -------------------------------------------------------------------------- */
+.suites-inventory-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 2.2rem;
+}
+
+.suite-ibe-card {
+  background: #110d1a;
+  border: 1px solid rgba(199, 175, 139, 0.25);
+  border-radius: 8px;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 320px 1fr 280px;
+  gap: 1.8rem;
+  align-items: stretch;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+  transition: border-color 0.25s, transform 0.25s;
+}
+
+.suite-ibe-card:hover {
+  border-color: rgba(199, 175, 139, 0.6);
+  transform: translateY(-3px);
+}
+
 .suite-ibe-card.highlighted-suite {
   border-color: #d4af37 !important;
   box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
+}
+
+.suite-ibe-card.unfit {
+  opacity: 0.55;
+  filter: grayscale(40%);
+}
+
+/* Columna 1: Media */
+.suite-ibe-media {
+  position: relative;
+  min-height: 250px;
+  background: #000;
+}
+
+.suite-ibe-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.media-cat-pill {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(6, 5, 8, 0.9);
+  border: 1px solid #c7af8b;
+  color: #f3e5ab;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+  letter-spacing: 0.5px;
 }
 
 .media-selected-pill {
@@ -601,6 +418,43 @@
   letter-spacing: 0.5px;
 }
 
+.media-footer-pills {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(180deg, transparent 0%, rgba(6, 5, 8, 0.95) 100%);
+  padding: 1rem 1rem 0.6rem;
+  display: flex;
+  gap: 0.8rem;
+  font-size: 0.72rem;
+  color: #cbd5e1;
+  box-sizing: border-box;
+}
+
+/* Columna 2: Detalles y Planes Tarifarios */
+.suite-ibe-details {
+  padding: 1.6rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.suite-title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.suite-title-row h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.85rem;
+  color: #f3e5ab;
+  margin: 0;
+  line-height: 1.2;
+}
+
 .scarcity-tag {
   display: inline-flex;
   align-items: center;
@@ -614,13 +468,156 @@
   border-radius: 4px;
 }
 
+.unfit-tag {
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid #ef4444;
+  color: #fca5a5;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+}
+
+.suite-desc {
+  color: #94a3b8;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  margin: 0 0 1.4rem;
+}
+
+.rate-plans-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.rates-group-title {
+  font-size: 0.72rem;
+  color: #c7af8b;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.2rem;
+}
+
+.rate-plan-option {
+  background: #171324;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 0.9rem 1.1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.rate-plan-option:hover {
+  border-color: rgba(199, 175, 139, 0.4);
+}
+
+.rate-plan-option.active {
+  background: rgba(199, 175, 139, 0.08);
+  border-color: #c7af8b;
+}
+
+.plan-radio-col {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+}
+
+.plan-radio-col input[type="radio"] {
+  accent-color: #d4af37;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.plan-radio-col strong {
+  font-size: 0.88rem;
+  color: #ffffff;
+  display: block;
+}
+
+.plan-badge {
+  display: inline-block;
+  background: rgba(34, 197, 94, 0.15);
+  color: #86efac;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+  margin: 0.25rem 0;
+}
+
+.plan-desc {
+  font-size: 0.75rem;
+  color: #94a3b8;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.plan-price-col {
+  text-align: right;
+  min-width: 130px;
+  flex-shrink: 0;
+}
+
 .old-price {
   display: block;
   font-size: 0.72rem;
   color: #64748b;
 }
 
-/* Puntos Rewards & Desglose Impuestos */
+.plan-night-price {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ffffff;
+  display: block;
+}
+
+.plan-price-col small {
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+/* Columna 3: Acción, Puntos Rewards, Impuestos y Total Estancia */
+.suite-ibe-action-col {
+  background: #0d0a14;
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.2rem;
+}
+
+.action-top {
+  display: flex;
+  flex-direction: column;
+}
+
+.label-total {
+  font-size: 0.7rem;
+  color: #94a3b8;
+  text-transform: uppercase;
+  display: block;
+}
+
+.figure-total {
+  font-size: 1.65rem;
+  color: #ffffff;
+  display: block;
+  margin: 0.2rem 0;
+}
+
+.taxes-notice {
+  font-size: 0.7rem;
+  color: #64748b;
+  display: block;
+}
+
 .rewards-earn-pill {
   display: inline-flex;
   align-items: center;
@@ -669,4 +666,47 @@
 .taxes-mini-breakdown div {
   display: flex;
   justify-content: space-between;
+}
+
+.btn-advance-checkout {
+  background: #c7af8b;
+  color: #060508;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 4px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  letter-spacing: 0.5px;
+  transition: background 0.2s;
+}
+
+.btn-advance-checkout:hover {
+  background: #deb887;
+}
+
+.btn-unfit {
+  background: #252033 !important;
+  color: #64748b !important;
+  cursor: not-allowed;
+}
+
+/* Ajuste intermedio para laptops compactas / tablets horizontales (769px - 1040px) */
+@media (max-width: 1040px) and (min-width: 769px) {
+  .suite-ibe-card {
+    grid-template-columns: 1fr;
+  }
+
+  .suite-ibe-details {
+    padding: 1.4rem 1.4rem 0.5rem;
+  }
+
+  .suite-ibe-action-col {
+    border-left: none;
+    border-top: 1px solid rgba(199, 175, 139, 0.2);
+  }
 }

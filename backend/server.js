@@ -760,7 +760,8 @@ app.post('/api/reservaciones', async (req, res) => {
             usuario_id, suite_id, fecha_llegada, fecha_salida, noches,
             adultos, ninos, peticiones, peticiones_especiales,
             subtotal, iva, ishe, saneamiento, saneamiento_ambiental,
-            total_general, terminacion_tarjeta, metodo_pago_tipo, estatus_reservacion
+            total_general, terminacion_tarjeta, metodo_pago_tipo, estatus_reservacion,
+            puntos_ganados, puntos_canjeados
         } = req.body;
 
         if (!usuario_id || !suite_id || !fecha_llegada || !fecha_salida || !total_general) {
@@ -832,7 +833,8 @@ app.post('/api/reservaciones', async (req, res) => {
             .input('uid', sql.Int, parseInt(usuario_id))
             .input('noches', sql.Int, totalNoches)
             .query("UPDATE dbo.Usuarios SET noches_acumuladas = ISNULL(noches_acumuladas, 0) + @noches WHERE usuario_id = @uid");
-            const ptsGanados = puntos_ganados ? parseInt(puntos_ganados, 10) : Math.round((sub / 18.5) * 10);
+
+        const ptsGanados = puntos_ganados ? parseInt(puntos_ganados, 10) : Math.round((sub / 18.5) * 10);
         const ptsCanjeados = puntos_canjeados ? parseInt(puntos_canjeados, 10) : 0;
 
         await pool.request()
@@ -849,14 +851,9 @@ app.post('/api/reservaciones', async (req, res) => {
                 WHERE usuario_id = @uid
             `);
 
-        res.status(201).json({
+        return res.status(201).json({
             ok: true,
             folio: folioConfirmacion,
-            mensaje: 'Reservación procesada exitosamente.',
-            reservacion: result.recordset[0]
-        });
-        res.status(201).json({
-            ok: true,
             mensaje: 'Reservación procesada exitosamente.',
             reservacion: result.recordset[0]
         });

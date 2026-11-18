@@ -293,3 +293,70 @@
   color: #ffffff;
   border-color: #f3e5ab;
 }
+/* ==========================================================================
+   BLOQUE 7: OPTIMIZACIÓN RESPONSIVA PARA OFERTAS (MÓVIL <= 640px)
+   ========================================================================== */
+@media (max-width: 640px) {
+  .ofertas-page-root {
+    padding-top: 5.8rem;
+    padding-bottom: 3rem;
+  }
+
+  .ofertas-container {
+    padding: 0 1rem;
+  }
+
+  .ofertas-hero-header {
+    margin-bottom: 1.8rem;
+  }
+
+  .ofertas-eyebrow {
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+  }
+
+  .ofertas-hero-header h1 {
+    font-size: 2rem;
+  }
+
+  .ofertas-cache-indicator {
+    width: 100%;
+    text-align: center;
+    border-radius: 8px;
+    padding: 0.6rem 0.85rem;
+    margin-bottom: 1.6rem;
+  }
+
+  .ofertas-cards-grid {
+    gap: 1.3rem;
+  }
+
+  .oferta-body-content {
+    padding: 1.2rem;
+  }
+
+  .oferta-body-content h3 {
+    min-height: auto;
+    font-size: 1.4rem;
+  }
+
+  .ofertas-loyalty-callout {
+    margin-top: 2.8rem;
+  }
+
+  .loyalty-callout-inner {
+    padding: 1.35rem;
+    gap: 1.1rem;
+  }
+
+  .loyalty-callout-inner h2 {
+    font-size: 1.7rem;
+  }
+
+  .btn-loyalty-login {
+    width: 100%;
+    white-space: normal;
+    text-align: center;
+    padding: 0.85rem 1rem;
+  }
+}

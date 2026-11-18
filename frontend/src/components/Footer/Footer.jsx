@@ -1,7 +1,8 @@
-﻿import React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, MessageSquare, Award, ShieldCheck, Globe, ExternalLink } from 'lucide-react';
 import './Footer.css';
+import './Footer.mobile.css';
 
 // SVG nativo y seguro para Instagram
 function InstagramIcon({ size = 16, color = "currentColor" }) {

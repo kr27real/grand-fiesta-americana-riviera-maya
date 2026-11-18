@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { fetchSuites } from '../../services/api';
 import {
@@ -8,6 +8,7 @@ import {
   Share2, Tag, HelpCircle, ChevronDown, ChevronUp, ShieldCheck, Check
 } from 'lucide-react';
 import './Habitaciones.css';
+import './Habitaciones.mobile.css';
 
 const PLANES_TARIFARIOS = [
   {
@@ -231,9 +232,6 @@ export default function Habitaciones() {
           </div>
           <div className="subnav-actions">
             <span className="price-match-tag"><Tag size={13} /> Igualamos el precio</span>
-            <button type="button" className="btn-subnav-cta" onClick={() => scrollASeccion('tabla-comparativa')}>
-              Reservar ahora
-            </button>
           </div>
         </div>
       </div>

@@ -1,10 +1,11 @@
-﻿import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { fetchGaleria } from '../../services/api';
 import { 
   Database, AlertTriangle, Loader2, Sparkles, X, 
   Maximize2, RefreshCw, ChevronLeft, ChevronRight, ShieldCheck 
 } from 'lucide-react';
 import './Galeria.css';
+import './Galeria.mobile.css';
 
 // Galería fotográfica oficial de alta resolución de Grand Fiesta Americana Riviera Cancún
 const GALERIA_FALLBACK = [

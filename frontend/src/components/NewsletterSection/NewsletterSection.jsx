@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mail, CheckCircle2, Send } from 'lucide-react';
 import './NewsletterSection.css';
+import './NewsletterSection.mobile.css';
 
 export default function NewsletterSection() {
   const [email, setEmail] = useState('');

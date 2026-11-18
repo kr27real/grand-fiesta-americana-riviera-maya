@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, KeyRound, CreditCard, Sparkles, Headphones, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 import './ServicesBar.css';
+import './ServicesBar.mobile.css';
 
 const services = [
   {

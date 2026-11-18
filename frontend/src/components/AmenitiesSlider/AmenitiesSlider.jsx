@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight, Plane, Wifi, Waves } from 'lucide-react';
 import './AmenitiesSlider.css';
+import './AmenitiesSlider.mobile.css';
 
 const amenities = [
   {
