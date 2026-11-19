@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Eye, EyeOff, ShieldCheck, UserCheck, RefreshCw, Lock, Mail, Phone, Globe, Award, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, RefreshCw, Lock, Mail, Phone, Globe, Award } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import './LoginModal.css';
 import './LoginModal.mobile.css';
@@ -77,6 +77,21 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
 
   const fortaleza = evaluarFortaleza(passwordRegistro);
 
+  // Helper unificado para guardar sesión y token JWT en todas las llaves usadas por api.js y AuthContext
+  const persistirSesion = (usuarioData, jwtToken) => {
+    if (jwtToken) {
+      localStorage.setItem('gfa_jwt_token', jwtToken);
+      localStorage.setItem('token_gfa', jwtToken);
+      localStorage.setItem('token', jwtToken);
+    }
+    if (iniciarSesion) {
+      iniciarSesion(usuarioData, jwtToken);
+    } else {
+      localStorage.setItem('usuario_gfa', JSON.stringify(usuarioData));
+      window.dispatchEvent(new Event('gfa_sesion_cambiada'));
+    }
+  };
+
   // Submit Login
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -84,7 +99,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
     setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:5000/api/usuarios/login', {
+      const res = await fetch('/api/usuarios/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ identificador, password: passwordLogin })
@@ -93,13 +108,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Credenciales inválidas.');
 
-      if (iniciarSesion) {
-        iniciarSesion(data.usuario, data.token);
-      } else {
-        localStorage.setItem('usuario_gfa', JSON.stringify(data.usuario));
-        localStorage.setItem('token_gfa', data.token);
-        window.dispatchEvent(new Event('gfa_sesion_cambiada'));
-      }
+      persistirSesion(data.usuario, data.token);
 
       if (onLoginSuccess) onLoginSuccess(data.usuario, data.token);
       onClose();
@@ -132,7 +141,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
 
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/usuarios/registro', {
+      const res = await fetch('/api/usuarios/registro', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -149,13 +158,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'No se pudo completar el registro.');
 
-      if (iniciarSesion) {
-        iniciarSesion(data.usuario, data.token);
-      } else {
-        localStorage.setItem('usuario_gfa', JSON.stringify(data.usuario));
-        localStorage.setItem('token_gfa', data.token);
-        window.dispatchEvent(new Event('gfa_sesion_cambiada'));
-      }
+      persistirSesion(data.usuario, data.token);
 
       if (onLoginSuccess) onLoginSuccess(data.usuario, data.token);
       onClose();
@@ -179,7 +182,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
 
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/usuarios/recuperar-password', {
+      const res = await fetch('/api/usuarios/recuperar-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: emailRecuperacion })
@@ -213,7 +216,7 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
 
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:5000/api/usuarios/restablecer-password', {
+      const res = await fetch('/api/usuarios/restablecer-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

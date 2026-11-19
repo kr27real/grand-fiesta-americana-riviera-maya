@@ -1,41 +1,37 @@
 const express = require('express');
 const cors = require('cors');
-const sql = require('mssql');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
+
+const { sql, poolPromise } = require('./db');
 const { validarReservacion } = require('./validators/reservacion.validator');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'gfa_secret_key_ultra_secure_2026';
 
-// Configuración de base de datos SQL Server
-const dbConfig = {
-    user: process.env.DB_USER || 'sa',
-    password: process.env.DB_PASSWORD || '123456',
-    server: process.env.DB_SERVER || 'localhost',
-    database: process.env.DB_DATABASE || 'HotelGranFiestaAmericanaDB',
-    options: {
-        encrypt: false,
-        trustServerCertificate: true,
-        enableArithAbort: true
-    }
-};
-
-const poolPromise = new sql.ConnectionPool(dbConfig)
-    .connect()
-    .then(pool => {
-        console.log(`Conectado exitosamente a SQL Server: ${dbConfig.database}`);
-        return pool;
-    })
-    .catch(err => {
-        console.error('Error crítico al conectar a SQL Server:', err.message);
-        process.exit(1);
-    });
-
 app.use(cors());
 app.use(express.json());
+
+// ==========================================
+// MIDDLEWARE DE AUTENTICACIÓN JWT
+// ==========================================
+const verificarToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Acceso denegado. Token de sesión no proporcionado.' });
+    }
+
+    const token = authHeader.split(' ')[1];
+    try {
+        const decoded = jwt.verify(token, JWT_SECRET);
+        req.usuario = decoded;
+        next();
+    } catch (err) {
+        return res.status(401).json({ error: 'Sesión expirada o token inválido. Inicia sesión nuevamente.' });
+    }
+};
 
 // ==========================================
 // 1. CATÁLOGOS PÚBLICOS DEL RESORT
@@ -64,8 +60,9 @@ app.get('/api/experiencias', async (req, res) => {
         res.status(500).json({ error: 'Error al consultar experiencias exclusivas' });
     }
 });
-// Consultar experiencias agendadas de un socio
-app.get('/api/experiencias/usuario/:id', async (req, res) => {
+
+// Consultar experiencias agendadas de un socio (Protegida)
+app.get('/api/experiencias/usuario/:id', verificarToken, async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await poolPromise;
@@ -86,8 +83,8 @@ app.get('/api/experiencias/usuario/:id', async (req, res) => {
     }
 });
 
-// Agendar nueva experiencia o cita en Spa
-app.post('/api/experiencias/reservar', async (req, res) => {
+// Agendar nueva experiencia o cita en Spa (Protegida)
+app.post('/api/experiencias/reservar', verificarToken, async (req, res) => {
     try {
         const {
             usuario_id,
@@ -111,6 +108,7 @@ app.post('/api/experiencias/reservar', async (req, res) => {
         const pool = await poolPromise;
         const folioExp = `EXP-${Math.floor(100000 + Math.random() * 900000)}`;
 
+        const uidFinal = usuario_id || req.usuario.usuario_id;
         const tituloFinal = titulo_experiencia || nombre_experiencia || 'Experiencia Exclusiva Resort & Spa';
         const fechaFinal = fecha_cita || fecha_experiencia || new Date().toISOString().split('T')[0];
         const horaFinal = horario_cita || hora_experiencia || '16:00';
@@ -119,7 +117,7 @@ app.post('/api/experiencias/reservar', async (req, res) => {
         const notasFinal = notas_especiales || comentarios || '';
 
         const result = await pool.request()
-            .input('uid', sql.Int, usuario_id || 2)
+            .input('uid', sql.Int, uidFinal)
             .input('expId', sql.Int, experiencia_id || null)
             .input('folio', sql.VarChar(30), folioExp)
             .input('titulo', sql.VarChar(150), tituloFinal)
@@ -208,7 +206,7 @@ app.get('/api/eventos/espacios', async (req, res) => {
     }
 });
 
-// Cotizar Evento MICE
+// Cotizar Evento MICE (Pública)
 app.post('/api/eventos/cotizar', async (req, res) => {
     try {
         const { espacio_id, nombre_contacto, email, telefono, tipo_evento, fecha_evento, num_asistentes, comentarios } = req.body;
@@ -246,12 +244,28 @@ app.get('/api/galeria', async (req, res) => {
     }
 });
 
+// Servicios Adicionales
+app.get('/api/servicios-adicionales', async (req, res) => {
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .query("SELECT * FROM dbo.ServiciosAdicionales WHERE activo = 1 ORDER BY categoria ASC, precio_unitario ASC");
+        res.json({ ok: true, data: result.recordset });
+    } catch (err) {
+        console.error('Error al consultar servicios adicionales:', err);
+        res.status(500).json({ error: 'Error al consultar catálogo de servicios: ' + err.message });
+    }
+});
+
 // ==========================================
 // 2. MÓDULO DE AUTENTICACIÓN Y SEGURIDAD
 // ==========================================
 
-// Registro de Socios
+// Registro de Socios (Con transacción para Usuario + Fiesta Card)
 app.post('/api/usuarios/registro', async (req, res) => {
+    const pool = await poolPromise;
+    const transaction = new sql.Transaction(pool);
+
     try {
         const { tratamiento, nombres, apellidos, email, password, telefono, pais, codigo_promocional } = req.body;
 
@@ -259,7 +273,6 @@ app.post('/api/usuarios/registro', async (req, res) => {
             return res.status(400).json({ error: 'Todos los campos obligatorios deben completarse.' });
         }
 
-        const pool = await poolPromise;
         const userExists = await pool.request()
             .input('email', sql.VarChar(100), email.trim().toLowerCase())
             .query("SELECT usuario_id FROM dbo.Usuarios WHERE LOWER(email) = @email");
@@ -273,7 +286,10 @@ app.post('/api/usuarios/registro', async (req, res) => {
         const randomFR = 'FR-' + Math.floor(100000 + Math.random() * 900000);
         const telSeguro = telefono ? String(telefono).trim() : '';
 
-        const insertResult = await pool.request()
+        await transaction.begin();
+
+        const reqUser = new sql.Request(transaction);
+        const insertResult = await reqUser
             .input('tratamiento', sql.VarChar(10), tratamiento || 'Sr.')
             .input('nombres', sql.VarChar(80), nombres.trim())
             .input('apellidos', sql.VarChar(80), apellidos.trim())
@@ -304,9 +320,9 @@ app.post('/api/usuarios/registro', async (req, res) => {
 
         const nuevoUsuario = insertResult.recordset[0];
 
-        // Crear Fiesta Card digital
         const maskNum = `4829 ${Math.floor(1000 + Math.random() * 9000)} ${Math.floor(1000 + Math.random() * 9000)} ${Math.floor(1000 + Math.random() * 9000)}`;
-        await pool.request()
+        const reqCard = new sql.Request(transaction);
+        await reqCard
             .input('uid', sql.Int, nuevoUsuario.usuario_id)
             .input('num', sql.VarChar(19), maskNum)
             .query(`
@@ -318,6 +334,8 @@ app.post('/api/usuarios/registro', async (req, res) => {
                 )
             `);
 
+        await transaction.commit();
+
         const token = jwt.sign({ usuario_id: nuevoUsuario.usuario_id, email: nuevoUsuario.email }, JWT_SECRET, { expiresIn: '7d' });
 
         res.status(201).json({
@@ -328,6 +346,9 @@ app.post('/api/usuarios/registro', async (req, res) => {
         });
 
     } catch (err) {
+        if (transaction._aborted === false) {
+            await transaction.rollback().catch(() => {});
+        }
         console.error('Error en registro:', err);
         res.status(500).json({ error: 'Error al registrar socio en SQL Server: ' + err.message });
     }
@@ -475,11 +496,10 @@ app.post('/api/usuarios/restablecer-password', async (req, res) => {
 });
 
 // ==========================================
-// 3. PERFIL DEL SOCIO Y LEALTAD
+// 3. PERFIL DEL SOCIO Y LEALTAD (PROTEGIDAS)
 // ==========================================
 
-// Consulta de Perfil
-app.get('/api/usuarios/perfil/:id', async (req, res) => {
+app.get('/api/usuarios/perfil/:id', verificarToken, async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await poolPromise;
@@ -505,8 +525,7 @@ app.get('/api/usuarios/perfil/:id', async (req, res) => {
     }
 });
 
-// Actualización Unificada de Perfil
-app.put(['/api/usuarios/perfil/:id', '/api/usuarios/:id'], async (req, res) => {
+app.put(['/api/usuarios/perfil/:id', '/api/usuarios/:id'], verificarToken, async (req, res) => {
     try {
         const { id } = req.params;
         const { 
@@ -573,10 +592,8 @@ app.put(['/api/usuarios/perfil/:id', '/api/usuarios/:id'], async (req, res) => {
         res.status(500).json({ error: 'Error al actualizar perfil: ' + err.message });
     }
 });
-// ==========================================
-// ACTUALIZAR PREFERENCIAS DE SUITE DEL SOCIO
-// ==========================================
-app.put('/api/usuarios/preferencias/:id', async (req, res) => {
+
+app.put('/api/usuarios/preferencias/:id', verificarToken, async (req, res) => {
     try {
         const { id } = req.params;
         const { preferencia_cama, preferencia_piso, preferencias_adicionales } = req.body;
@@ -616,7 +633,7 @@ app.put('/api/usuarios/preferencias/:id', async (req, res) => {
 });
 
 // Fiesta Card Digital
-app.get(['/api/tarjeta-fiesta/:id', '/api/usuarios/fiesta-card/:id', '/api/tarjetas-fiesta-card/usuario/:id'], async (req, res) => {
+app.get(['/api/tarjeta-fiesta/:id', '/api/usuarios/fiesta-card/:id', '/api/tarjetas-fiesta-card/usuario/:id'], verificarToken, async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await poolPromise;
@@ -707,11 +724,10 @@ app.all(['/api/reservaciones/buscar'], async (req, res) => {
 });
 
 // ==========================================
-// 5. RESERVACIONES: CREACIÓN Y GESTIÓN
+// 5. RESERVACIONES: TRANSACCIÓN ATÓMICA Y CONTROL DE TRASLAPES
 // ==========================================
 
-// Consulta general
-app.get('/api/reservaciones', async (req, res) => {
+app.get('/api/reservaciones', verificarToken, async (req, res) => {
     try {
         const pool = await poolPromise;
         const result = await pool.request().query(`
@@ -727,8 +743,7 @@ app.get('/api/reservaciones', async (req, res) => {
     }
 });
 
-// Historial por Usuario
-app.get('/api/reservaciones/usuario/:id', async (req, res) => {
+app.get('/api/reservaciones/usuario/:id', verificarToken, async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await poolPromise;
@@ -753,8 +768,11 @@ app.get('/api/reservaciones/usuario/:id', async (req, res) => {
     }
 });
 
-// Crear nueva reservación (POST)
-app.post('/api/reservaciones', async (req, res) => {
+// Crear nueva reservación con validación, control de traslapes y transacción SQL
+app.post('/api/reservaciones', verificarToken, validarReservacion, async (req, res) => {
+    const pool = await poolPromise;
+    const transaction = new sql.Transaction(pool);
+
     try {
         const {
             usuario_id, suite_id, fecha_llegada, fecha_salida, noches,
@@ -764,11 +782,41 @@ app.post('/api/reservaciones', async (req, res) => {
             puntos_ganados, puntos_canjeados
         } = req.body;
 
-        if (!usuario_id || !suite_id || !fecha_llegada || !fecha_salida || !total_general) {
+        const uidFinal = parseInt(usuario_id || req.usuario.usuario_id, 10);
+        const sidFinal = parseInt(suite_id, 10);
+
+        if (!uidFinal || !sidFinal || !fecha_llegada || !fecha_salida || !total_general) {
             return res.status(400).json({ error: 'Faltan campos obligatorios para procesar la reservación.' });
         }
 
-        const pool = await poolPromise;
+        if (new Date(fecha_salida) <= new Date(fecha_llegada)) {
+            return res.status(400).json({ error: 'La fecha de salida debe ser posterior a la fecha de llegada.' });
+        }
+
+        await transaction.begin(sql.ISOLATION_LEVEL.SERIALIZABLE);
+
+        // 1. Verificar disponibilidad / evitar traslapes de fechas en la misma suite
+        const reqOverlap = new sql.Request(transaction);
+        const overlapCheck = await reqOverlap
+            .input('sid', sql.Int, sidFinal)
+            .input('llegada', sql.Date, fecha_llegada)
+            .input('salida', sql.Date, fecha_salida)
+            .query(`
+                SELECT TOP 1 folio_confirmacion
+                FROM dbo.Reservaciones WITH (UPDLOCK, HOLDLOCK)
+                WHERE suite_id = @sid
+                  AND estatus_reservacion <> 'CANCELADA'
+                  AND fecha_llegada < @salida
+                  AND fecha_salida > @llegada
+            `);
+
+        if (overlapCheck.recordset.length > 0) {
+            await transaction.rollback();
+            return res.status(409).json({
+                error: 'La suite seleccionada ya no está disponible para el rango de fechas elegido.'
+            });
+        }
+
         const folioConfirmacion = 'GFA-' + Math.floor(100000 + Math.random() * 900000);
 
         let estatusFinal = estatus_reservacion;
@@ -778,28 +826,46 @@ app.post('/api/reservaciones', async (req, res) => {
                 : 'Confirmada';
         }
 
-        const sub = subtotal ? parseFloat(subtotal) : parseFloat(total_general) / 1.16;
+        const totalNum = parseFloat(total_general);
+        const sub = subtotal ? parseFloat(subtotal) : totalNum / 1.16;
         const impIva = iva ? parseFloat(iva) : sub * 0.16;
         const impIshe = ishe ? parseFloat(ishe) : sub * 0.05;
         const impSan = (saneamiento_ambiental || saneamiento) ? parseFloat(saneamiento_ambiental || saneamiento) : 75.00;
         const cardTerm = terminacion_tarjeta ? String(terminacion_tarjeta).slice(-4) : '4829';
         const notas = (peticiones_especiales || peticiones || '').trim() || null;
+        const totalNoches = noches ? parseInt(noches, 10) : 1;
 
-        const result = await pool.request()
-            .input('uid', sql.Int, parseInt(usuario_id))
-            .input('sid', sql.Int, parseInt(suite_id))
+        // 2. Validar saldo si paga con Fiesta Card antes de insertar
+        if (metodo_pago_tipo === 'fiesta_card' && estatusFinal === 'Confirmada') {
+            const reqSaldo = new sql.Request(transaction);
+            const cardCheck = await reqSaldo
+                .input('uid', sql.Int, uidFinal)
+                .query("SELECT saldo_disponible FROM dbo.TarjetasFiestaCard WHERE usuario_id = @uid");
+
+            const saldoActual = Number(cardCheck.recordset[0]?.saldo_disponible || 0);
+            if (saldoActual < totalNum) {
+                await transaction.rollback();
+                return res.status(400).json({ error: 'Saldo insuficiente en tu Fiesta Card para cubrir el total de la estancia.' });
+            }
+        }
+
+        // 3. Insertar Reservación
+        const reqInsert = new sql.Request(transaction);
+        const result = await reqInsert
+            .input('uid', sql.Int, uidFinal)
+            .input('sid', sql.Int, sidFinal)
             .input('folio', sql.VarChar(50), folioConfirmacion)
             .input('llegada', sql.Date, fecha_llegada)
             .input('salida', sql.Date, fecha_salida)
-            .input('noches', sql.Int, noches ? parseInt(noches) : 1)
-            .input('adultos', sql.Int, adultos ? parseInt(adultos) : 2)
-            .input('ninos', sql.Int, ninos ? parseInt(ninos) : 0)
+            .input('noches', sql.Int, totalNoches)
+            .input('adultos', sql.Int, adultos ? parseInt(adultos, 10) : 2)
+            .input('ninos', sql.Int, ninos ? parseInt(ninos, 10) : 0)
             .input('peticiones', sql.VarChar(500), notas)
             .input('subtotal', sql.Decimal(12, 2), sub)
             .input('iva', sql.Decimal(12, 2), impIva)
             .input('ishe', sql.Decimal(12, 2), impIshe)
             .input('saneamiento', sql.Decimal(12, 2), impSan)
-            .input('total', sql.Decimal(12, 2), parseFloat(total_general))
+            .input('total', sql.Decimal(12, 2), totalNum)
             .input('terminacion', sql.VarChar(4), cardTerm)
             .input('estatus', sql.VarChar(30), estatusFinal)
             .query(`
@@ -816,29 +882,34 @@ app.post('/api/reservaciones', async (req, res) => {
                 )
             `);
 
+        // 4. Descontar saldo Fiesta Card si aplica
         if (metodo_pago_tipo === 'fiesta_card' && estatusFinal === 'Confirmada') {
-            await pool.request()
-                .input('uid', sql.Int, parseInt(usuario_id))
-                .input('monto', sql.Decimal(12, 2), parseFloat(total_general))
+            const reqCargo = new sql.Request(transaction);
+            await reqCargo
+                .input('uid', sql.Int, uidFinal)
+                .input('monto', sql.Decimal(12, 2), totalNum)
                 .query(`
                     UPDATE dbo.TarjetasFiestaCard 
-                    SET saldo_disponible = CASE WHEN saldo_disponible >= @monto THEN saldo_disponible - @monto ELSE 0 END,
+                    SET saldo_disponible = saldo_disponible - @monto,
                         saldo_utilizado = ISNULL(saldo_utilizado, 0) + @monto
                     WHERE usuario_id = @uid
                 `);
         }
 
-        const totalNoches = noches ? parseInt(noches) : 1;
-        await pool.request()
-            .input('uid', sql.Int, parseInt(usuario_id))
+        // 5. Actualizar noches acumuladas del socio
+        const reqNoches = new sql.Request(transaction);
+        await reqNoches
+            .input('uid', sql.Int, uidFinal)
             .input('noches', sql.Int, totalNoches)
             .query("UPDATE dbo.Usuarios SET noches_acumuladas = ISNULL(noches_acumuladas, 0) + @noches WHERE usuario_id = @uid");
 
+        // 6. Actualizar puntos Fiesta Rewards
         const ptsGanados = puntos_ganados ? parseInt(puntos_ganados, 10) : Math.round((sub / 18.5) * 10);
         const ptsCanjeados = puntos_canjeados ? parseInt(puntos_canjeados, 10) : 0;
 
-        await pool.request()
-            .input('uid', sql.Int, parseInt(usuario_id))
+        const reqPuntos = new sql.Request(transaction);
+        await reqPuntos
+            .input('uid', sql.Int, uidFinal)
             .input('ganados', sql.Int, estatusFinal === 'Confirmada' ? ptsGanados : 0)
             .input('canjeados', sql.Int, ptsCanjeados)
             .query(`
@@ -851,6 +922,8 @@ app.post('/api/reservaciones', async (req, res) => {
                 WHERE usuario_id = @uid
             `);
 
+        await transaction.commit();
+
         return res.status(201).json({
             ok: true,
             folio: folioConfirmacion,
@@ -859,33 +932,47 @@ app.post('/api/reservaciones', async (req, res) => {
         });
 
     } catch (err) {
-        console.error('Error al procesar reservación:', err);
+        if (transaction._aborted === false) {
+            await transaction.rollback().catch(() => {});
+        }
+        console.error('Error al procesar reservación (rollback ejecutado):', err);
         res.status(500).json({ error: 'Error al registrar reservación: ' + err.message });
     }
 });
 
-// Cancelar Reservación
-app.put('/api/reservaciones/:id/cancelar', async (req, res) => {
+// Cancelar Reservación (Con transacción para reembolso atómico)
+app.put('/api/reservaciones/:id/cancelar', verificarToken, async (req, res) => {
+    const pool = await poolPromise;
+    const transaction = new sql.Transaction(pool);
+
     try {
         const { id } = req.params;
-        const pool = await poolPromise;
+        await transaction.begin();
 
-        const resQuery = await pool.request()
+        const reqCheck = new sql.Request(transaction);
+        const resQuery = await reqCheck
             .input('rid', sql.Int, id)
             .query("SELECT * FROM dbo.Reservaciones WHERE reservacion_id = @rid");
 
         if (resQuery.recordset.length === 0) {
+            await transaction.rollback();
             return res.status(404).json({ error: 'Reservación no encontrada.' });
         }
 
         const reserva = resQuery.recordset[0];
+        if (reserva.estatus_reservacion === 'CANCELADA') {
+            await transaction.rollback();
+            return res.status(400).json({ error: 'Esta reservación ya fue cancelada previamente.' });
+        }
 
-        await pool.request()
+        const reqCancel = new sql.Request(transaction);
+        await reqCancel
             .input('rid', sql.Int, id)
             .query("UPDATE dbo.Reservaciones SET estatus_reservacion = 'CANCELADA' WHERE reservacion_id = @rid");
 
         if (reserva.total_general && reserva.usuario_id) {
-            await pool.request()
+            const reqRefund = new sql.Request(transaction);
+            await reqRefund
                 .input('uid', sql.Int, reserva.usuario_id)
                 .input('monto', sql.Decimal(12, 2), parseFloat(reserva.total_general))
                 .query(`
@@ -896,15 +983,19 @@ app.put('/api/reservaciones/:id/cancelar', async (req, res) => {
                 `);
         }
 
+        await transaction.commit();
         res.json({ ok: true, mensaje: 'Reservación cancelada exitosamente y saldo reembolsado a tu cuenta.' });
     } catch (err) {
+        if (transaction._aborted === false) {
+            await transaction.rollback().catch(() => {});
+        }
         console.error('Error al cancelar reservación:', err);
         res.status(500).json({ error: 'Error al cancelar la reservación: ' + err.message });
     }
 });
 
 // Purgar historial cancelado
-app.delete('/api/reservaciones/canceladas/usuario/:id', async (req, res) => {
+app.delete('/api/reservaciones/canceladas/usuario/:id', verificarToken, async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await poolPromise;
@@ -920,11 +1011,10 @@ app.delete('/api/reservaciones/canceladas/usuario/:id', async (req, res) => {
 });
 
 // ==========================================
-// 6. FACTURACIÓN FISCAL SAT CFDI 4.0
+// 6. FACTURACIÓN FISCAL SAT CFDI 4.0 (PROTEGIDAS)
 // ==========================================
 
-// Consultar facturas por usuario
-app.get('/api/facturas/usuario/:id', async (req, res) => {
+app.get('/api/facturas/usuario/:id', verificarToken, async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await poolPromise;
@@ -945,8 +1035,7 @@ app.get('/api/facturas/usuario/:id', async (req, res) => {
     }
 });
 
-// Emitir / Timbrar factura CFDI 4.0
-app.post('/api/facturas', async (req, res) => {
+app.post('/api/facturas', verificarToken, async (req, res) => {
     try {
         const pool = await poolPromise;
         const folio_reservacion = String(req.body.folio_confirmacion || req.body.folio_reservacion || req.body.folio || '').trim();
@@ -1018,8 +1107,7 @@ app.post('/api/facturas', async (req, res) => {
     }
 });
 
-// Cancelar / Eliminar Factura por Folio
-app.delete('/api/facturas/:folio', async (req, res) => {
+app.delete('/api/facturas/:folio', verificarToken, async (req, res) => {
     try {
         const { folio } = req.params;
         const pool = await poolPromise;
@@ -1043,8 +1131,7 @@ app.delete('/api/facturas/:folio', async (req, res) => {
 // 7. BILLETERA BANCARIA & TICKETS CONCIERGE
 // ==========================================
 
-// Billetera
-app.get(['/api/billetera/usuario/:id', '/api/billetera/:id'], async (req, res) => {
+app.get(['/api/billetera/usuario/:id', '/api/billetera/:id'], verificarToken, async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await poolPromise;
@@ -1060,8 +1147,7 @@ app.get(['/api/billetera/usuario/:id', '/api/billetera/:id'], async (req, res) =
         res.json({
             ok: true,
             fiesta_card: fCard.recordset[0] || null,
-            tarjetas_bancarias: tarjetas.recordset,
-            ...tarjetas.recordset
+            tarjetas_bancarias: tarjetas.recordset
         });
     } catch (err) {
         console.error('Error al consultar billetera:', err);
@@ -1069,13 +1155,13 @@ app.get(['/api/billetera/usuario/:id', '/api/billetera/:id'], async (req, res) =
     }
 });
 
-app.post('/api/billetera', async (req, res) => {
+app.post('/api/billetera', verificarToken, async (req, res) => {
     try {
         const { usuario_id, alias_tarjeta, banco_emisor, marca_tarjeta, tipo_cuenta, numero_enmascarado, titular_nombre, mes_expiracion, anio_expiracion, es_preferida } = req.body;
         const pool = await poolPromise;
 
         const result = await pool.request()
-            .input('uid', sql.Int, usuario_id)
+            .input('uid', sql.Int, usuario_id || req.usuario.usuario_id)
             .input('alias', sql.VarChar(50), alias_tarjeta || 'Tarjeta Personal')
             .input('banco', sql.VarChar(50), banco_emisor || 'Banco Emisor')
             .input('marca', sql.VarChar(20), marca_tarjeta || 'Visa')
@@ -1107,7 +1193,7 @@ app.post('/api/billetera', async (req, res) => {
     }
 });
 
-app.delete('/api/billetera/:id', async (req, res) => {
+app.delete('/api/billetera/:id', verificarToken, async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await poolPromise;
@@ -1122,12 +1208,11 @@ app.delete('/api/billetera/:id', async (req, res) => {
     }
 });
 
-app.put('/api/billetera/:id/predeterminada', async (req, res) => {
+app.put('/api/billetera/:id/predeterminada', verificarToken, async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await poolPromise;
 
-        // Obtener el usuario_id dueño de esa tarjeta
         const info = await pool.request()
             .input('tid', sql.Int, id)
             .query("SELECT usuario_id FROM dbo.TarjetasBancariasUsuario WHERE tarjeta_bancaria_id = @tid");
@@ -1135,7 +1220,6 @@ app.put('/api/billetera/:id/predeterminada', async (req, res) => {
         if (info.recordset.length === 0) return res.status(404).json({ error: 'Tarjeta no encontrada' });
         const uid = info.recordset[0].usuario_id;
 
-        // Desmarcar las demás y marcar la elegida
         await pool.request().input('uid', sql.Int, uid).query("UPDATE dbo.TarjetasBancariasUsuario SET es_preferida = 0 WHERE usuario_id = @uid");
         await pool.request().input('tid', sql.Int, id).query("UPDATE dbo.TarjetasBancariasUsuario SET es_preferida = 1 WHERE tarjeta_bancaria_id = @tid");
 
@@ -1154,14 +1238,14 @@ const handlerGetTickets = async (req, res) => {
             .input('uid', sql.Int, id)
             .query("SELECT * FROM dbo.TicketsContacto WHERE usuario_id = @uid ORDER BY creado_en DESC");
 
-        res.json({ ok: true, data: result.recordset, tickets: result.recordset, ...result.recordset });
+        res.json({ ok: true, data: result.recordset, tickets: result.recordset });
     } catch (err) {
         console.error('Error al consultar tickets:', err);
         res.status(500).json({ ok: false, error: 'Error al consultar tickets' });
     }
 };
 
-app.get(['/api/tickets/usuario/:id', '/api/contacto/usuario/:usuario_id', '/api/contacto/usuario/:id'], handlerGetTickets);
+app.get(['/api/tickets/usuario/:id', '/api/contacto/usuario/:usuario_id', '/api/contacto/usuario/:id'], verificarToken, handlerGetTickets);
 
 const handlerPostTickets = async (req, res) => {
     try {
@@ -1197,23 +1281,8 @@ const handlerPostTickets = async (req, res) => {
         res.status(500).json({ ok: false, error: 'Error al registrar ticket: ' + err.message });
     }
 };
-// ==========================================
-// SERVICIOS ADICIONALES Y PERSONALIZACIÓN DE ESTANCIA
-// ==========================================
-app.get('/api/servicios-adicionales', async (req, res) => {
-    try {
-        const pool = await poolPromise;
-        const result = await pool.request()
-            .query("SELECT * FROM dbo.ServiciosAdicionales WHERE activo = 1 ORDER BY categoria ASC, precio_unitario ASC");
-        res.json({ ok: true, data: result.recordset });
-    } catch (err) {
-        console.error('Error al consultar servicios adicionales:', err);
-        res.status(500).json({ error: 'Error al consultar catálogo de servicios: ' + err.message });
-    }
-});
 
 app.post(['/api/tickets', '/api/contacto', '/api/contacto/tickets'], handlerPostTickets);
-
 
 // ==========================================
 // INICIALIZACIÓN

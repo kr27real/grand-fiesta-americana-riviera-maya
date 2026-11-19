@@ -4,7 +4,7 @@ import FiestaCard from '../../components/FiestaCard/FiestaCard';
 import './PerfilSocio.css';
 import './PerfilSocio.mobile.css';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = '/api';
 
 const NIVELES_REWARDS = [
   {

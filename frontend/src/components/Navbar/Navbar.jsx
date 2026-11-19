@@ -30,15 +30,31 @@ export default function Navbar() {
   // Sincronizar puntos reales desde TarjetasFiestaCard en SQL Server
   useEffect(() => {
     const uid = usuario?.usuario_id || usuario?.id;
-    if (!uid) {
+    const token =
+      localStorage.getItem('gfa_jwt_token') ||
+      localStorage.getItem('token_gfa') ||
+      localStorage.getItem('token');
+
+    if (!uid || !token || token === 'null' || token === 'undefined' || token === 'session_token_valid') {
       setPuntosReales(null);
       return;
     }
-    const token = localStorage.getItem('token') || localStorage.getItem('token_gfa') || localStorage.getItem('gfa_jwt_token');
+
     fetch(`/api/billetera/${uid}`, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {}
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`
+      }
     })
-      .then(res => (res.ok ? res.json() : null))
+      .then(res => {
+        if (res.status === 401) {
+          localStorage.removeItem('gfa_jwt_token');
+          localStorage.removeItem('token_gfa');
+          localStorage.removeItem('token');
+          return null;
+        }
+        return res.ok ? res.json() : null;
+      })
       .then(data => {
         const pts = data?.fiesta_card?.puntos_rewards_acumulados ?? data?.puntos_rewards_acumulados;
         if (pts !== undefined && pts !== null) {
@@ -60,6 +76,9 @@ export default function Navbar() {
 
   const handleCerrarSesion = () => {
     setMenuMovilAbierto(false);
+    localStorage.removeItem('gfa_jwt_token');
+    localStorage.removeItem('token_gfa');
+    localStorage.removeItem('token');
     cerrarSesion();
     navigate('/');
   };
@@ -227,7 +246,9 @@ export default function Navbar() {
       <LoginModal
         isOpen={loginModalAbierto}
         onClose={cerrarLogin}
-        onLoginSuccess={(user, token) => iniciarSesion(user, token || 'session_token_valid')}
+        onLoginSuccess={(user, token) => {
+          if (token) iniciarSesion(user, token);
+        }}
       />
 
     </header>
