@@ -2,6 +2,11 @@ const express = require('express');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
+const crypto = require('crypto');
+const hpp = require('hpp');
+const zxcvbn = require('zxcvbn');
 require('dotenv').config();
 
 const { sql, poolPromise } = require('./db');
@@ -12,10 +17,109 @@ const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'gfa_secret_key_ultra_secure_2026';
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '100kb' }));
+app.use(hpp());
 
 // ==========================================
-// MIDDLEWARE DE AUTENTICACIÓN JWT
+// ESCUDOS DE SEGURIDAD (HELMET, RATE LIMIT & XSS)
+// ==========================================
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' }
+}));
+
+// Limitar intentos de fuerza bruta en autenticación y recuperación (máx. 15 intentos / 15 min)
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: process.env.NODE_ENV === 'test' ? 1000 : 15,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Demasiados intentos de acceso desde esta IP. Por seguridad, espera 15 minutos.' }
+});
+
+// Limitar abuso general de API (máx. 200 peticiones / minuto)
+const apiLimiter = rateLimit({
+    windowMs: 60 * 1000,
+    max: process.env.NODE_ENV === 'test' ? 2000 : 200,
+    standardHeaders: true,
+    legacyHeaders: false,
+    message: { error: 'Límite de solicitudes excedido. Intenta de nuevo en un momento.' }
+});
+
+app.use('/api/', apiLimiter);
+app.use(['/api/usuarios/login', '/api/usuarios/registro', '/api/usuarios/recuperar-password', '/api/usuarios/restablecer-password'], authLimiter);
+
+// Helper de Auditoría Forense en SQL Server
+const registrarEventoSeguridad = async (evento, detalle, ip = '0.0.0.0', usuarioId = null) => {
+    try {
+        const pool = await poolPromise;
+        await pool.request()
+            .input('evento', sql.VarChar(80), evento)
+            .input('detalle', sql.VarChar(500), String(detalle).slice(0, 500))
+            .input('ip', sql.VarChar(60), String(ip).slice(0, 60))
+            .input('uid', sql.Int, usuarioId)
+            .query(`
+                IF OBJECT_ID('dbo.BitacoraSeguridad', 'U') IS NULL
+                BEGIN
+                    CREATE TABLE dbo.BitacoraSeguridad (
+                        bitacora_id INT IDENTITY(1,1) PRIMARY KEY,
+                        evento VARCHAR(80) NOT NULL,
+                        detalle VARCHAR(500) NOT NULL,
+                        ip_origen VARCHAR(60) NULL,
+                        usuario_id INT NULL,
+                        fecha_evento DATETIME NOT NULL DEFAULT GETDATE()
+                    );
+                END
+                INSERT INTO dbo.BitacoraSeguridad (evento, detalle, ip_origen, usuario_id, fecha_evento)
+                VALUES (@evento, @detalle, @ip, @uid, GETDATE());
+            `);
+    } catch (_) {
+        // Silencioso para no interrumpir operaciones críticas
+    }
+};
+
+// Sanitizador recursivo anti-XSS / inyección de etiquetas HTML en req.body
+const sanitizarObjeto = (obj) => {
+    if (typeof obj === 'string') {
+        return obj
+            .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+            .replace(/<[^>]*>?/gm, '')
+            .replace(/javascript:/gi, '')
+            .trim();
+    }
+    if (Array.isArray(obj)) {
+        return obj.map(sanitizarObjeto);
+    }
+    if (obj && typeof obj === 'object') {
+        for (const key of Object.keys(obj)) {
+            if (key.toLowerCase().includes('password')) continue;
+            obj[key] = sanitizarObjeto(obj[key]);
+        }
+    }
+    return obj;
+};
+
+app.use((req, res, next) => {
+    if (req.body) req.body = sanitizarObjeto(req.body);
+    next();
+});
+
+// Política estricta de contraseña con análisis de entropía NIST (zxcvbn)
+const validarPoliticaPassword = (pwd) => {
+    if (typeof pwd !== 'string' || pwd.length < 8) {
+        return 'La contraseña debe tener al menos 8 caracteres.';
+    }
+    if (!/[A-Z]/.test(pwd) || !/[a-z]/.test(pwd) || !/[0-9]/.test(pwd) || !/[^A-Za-z0-9]/.test(pwd)) {
+        return 'La contraseña debe incluir al menos una mayúscula, una minúscula, un número y un carácter especial (#, @, $, !, %).';
+    }
+    const analisis = zxcvbn(pwd);
+    if (analisis.score < 3) {
+        return 'Contraseña vulnerable según estándar NIST: evita secuencias comunes, fechas o palabras predecibles.';
+    }
+    return null;
+};
+
+// ==========================================
+// MIDDLEWARES DE AUTENTICACIÓN JWT Y ANTI-IDOR
 // ==========================================
 const verificarToken = (req, res, next) => {
     const authHeader = req.headers['authorization'] || req.headers['Authorization'];
@@ -32,6 +136,62 @@ const verificarToken = (req, res, next) => {
         return res.status(401).json({ error: 'Sesión expirada o token inválido. Inicia sesión nuevamente.' });
     }
 };
+
+const verificarPropietario = (req, res, next) => {
+    const idSolicitado = Number(req.params.id || req.params.usuario_id);
+    if (!req.usuario || Number(req.usuario.usuario_id) !== idSolicitado) {
+        registrarEventoSeguridad(
+            'INTENTO_IDOR_PARAM',
+            `Token UID ${req.usuario?.usuario_id} intentó acceder al recurso de UID ${idSolicitado} en ${req.originalUrl}`,
+            req.ip,
+            req.usuario?.usuario_id || null
+        );
+        return res.status(403).json({
+            error: 'Acceso denegado (Anti-IDOR): No tienes autorización para consultar recursos de otro socio.'
+        });
+    }
+    next();
+};
+
+const verificarPropietarioBody = (req, res, next) => {
+    if (req.body && req.body.usuario_id !== undefined && req.body.usuario_id !== null) {
+        if (Number(req.body.usuario_id) !== Number(req.usuario.usuario_id)) {
+            registrarEventoSeguridad(
+                'INTENTO_SUPLANTACION_IDOR',
+                `Token UID ${req.usuario.usuario_id} intentó operar sobre UID ${req.body.usuario_id} en ${req.originalUrl}`,
+                req.ip,
+                req.usuario.usuario_id
+            );
+            return res.status(403).json({
+                error: 'Acceso denegado (Anti-Suplantación): El usuario_id no coincide con tu sesión autenticada.'
+            });
+        }
+    }
+    next();
+};
+
+// ==========================================
+// 0. ENDPOINTS DE SEGURIDAD CRIPTOGRÁFICA
+// ==========================================
+app.get('/api/seguridad/captcha', (req, res) => {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let codigo = '';
+    for (let i = 0; i < 5; i++) {
+        codigo += chars.charAt(crypto.randomInt(0, chars.length));
+    }
+    const expira = Date.now() + 3 * 60 * 1000;
+    const firma = crypto
+        .createHmac('sha256', JWT_SECRET)
+        .update(`${codigo}:${expira}`)
+        .digest('hex');
+
+    res.json({
+        ok: true,
+        codigo,
+        captcha_token: `${expira}.${firma}`
+    });
+});
+
 
 // ==========================================
 // 1. CATÁLOGOS PÚBLICOS DEL RESORT
@@ -61,8 +221,8 @@ app.get('/api/experiencias', async (req, res) => {
     }
 });
 
-// Consultar experiencias agendadas de un socio (Protegida)
-app.get('/api/experiencias/usuario/:id', verificarToken, async (req, res) => {
+// Consultar experiencias agendadas de un socio (Protegida + Anti-IDOR)
+app.get('/api/experiencias/usuario/:id', verificarToken, verificarPropietario, async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await poolPromise;
@@ -273,6 +433,11 @@ app.post('/api/usuarios/registro', async (req, res) => {
             return res.status(400).json({ error: 'Todos los campos obligatorios deben completarse.' });
         }
 
+        const errorPwd = validarPoliticaPassword(password);
+        if (errorPwd) {
+            return res.status(400).json({ error: errorPwd });
+        }
+
         const userExists = await pool.request()
             .input('email', sql.VarChar(100), email.trim().toLowerCase())
             .query("SELECT usuario_id FROM dbo.Usuarios WHERE LOWER(email) = @email");
@@ -308,13 +473,17 @@ app.post('/api/usuarios/registro', async (req, res) => {
                     creado_en, FechaRegistro, intentos_fallidos,
                     nivel_socio, noches_acumuladas, preferencia_cama, preferencia_piso
                 )
-                OUTPUT INSERTED.usuario_id, INSERTED.fiesta_rewards_id, INSERTED.nombres, INSERTED.apellidos, INSERTED.email, INSERTED.telefono
+                OUTPUT 
+                    INSERTED.usuario_id, INSERTED.tratamiento, INSERTED.fiesta_rewards_id,
+                    INSERTED.nombres, INSERTED.apellidos, INSERTED.email, INSERTED.telefono,
+                    INSERTED.pais, INSERTED.nivel_socio, INSERTED.noches_acumuladas,
+                    INSERTED.preferencia_cama, INSERTED.preferencia_piso
                 VALUES (
                     @tratamiento, @nombres, @apellidos, @email, @telefono, @pais,
                     @programa_lealtad, @fiesta_rewards_id, @password_hash,
                     @nombres, @apellidos, @programa_lealtad, @promo, @password_hash,
                     GETDATE(), GETDATE(), 0,
-                    'Titanium Privilege', 12, 'King Size', 'Piso Alto - Vista al Mar'
+                    'Titanium Privilege', 0, 'King Size', 'Piso Alto - Vista al Mar'
                 )
             `);
 
@@ -400,6 +569,10 @@ app.post('/api/usuarios/login', async (req, res) => {
                 .input('bloqueado', sql.DateTime, bloqueadoHasta)
                 .query("UPDATE dbo.Usuarios SET intentos_fallidos = @intentos, bloqueado_hasta = @bloqueado WHERE usuario_id = @uid");
 
+            if (intentos >= 5) {
+                return res.status(423).json({ error: 'Cuenta bloqueada preventivamente tras 5 intentos fallidos por 15 minutos.' });
+            }
+
             return res.status(401).json({ error: 'Contraseña incorrecta.' });
         }
 
@@ -455,8 +628,12 @@ app.post('/api/usuarios/recuperar-password', async (req, res) => {
 app.post('/api/usuarios/restablecer-password', async (req, res) => {
     try {
         const { email, codigo_token, nueva_password } = req.body;
-        if (!email || !codigo_token || !nueva_password || nueva_password.length < 8) {
-            return res.status(400).json({ error: 'Datos incompletos o contraseña menor a 8 caracteres.' });
+        if (!email || !codigo_token || !nueva_password) {
+            return res.status(400).json({ error: 'Todos los campos son obligatorios.' });
+        }
+        const errorPwd = validarPoliticaPassword(nueva_password);
+        if (errorPwd) {
+            return res.status(400).json({ error: errorPwd });
         }
 
         const pool = await poolPromise;
@@ -499,7 +676,7 @@ app.post('/api/usuarios/restablecer-password', async (req, res) => {
 // 3. PERFIL DEL SOCIO Y LEALTAD (PROTEGIDAS)
 // ==========================================
 
-app.get('/api/usuarios/perfil/:id', verificarToken, async (req, res) => {
+app.get('/api/usuarios/perfil/:id', verificarToken, verificarPropietario, async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await poolPromise;
@@ -525,7 +702,7 @@ app.get('/api/usuarios/perfil/:id', verificarToken, async (req, res) => {
     }
 });
 
-app.put(['/api/usuarios/perfil/:id', '/api/usuarios/:id'], verificarToken, async (req, res) => {
+app.put(['/api/usuarios/perfil/:id', '/api/usuarios/:id'], verificarToken, verificarPropietario, async (req, res) => {
     try {
         const { id } = req.params;
         const { 
@@ -560,7 +737,9 @@ app.put(['/api/usuarios/perfil/:id', '/api/usuarios/:id'], verificarToken, async
                 preferencias_adicionales = @adic
         `;
 
-        if (password && String(password).trim().length >= 8) {
+        if (password && String(password).trim().length > 0) {
+            const errorPwd = validarPoliticaPassword(String(password).trim());
+            if (errorPwd) return res.status(400).json({ error: errorPwd });
             const salt = await bcrypt.genSalt(10);
             const passHash = await bcrypt.hash(String(password).trim(), salt);
             request.input('pwd', sql.VarChar(255), passHash);
@@ -593,7 +772,7 @@ app.put(['/api/usuarios/perfil/:id', '/api/usuarios/:id'], verificarToken, async
     }
 });
 
-app.put('/api/usuarios/preferencias/:id', verificarToken, async (req, res) => {
+app.put('/api/usuarios/preferencias/:id', verificarToken, verificarPropietario, async (req, res) => {
     try {
         const { id } = req.params;
         const { preferencia_cama, preferencia_piso, preferencias_adicionales } = req.body;
@@ -632,8 +811,8 @@ app.put('/api/usuarios/preferencias/:id', verificarToken, async (req, res) => {
     }
 });
 
-// Fiesta Card Digital
-app.get(['/api/tarjeta-fiesta/:id', '/api/usuarios/fiesta-card/:id', '/api/tarjetas-fiesta-card/usuario/:id'], verificarToken, async (req, res) => {
+// Fiesta Card Digital (Protegida + Anti-IDOR)
+app.get(['/api/tarjeta-fiesta/:id', '/api/usuarios/fiesta-card/:id', '/api/tarjetas-fiesta-card/usuario/:id'], verificarToken, verificarPropietario, async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await poolPromise;
@@ -743,7 +922,7 @@ app.get('/api/reservaciones', verificarToken, async (req, res) => {
     }
 });
 
-app.get('/api/reservaciones/usuario/:id', verificarToken, async (req, res) => {
+app.get('/api/reservaciones/usuario/:id', verificarToken, verificarPropietario, async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await poolPromise;
@@ -960,6 +1139,11 @@ app.put('/api/reservaciones/:id/cancelar', verificarToken, async (req, res) => {
         }
 
         const reserva = resQuery.recordset[0];
+        if (Number(reserva.usuario_id) !== Number(req.usuario.usuario_id)) {
+            await transaction.rollback();
+            return res.status(403).json({ error: 'Acceso denegado (Anti-IDOR): No puedes cancelar una reservación ajena.' });
+        }
+
         if (reserva.estatus_reservacion === 'CANCELADA') {
             await transaction.rollback();
             return res.status(400).json({ error: 'Esta reservación ya fue cancelada previamente.' });
@@ -994,8 +1178,8 @@ app.put('/api/reservaciones/:id/cancelar', verificarToken, async (req, res) => {
     }
 });
 
-// Purgar historial cancelado
-app.delete('/api/reservaciones/canceladas/usuario/:id', verificarToken, async (req, res) => {
+// Purgar historial cancelado (Protegida + Anti-IDOR)
+app.delete('/api/reservaciones/canceladas/usuario/:id', verificarToken, verificarPropietario, async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await poolPromise;
@@ -1014,7 +1198,7 @@ app.delete('/api/reservaciones/canceladas/usuario/:id', verificarToken, async (r
 // 6. FACTURACIÓN FISCAL SAT CFDI 4.0 (PROTEGIDAS)
 // ==========================================
 
-app.get('/api/facturas/usuario/:id', verificarToken, async (req, res) => {
+app.get('/api/facturas/usuario/:id', verificarToken, verificarPropietario, async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await poolPromise;
@@ -1038,6 +1222,7 @@ app.get('/api/facturas/usuario/:id', verificarToken, async (req, res) => {
 app.post('/api/facturas', verificarToken, async (req, res) => {
     try {
         const pool = await poolPromise;
+        const uidToken = Number(req.usuario.usuario_id);
         const folio_reservacion = String(req.body.folio_confirmacion || req.body.folio_reservacion || req.body.folio || '').trim();
         const rfc_receptor = String(req.body.rfc_receptor || req.body.rfc || '').trim().toUpperCase();
         const razon_social = String(req.body.razon_social_receptor || req.body.razon_social || '').trim().toUpperCase();
@@ -1049,6 +1234,10 @@ app.post('/api/facturas', verificarToken, async (req, res) => {
             return res.status(400).json({ error: 'Folio, RFC y Razón Social son requeridos.' });
         }
 
+        if (!/^[A-ZÑ&]{3,4}\d{6}[A-Z0-9]{3}$/.test(rfc_receptor)) {
+            return res.status(400).json({ error: 'Formato de RFC inválido según anexo SAT CFDI 4.0.' });
+        }
+
         const resConsulta = await pool.request()
             .input('folio', sql.VarChar(50), folio_reservacion)
             .query("SELECT TOP 1 * FROM dbo.Reservaciones WHERE folio_confirmacion = @folio");
@@ -1058,6 +1247,20 @@ app.post('/api/facturas', verificarToken, async (req, res) => {
         }
 
         const reserva = resConsulta.recordset[0];
+
+        // Blindaje Anti-IDOR Fiscal: Verificar que la reservación pertenezca al socio autenticado
+        if (Number(reserva.usuario_id) !== uidToken) {
+            registrarEventoSeguridad(
+                'INTENTO_IDOR_FACTURACION',
+                `UID ${uidToken} intentó timbrar CFDI del folio ${folio_reservacion} (UID ${reserva.usuario_id})`,
+                req.ip,
+                uidToken
+            );
+            return res.status(403).json({
+                error: 'Acceso denegado (Anti-IDOR): Solo puedes emitir CFDI de tus propias reservaciones.'
+            });
+        }
+
         const folioFiscalNumero = 'GFA-' + Math.floor(100000 + Math.random() * 900000);
 
         const insertCFDI = `
@@ -1110,6 +1313,43 @@ app.post('/api/facturas', verificarToken, async (req, res) => {
 app.delete('/api/facturas/:folio', verificarToken, async (req, res) => {
     try {
         const { folio } = req.params;
+        const uidToken = Number(req.usuario.usuario_id);
+        const pool = await poolPromise;
+
+        const resultado = await pool.request()
+            .input('folio', sql.VarChar(50), folio.trim())
+            .input('uid', sql.Int, uidToken)
+            .query(`
+                DELETE f
+                FROM dbo.FacturasCFDI f
+                INNER JOIN dbo.Reservaciones r ON f.reservacion_id = r.reservacion_id
+                WHERE f.folio_reservacion = @folio AND r.usuario_id = @uid;
+                SELECT @@ROWCOUNT AS eliminadas;
+            `);
+
+        const filasEliminadas = resultado.recordset[0]?.eliminadas || 0;
+        if (filasEliminadas === 0) {
+            registrarEventoSeguridad(
+                'INTENTO_IDOR_DELETE_CFDI',
+                `UID ${uidToken} intentó cancelar factura ajena o inexistente ${folio}`,
+                req.ip,
+                uidToken
+            );
+            return res.status(403).json({
+                error: 'Acceso denegado (Anti-IDOR): No se encontró una factura propia asociada a ese folio.'
+            });
+        }
+
+        res.json({ ok: true, mensaje: `Factura del folio ${folio} cancelada exitosamente.` });
+    } catch (err) {
+        console.error('Error al cancelar factura:', err);
+        res.status(500).json({ error: 'Error interno: ' + err.message });
+    }
+});
+
+app.delete('/api/facturas/:folio', verificarToken, async (req, res) => {
+    try {
+        const { folio } = req.params;
         const pool = await poolPromise;
         const resultado = await pool.request()
             .input('folio', sql.VarChar(50), folio.trim())
@@ -1131,7 +1371,7 @@ app.delete('/api/facturas/:folio', verificarToken, async (req, res) => {
 // 7. BILLETERA BANCARIA & TICKETS CONCIERGE
 // ==========================================
 
-app.get(['/api/billetera/usuario/:id', '/api/billetera/:id'], verificarToken, async (req, res) => {
+app.get(['/api/billetera/usuario/:id', '/api/billetera/:id'], verificarToken, verificarPropietario, async (req, res) => {
     try {
         const { id } = req.params;
         const pool = await poolPromise;
@@ -1155,21 +1395,45 @@ app.get(['/api/billetera/usuario/:id', '/api/billetera/:id'], verificarToken, as
     }
 });
 
-app.post('/api/billetera', verificarToken, async (req, res) => {
+app.post('/api/billetera', verificarToken, verificarPropietarioBody, async (req, res) => {
     try {
-        const { usuario_id, alias_tarjeta, banco_emisor, marca_tarjeta, tipo_cuenta, numero_enmascarado, titular_nombre, mes_expiracion, anio_expiracion, es_preferida } = req.body;
+        const {
+            usuario_id, alias_tarjeta, banco_emisor, marca_tarjeta, tipo_cuenta,
+            numero_enmascarado, titular_nombre, mes_expiracion, anio_expiracion, es_preferida
+        } = req.body;
+
+        const uidFinal = Number(usuario_id || req.usuario.usuario_id);
+        const numLimpio = String(numero_enmascarado || '').trim();
+
+        // Blindaje PCI-DSS: Prohibido almacenar PAN completo (más de 4 dígitos seguidos) o sin enmascarar
+        if (!numLimpio || /\d{5,}/.test(numLimpio.replace(/\s+/g, '')) || !/[*•]/.test(numLimpio)) {
+            registrarEventoSeguridad(
+                'VIOLACION_PCI_DSS_BILLETERA',
+                `Intento de registrar tarjeta sin enmascarar por UID ${uidFinal}`,
+                req.ip,
+                uidFinal
+            );
+            return res.status(400).json({
+                error: 'Violación PCI-DSS: Solo se permite almacenar números de tarjeta enmascarados (ej. **** **** **** 4829).'
+            });
+        }
+
+        if (!titular_nombre || !mes_expiracion || !anio_expiracion) {
+            return res.status(400).json({ error: 'Titular y fecha de expiración son obligatorios.' });
+        }
+
         const pool = await poolPromise;
 
         const result = await pool.request()
-            .input('uid', sql.Int, usuario_id || req.usuario.usuario_id)
+            .input('uid', sql.Int, uidFinal)
             .input('alias', sql.VarChar(50), alias_tarjeta || 'Tarjeta Personal')
             .input('banco', sql.VarChar(50), banco_emisor || 'Banco Emisor')
             .input('marca', sql.VarChar(20), marca_tarjeta || 'Visa')
             .input('tipo', sql.VarChar(20), tipo_cuenta || 'Crédito')
-            .input('num', sql.VarChar(25), numero_enmascarado)
-            .input('titular', sql.NVarChar(150), titular_nombre)
-            .input('mes', sql.Int, mes_expiracion)
-            .input('anio', sql.Int, anio_expiracion)
+            .input('num', sql.VarChar(25), numLimpio)
+            .input('titular', sql.NVarChar(150), String(titular_nombre).trim())
+            .input('mes', sql.Int, Number(mes_expiracion))
+            .input('anio', sql.Int, Number(anio_expiracion))
             .input('saldo', sql.Decimal(12, 2), 75000.00)
             .input('pref', sql.Bit, es_preferida ? 1 : 0)
             .query(`
@@ -1196,10 +1460,25 @@ app.post('/api/billetera', verificarToken, async (req, res) => {
 app.delete('/api/billetera/:id', verificarToken, async (req, res) => {
     try {
         const { id } = req.params;
+        const uidToken = Number(req.usuario.usuario_id);
         const pool = await poolPromise;
-        await pool.request()
+
+        const result = await pool.request()
             .input('tid', sql.Int, id)
-            .query("DELETE FROM dbo.TarjetasBancariasUsuario WHERE tarjeta_bancaria_id = @tid");
+            .input('uid', sql.Int, uidToken)
+            .query("DELETE FROM dbo.TarjetasBancariasUsuario WHERE tarjeta_bancaria_id = @tid AND usuario_id = @uid");
+
+        if (result.rowsAffected[0] === 0) {
+            registrarEventoSeguridad(
+                'INTENTO_IDOR_DELETE_TARJETA',
+                `UID ${uidToken} intentó eliminar tarjeta_bancaria_id ${id}`,
+                req.ip,
+                uidToken
+            );
+            return res.status(403).json({
+                error: 'Acceso denegado (Anti-IDOR): La tarjeta no existe o pertenece a otro socio.'
+            });
+        }
 
         res.json({ ok: true, mensaje: 'Tarjeta eliminada exitosamente.' });
     } catch (err) {
@@ -1211,6 +1490,7 @@ app.delete('/api/billetera/:id', verificarToken, async (req, res) => {
 app.put('/api/billetera/:id/predeterminada', verificarToken, async (req, res) => {
     try {
         const { id } = req.params;
+        const uidToken = Number(req.usuario.usuario_id);
         const pool = await poolPromise;
 
         const info = await pool.request()
@@ -1219,6 +1499,16 @@ app.put('/api/billetera/:id/predeterminada', verificarToken, async (req, res) =>
 
         if (info.recordset.length === 0) return res.status(404).json({ error: 'Tarjeta no encontrada' });
         const uid = info.recordset[0].usuario_id;
+
+        if (Number(uid) !== uidToken) {
+            registrarEventoSeguridad(
+                'INTENTO_IDOR_UPDATE_TARJETA',
+                `UID ${uidToken} intentó modificar tarjeta_bancaria_id ${id} del socio ${uid}`,
+                req.ip,
+                uidToken
+            );
+            return res.status(403).json({ error: 'Acceso denegado (Anti-IDOR): No puedes modificar tarjetas de otro socio.' });
+        }
 
         await pool.request().input('uid', sql.Int, uid).query("UPDATE dbo.TarjetasBancariasUsuario SET es_preferida = 0 WHERE usuario_id = @uid");
         await pool.request().input('tid', sql.Int, id).query("UPDATE dbo.TarjetasBancariasUsuario SET es_preferida = 1 WHERE tarjeta_bancaria_id = @tid");
@@ -1245,7 +1535,7 @@ const handlerGetTickets = async (req, res) => {
     }
 };
 
-app.get(['/api/tickets/usuario/:id', '/api/contacto/usuario/:usuario_id', '/api/contacto/usuario/:id'], verificarToken, handlerGetTickets);
+app.get(['/api/tickets/usuario/:id', '/api/contacto/usuario/:usuario_id', '/api/contacto/usuario/:id'], verificarToken, verificarPropietario, handlerGetTickets);
 
 const handlerPostTickets = async (req, res) => {
     try {
@@ -1285,8 +1575,12 @@ const handlerPostTickets = async (req, res) => {
 app.post(['/api/tickets', '/api/contacto', '/api/contacto/tickets'], handlerPostTickets);
 
 // ==========================================
-// INICIALIZACIÓN
+// INICIALIZACIÓN Y EXPORTACIÓN PARA PRUEBAS
 // ==========================================
-app.listen(PORT, () => {
-    console.log(`Servidor seguro corriendo en http://localhost:${PORT}`);
-});
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Servidor seguro corriendo en http://localhost:${PORT}`);
+    });
+}
+
+module.exports = app;

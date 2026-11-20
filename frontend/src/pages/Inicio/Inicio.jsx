@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { fetchSuites } from '../../services/api';
 import HeroSlider from '../../components/HeroSlider/HeroSlider';
+import BienvenidaSocioModal from '../../components/BienvenidaSocioModal/BienvenidaSocioModal';
 import { 
   Calendar, Users, Baby, ShieldCheck, Smartphone, CreditCard, 
   Award, MessageSquare, Sparkles, ArrowRight, ChevronDown 
@@ -10,6 +11,25 @@ import './Inicio.css';
 import './Inicio.mobile.css';
 
 export default function Inicio() {
+  const [nuevoSocioPromo, setNuevoSocioPromo] = useState(null);
+
+useEffect(() => {
+  const revisarBienvenidaNuevoSocio = () => {
+    const raw = sessionStorage.getItem('gfa_nuevo_socio_bienvenida');
+    if (raw) {
+      try {
+        setNuevoSocioPromo(JSON.parse(raw));
+        sessionStorage.removeItem('gfa_nuevo_socio_bienvenida');
+      } catch {
+        sessionStorage.removeItem('gfa_nuevo_socio_bienvenida');
+      }
+    }
+  };
+
+  revisarBienvenidaNuevoSocio();
+  window.addEventListener('gfa:nuevo-registro', revisarBienvenidaNuevoSocio);
+  return () => window.removeEventListener('gfa:nuevo-registro', revisarBienvenidaNuevoSocio);
+}, []);
   const navigate = useNavigate();
 
   // Estados del Booking Bar
@@ -389,7 +409,11 @@ export default function Inicio() {
           </div>
         </div>
       </section>
-
+<BienvenidaSocioModal
+  isOpen={Boolean(nuevoSocioPromo)}
+  usuario={nuevoSocioPromo}
+  onClose={() => setNuevoSocioPromo(null)}
+/>
     </div>
   );
 }

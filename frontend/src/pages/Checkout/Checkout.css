@@ -1047,3 +1047,77 @@
     grid-template-columns: 1fr;
   }
 }
+/* ==========================================================
+   MODO SANDBOX DE CONFIANZA — CHECKOUT (ESCRITORIO)
+   ========================================================== */
+.sandbox-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1.15rem;
+  margin: 1rem 0 1.25rem;
+  border-radius: 10px;
+  background: linear-gradient(135deg, rgba(199, 175, 139, 0.14), rgba(15, 23, 42, 0.88));
+  border: 1px solid rgba(199, 175, 139, 0.45);
+}
+
+.sandbox-banner-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.sandbox-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.sandbox-badge {
+  display: inline-block;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #0f172a;
+  background: #c7af8b;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+}
+
+.sandbox-cipher {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #86efac;
+}
+
+.sandbox-banner-info p {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #e2e8f0;
+  line-height: 1.4;
+}
+
+.btn-sandbox-autofill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+  background: rgba(199, 175, 139, 0.18);
+  border: 1px solid #c7af8b;
+  color: #f3e5ce;
+  padding: 0.55rem 1rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-sandbox-autofill:hover {
+  background: #c7af8b;
+  color: #0f172a;
+  transform: translateY(-1px);
+}

@@ -1,10 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FiestaCard from '../../components/FiestaCard/FiestaCard';
+import * as cfdiXmlUtils from '../../utils/cfdiXmlGenerator';
+import * as cfdiPdfUtils from '../../utils/cfdiPdfGenerator';
 import './PerfilSocio.css';
 import './PerfilSocio.mobile.css';
 
 const API_BASE = '/api';
+
+const obtenerTokenJwt = () =>
+  localStorage.getItem('gfa_jwt_token') ||
+  localStorage.getItem('token') ||
+  localStorage.getItem('token_gfa') ||
+  '';
 
 const NIVELES_REWARDS = [
   {
@@ -65,66 +73,63 @@ export default function PerfilSocio() {
   const [cargando, setCargando] = useState(true);
   const [copiadoFr, setCopiadoFr] = useState(false);
 
-  // Fiesta Card de Socio
+  // Fiesta Card de Socio (hidratada dinámicamente desde sesión y SQL Server)
   const [fiestaCard, setFiestaCard] = useState({
     saldo_disponible: 50000.00,
     linea_credito_total: 50000.00,
-    numero_enmascarado: '4829 6049 3035 3467',
+    numero_enmascarado: '4829 **** **** 0000',
     puntos_rewards_acumulados: 2500,
     fecha_expiracion: '11/30',
-    titular_tarjeta: 'KEVIN RAMIREZ SORIA',
+    titular_tarjeta: 'SOCIO FIESTA REWARDS',
     descuento_restaurantes_porcentaje: 20,
     descuento_spa_porcentaje: 20,
     noches_gratis_disponibles: 2,
     acceso_lounge_vip: true
   });
+
   // Premios, Cupones y Actividad del Monedero
-const [codigoCupon, setCodigoCupon] = useState('');
-const [cuponMsg, setCuponMsg] = useState('');
-const [mostrarActividadWallet, setMostrarActividadWallet] = useState(false);
-const [movimientosWallet, setMovimientosWallet] = useState([
-  { id: 'MOV-101', fecha: '2026-11-16', concepto: 'Asignación Línea Titanium Privilege', tipo: 'ABONO', monto: '+$50,000.00 MXN' },
-  { id: 'MOV-102', fecha: '2026-11-16', concepto: 'Bono Acumulado Estancias Confirmadas', tipo: 'ABONO', monto: '+2,500 PTS' },
-  { id: 'MOV-103', fecha: '2026-11-16', concepto: 'Canje aplicado en Folio GFA-903115', tipo: 'CANJE', monto: '-$1,250.00 MXN' }
-]);
+  const [codigoCupon, setCodigoCupon] = useState('');
+  const [cuponMsg, setCuponMsg] = useState('');
+  const [mostrarActividadWallet, setMostrarActividadWallet] = useState(false);
+  const [movimientosWallet, setMovimientosWallet] = useState([]);
 
-const handleCanjearCupon = (e) => {
-  e.preventDefault();
-  const code = codigoCupon.trim().toUpperCase();
-  if (!code) return;
+  const handleCanjearCupon = (e) => {
+    e.preventDefault();
+    const code = codigoCupon.trim().toUpperCase();
+    if (!code) return;
 
-  const cuponesValidos = {
-    TITANIUM500: { pts: 500, bonoMxn: 0, desc: 'Bono VIP +500 Puntos Fiesta Rewards' },
-    CANCUN1000: { pts: 0, bonoMxn: 1000, desc: 'Vale de $1,000.00 MXN para Spa o Restaurantes' },
-    VIPGFA: { pts: 1000, bonoMxn: 500, desc: 'Paquete Bienvenida: +1,000 PTS y $500.00 MXN' }
+    const cuponesValidos = {
+      TITANIUM500: { pts: 500, bonoMxn: 0, desc: 'Bono VIP +500 Puntos Fiesta Rewards' },
+      CANCUN1000: { pts: 0, bonoMxn: 1000, desc: 'Vale de $1,000.00 MXN para Spa o Restaurantes' },
+      VIPGFA: { pts: 1000, bonoMxn: 500, desc: 'Paquete Bienvenida: +1,000 PTS y $500.00 MXN' }
+    };
+
+    const premio = cuponesValidos[code];
+    if (!premio) {
+      setCuponMsg('Código no válido o expirado. Prueba con: TITANIUM500, CANCUN1000 o VIPGFA.');
+      return;
+    }
+
+    setFiestaCard(prev => ({
+      ...prev,
+      saldo_disponible: prev.saldo_disponible + premio.bonoMxn,
+      puntos_rewards_acumulados: Number(prev.puntos_rewards_acumulados) + premio.pts
+    }));
+
+    setMovimientosWallet(prev => [
+      {
+        id: `MOV-${Math.floor(200 + Math.random() * 800)}`,
+        fecha: new Date().toISOString().split('T')[0],
+        concepto: `Cupón canjeado (${code}): ${premio.desc}`,
+        tipo: 'ABONO',
+        monto: premio.bonoMxn > 0 ? `+$${premio.bonoMxn.toLocaleString('es-MX')}.00 MXN` : `+${premio.pts} PTS`
+      },
+      ...prev
+    ]);
+
+    setCuponMsg(`✓ ¡Premio acreditado! ${premio.desc}`);
+    setCodigoCupon('');
   };
-
-  const premio = cuponesValidos[code];
-  if (!premio) {
-    setCuponMsg('Código no válido o expirado. Prueba con: TITANIUM500, CANCUN1000 o VIPGFA.');
-    return;
-  }
-
-  setFiestaCard(prev => ({
-    ...prev,
-    saldo_disponible: prev.saldo_disponible + premio.bonoMxn,
-    puntos_rewards_acumulados: Number(prev.puntos_rewards_acumulados) + premio.pts
-  }));
-
-  setMovimientosWallet(prev => [
-    {
-      id: `MOV-${Math.floor(200 + Math.random() * 800)}`,
-      fecha: new Date().toISOString().split('T')[0],
-      concepto: `Cupón canjeado (${code}): ${premio.desc}`,
-      tipo: 'ABONO',
-      monto: premio.bonoMxn > 0 ? `+$${premio.bonoMxn.toLocaleString('es-MX')}.00 MXN` : `+${premio.pts} PTS`
-    },
-    ...prev
-  ]);
-
-  setCuponMsg(`✓ ¡Premio acreditado! ${premio.desc}`);
-  setCodigoCupon('');
-};
 
   // Modal Voucher
   const [reservaBaucher, setReservaBaucher] = useState(null);
@@ -164,7 +169,8 @@ const handleCanjearCupon = (e) => {
   const [editPassword, setEditPassword] = useState('');
   const [editConfirmPassword, setEditConfirmPassword] = useState('');
   const [editMsg, setEditMsg] = useState('');
-  // Seguridad, Comunicaciones y Acompañantes (MySettings VIP)
+
+  // Seguridad, Comunicaciones y Acompañantes
   const [notifWhatsapp, setNotifWhatsapp] = useState(true);
   const [notifEmailOfertas, setNotifEmailOfertas] = useState(true);
   const [notifPushPagos, setNotifPushPagos] = useState(true);
@@ -174,14 +180,15 @@ const handleCanjearCupon = (e) => {
   const [nuevoAcompNombre, setNuevoAcompNombre] = useState('');
   const [nuevoAcompRelacion, setNuevoAcompRelacion] = useState('Familiar');
   const [seguridadFeedback, setSeguridadFeedback] = useState('');
-  // Expediente Internacional, Pre-Check-In y Accesibilidad (MySettings_Index)
+
+  // Expediente Internacional, Pre-Check-In y Accesibilidad
   const [idiomaAtencion, setIdiomaAtencion] = useState('es-mx');
   const [divisaPreferida, setDivisaPreferida] = useState('MXN');
   const [accesibilidadActiva, setAccesibilidadActiva] = useState(false);
   const [tipoDocumento, setTipoDocumento] = useState('Pasaporte');
   const [numeroDocumento, setNumeroDocumento] = useState('');
   const [vigenciaDocumento, setVigenciaDocumento] = useState('2030-12-31');
-  const [direccionResidencia, setDireccionResidencia] = useState('Coacalco, Estado de México, México');
+  const [direccionResidencia, setDireccionResidencia] = useState('Cancún / Riviera Maya, Quintana Roo, México');
   const [docGuardadoMsg, setDocGuardadoMsg] = useState('');
 
   const handleGuardarExpedienteViajero = (e) => {
@@ -237,7 +244,7 @@ const handleCanjearCupon = (e) => {
   useEffect(() => {
     const verificarSesion = async () => {
       const rawUser = localStorage.getItem('usuario') || localStorage.getItem('usuario_gfa');
-      const token = localStorage.getItem('token') || localStorage.getItem('token_gfa');
+      const token = obtenerTokenJwt();
 
       if (!rawUser || !token) {
         expulsarUsuario();
@@ -247,13 +254,17 @@ const handleCanjearCupon = (e) => {
       let u = null;
       try {
         u = JSON.parse(rawUser);
-        if (!u || (!u.usuario_id && !u.id)) throw new Error("Datos locales no válidos");
+        if (!u || (!u.usuario_id && !u.id)) throw new Error('Datos locales no válidos');
       } catch {
         expulsarUsuario();
         return;
       }
 
       const uid = u.usuario_id || u.id;
+      const nombreTitularReal = `${u.nombres || u.nombre || ''} ${u.apellidos || u.apellido || ''}`
+        .trim()
+        .toUpperCase() || 'SOCIO FIESTA REWARDS';
+      const fechaHoy = new Date().toISOString().split('T')[0];
 
       setUsuario(u);
       setEditNombre(u.nombres || u.nombre || '');
@@ -263,7 +274,29 @@ const handleCanjearCupon = (e) => {
       setPrefPiso(u.preferencia_piso || 'Piso Alto - Vista al Mar');
       setPrefAdicionales(u.preferencias_adicionales || '');
 
-      cargarDatosPerfil(uid);
+      setFiestaCard(prev => ({
+        ...prev,
+        titular_tarjeta: nombreTitularReal
+      }));
+
+      setMovimientosWallet([
+        {
+          id: 'MOV-101',
+          fecha: fechaHoy,
+          concepto: `Apertura Línea Titanium Privilege — ${nombreTitularReal}`,
+          tipo: 'ABONO',
+          monto: '+$50,000.00 MXN'
+        },
+        {
+          id: 'MOV-102',
+          fecha: fechaHoy,
+          concepto: 'Bono de Bienvenida Fiesta Rewards',
+          tipo: 'ABONO',
+          monto: '+2,500 PTS'
+        }
+      ]);
+
+      cargarDatosPerfil(uid, nombreTitularReal);
     };
 
     verificarSesion();
@@ -274,18 +307,20 @@ const handleCanjearCupon = (e) => {
     localStorage.removeItem('usuario_gfa');
     localStorage.removeItem('token');
     localStorage.removeItem('token_gfa');
+    localStorage.removeItem('gfa_jwt_token');
     setUsuario(null);
     navigate('/', { replace: true });
   };
 
-  const cargarDatosPerfil = async (uid) => {
-    const token = localStorage.getItem('token') || localStorage.getItem('token_gfa');
+  const cargarDatosPerfil = async (uid, titularFallback = 'SOCIO FIESTA REWARDS') => {
+    const token = obtenerTokenJwt();
     const authHeaders = {
       Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json"
+      'Content-Type': 'application/json'
     };
 
     setCargando(true);
+    let titularActual = titularFallback;
 
     try {
       // 1. Refrescar datos del usuario desde /api/usuarios/perfil/:id
@@ -303,6 +338,7 @@ const handleCanjearCupon = (e) => {
             setPrefCama(userObj.preferencia_cama || 'King Size');
             setPrefPiso(userObj.preferencia_piso || 'Piso Alto - Vista al Mar');
             setPrefAdicionales(userObj.preferencias_adicionales || '');
+            titularActual = `${userObj.nombres || ''} ${userObj.apellidos || ''}`.trim().toUpperCase() || titularActual;
           }
         }
       } catch (eU) {
@@ -314,17 +350,11 @@ const handleCanjearCupon = (e) => {
         const resTickets = await fetch(`${API_BASE}/tickets/usuario/${uid}`, { headers: authHeaders });
         if (resTickets.ok) {
           const tksData = await resTickets.json();
-          if (Array.isArray(tksData)) {
-            setTickets(tksData);
-          } else if (Array.isArray(tksData.tickets)) {
-            setTickets(tksData.tickets);
-          } else {
-            setTickets([]);
-          }
+          setTickets(Array.isArray(tksData) ? tksData : (Array.isArray(tksData.tickets) ? tksData.tickets : []));
         } else {
           setTickets([]);
         }
-      } catch (eT) {
+      } catch {
         setTickets([]);
       }
 
@@ -337,7 +367,7 @@ const handleCanjearCupon = (e) => {
         } else {
           setFacturas([]);
         }
-      } catch (eFac) {
+      } catch {
         setFacturas([]);
       }
 
@@ -349,23 +379,19 @@ const handleCanjearCupon = (e) => {
           const f = bData.fiesta_card || bData;
           if (f) {
             setFiestaCard({
-              saldo_disponible: parseFloat(f.saldo_disponible) || 50000.00,
+              saldo_disponible: parseFloat(f.saldo_disponible) ?? 50000.00,
               linea_credito_total: parseFloat(f.linea_credito_total) || 50000.00,
-              numero_enmascarado: f.numero_enmascarado || '4829 6049 3035 3467',
+              numero_enmascarado: f.numero_enmascarado || '4829 **** **** 3467',
               puntos_rewards_acumulados: f.puntos_rewards_acumulados ?? 2500,
               fecha_expiracion: f.fecha_expiracion || '11/30',
-              titular_tarjeta: f.titular_tarjeta || `${usuario?.nombres || ''} ${usuario?.apellidos || ''}`.trim(),
+              titular_tarjeta: f.titular_tarjeta || titularActual,
               descuento_restaurantes_porcentaje: f.descuento_restaurantes_porcentaje ?? 20,
               descuento_spa_porcentaje: f.descuento_spa_porcentaje ?? 20,
               noches_gratis_disponibles: f.noches_gratis_disponibles ?? 2,
               acceso_lounge_vip: Boolean(f.acceso_lounge_vip ?? true)
             });
           }
-          if (Array.isArray(bData.tarjetas_bancarias)) {
-            setTarjetasBancarias(bData.tarjetas_bancarias);
-          } else {
-            setTarjetasBancarias([]);
-          }
+          setTarjetasBancarias(Array.isArray(bData.tarjetas_bancarias) ? bData.tarjetas_bancarias : []);
         }
       } catch (eB) {
         console.warn('Error leyendo billetera:', eB);
@@ -380,8 +406,13 @@ const handleCanjearCupon = (e) => {
             ? rawRes
             : (Array.isArray(rawRes?.reservaciones) ? rawRes.reservaciones : (Array.isArray(rawRes?.data) ? rawRes.data : []));
           setReservaciones(arrayReservas);
+          // Precargar automáticamente el folio más reciente vigente en el formulario CFDI
+          const vigente = arrayReservas.find(r => (r.estatus_reservacion || '').toUpperCase() !== 'CANCELADA');
+          if (vigente && vigente.folio_confirmacion) {
+            setFolioFacturar(prev => prev || vigente.folio_confirmacion);
+          }
         }
-      } catch (eR) {
+      } catch {
         setReservaciones([]);
       }
 
@@ -397,10 +428,9 @@ const handleCanjearCupon = (e) => {
         } else {
           setExperiencias([]);
         }
-      } catch (eExp) {
+      } catch {
         setExperiencias([]);
       }
-
     } catch (err) {
       console.error('Error al sincronizar datos del socio:', err);
     } finally {
@@ -420,7 +450,7 @@ const handleCanjearCupon = (e) => {
     const esPagada = (reservaObj?.estatus_reservacion || '').toUpperCase().includes('CONFIRMADA') || reservaObj?.estatus_pago === 'PAGADO';
 
     const msgConfirm = esPagada
-      ? '¿Deseas cancelar esta reservación confirmada? El importe liquidado se reembolsará íntegramente a tu método de pago registrado en SQL Server.'
+      ? '¿Deseas cancelar esta reservación confirmada? El importe liquidado se reembolsará íntegramente a tu Fiesta Card en SQL Server.'
       : '¿Deseas cancelar esta reservación pendiente?';
 
     if (!window.confirm(msgConfirm)) return;
@@ -430,7 +460,7 @@ const handleCanjearCupon = (e) => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token') || localStorage.getItem('token_gfa')}`
+          Authorization: `Bearer ${obtenerTokenJwt()}`
         }
       });
       const data = await res.json();
@@ -440,6 +470,17 @@ const handleCanjearCupon = (e) => {
     } catch (e) {
       alert(e.message);
     }
+  };
+
+  // Autocompletar tarjeta Sandbox en modal de bóveda
+  const autocompletarTarjetaBovedaDemo = () => {
+    setTbNumero('4532 0151 1283 0366');
+    setTbTitular(`${usuario?.nombres || 'EVALUADOR'} ${usuario?.apellidos || 'COLOQUIO'}`.trim().toUpperCase());
+    setTbExp('11/29');
+    setTbCvv('842');
+    setTbBanco('BBVA Bancomer');
+    setTbTipo('CREDITO');
+    setTbError('');
   };
 
   const handleAgregarTarjeta = async (e) => {
@@ -456,7 +497,7 @@ const handleCanjearCupon = (e) => {
     else if (cleanNum.startsWith('3')) marcaDetectada = 'American Express';
 
     const ultimos4 = cleanNum.slice(-4);
-    const numeroEnmascarado = `${cleanNum.slice(0, 4)} •••• •••• ${ultimos4}`;
+    const numeroEnmascarado = `${cleanNum.slice(0, 4)} **** **** ${ultimos4}`;
 
     try {
       const expParts = tbExp.split('/');
@@ -480,7 +521,7 @@ const handleCanjearCupon = (e) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token') || localStorage.getItem('token_gfa')}`
+          Authorization: `Bearer ${obtenerTokenJwt()}`
         },
         body: JSON.stringify(payload)
       });
@@ -506,14 +547,14 @@ const handleCanjearCupon = (e) => {
       await fetch(`${API_BASE}/billetera/${tarjetaId}/predeterminada`, {
         method: 'PUT',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token') || localStorage.getItem('token_gfa')}`
+          Authorization: `Bearer ${obtenerTokenJwt()}`
         }
       });
       cargarDatosPerfil(usuario.usuario_id);
-    } catch (err) {
+    } catch {
       setTarjetasBancarias(tarjetasBancarias.map(t => ({
         ...t,
-        es_predeterminada: t.tarjeta_bancaria_id === tarjetaId
+        es_preferida: t.tarjeta_bancaria_id === tarjetaId
       })));
     }
   };
@@ -524,13 +565,24 @@ const handleCanjearCupon = (e) => {
       await fetch(`${API_BASE}/billetera/${tarjetaId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token') || localStorage.getItem('token_gfa')}`
+          Authorization: `Bearer ${obtenerTokenJwt()}`
         }
       });
       cargarDatosPerfil(usuario.usuario_id);
     } catch (err) {
       console.error('Error al eliminar tarjeta:', err);
     }
+  };
+
+  // Autocompletar datos fiscales SAT de demostración
+  const autocompletarDatosSatDemo = () => {
+    const vigente = listaReservas.find(r => (r.estatus_reservacion || '').toUpperCase() !== 'CANCELADA');
+    if (vigente?.folio_confirmacion) setFolioFacturar(vigente.folio_confirmacion);
+    setRfcReceptor('XAXX010101000');
+    setRazonSocial(`${usuario?.nombres || 'EVALUADOR'} ${usuario?.apellidos || 'COLOQUIO'}`.trim().toUpperCase());
+    setCpFiscal('77500');
+    setRegimenFiscal('612');
+    setUsoCfdi('G03');
   };
 
   const handleTimbrarFactura = async (e) => {
@@ -543,7 +595,7 @@ const handleCanjearCupon = (e) => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token') || localStorage.getItem('token_gfa')}`
+          Authorization: `Bearer ${obtenerTokenJwt()}`
         },
         body: JSON.stringify({
           usuario_id: usuario.usuario_id,
@@ -590,7 +642,7 @@ const handleCanjearCupon = (e) => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token') || localStorage.getItem('token_gfa')}`
+          Authorization: `Bearer ${obtenerTokenJwt()}`
         },
         body: JSON.stringify({
           preferencia_cama: prefCama,
@@ -621,9 +673,21 @@ const handleCanjearCupon = (e) => {
   const handleGuardarPerfil = async (e) => {
     e.preventDefault();
     setEditMsg('');
-    if (editPassword && editPassword !== editConfirmPassword) {
-      setEditMsg('Las contraseñas no coinciden.');
-      return;
+    if (editPassword) {
+      const robusta =
+        editPassword.length >= 8 &&
+        /[A-Z]/.test(editPassword) &&
+        /[a-z]/.test(editPassword) &&
+        /[0-9]/.test(editPassword) &&
+        /[^A-Za-z0-9]/.test(editPassword);
+      if (!robusta) {
+        setEditMsg('La nueva contraseña debe tener mínimo 8 caracteres, 1 mayúscula, 1 minúscula, 1 número y 1 símbolo.');
+        return;
+      }
+      if (editPassword !== editConfirmPassword) {
+        setEditMsg('Las contraseñas no coinciden.');
+        return;
+      }
     }
 
     try {
@@ -631,7 +695,7 @@ const handleCanjearCupon = (e) => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token') || localStorage.getItem('token_gfa')}`
+          Authorization: `Bearer ${obtenerTokenJwt()}`
         },
         body: JSON.stringify({
           nombres: editNombre,
@@ -665,7 +729,6 @@ const handleCanjearCupon = (e) => {
     ? Number(usuario.noches_acumuladas)
     : listaReservas.reduce((acc, r) => acc + (parseInt(r.noches) || 0), 0);
 
-  // Solo suma estancias vigentes (excluye CANCELADA)
   const reservasVigentes = listaReservas.filter(r => (r.estatus_reservacion || '').toUpperCase() !== 'CANCELADA');
   const totalInvertido = reservasVigentes.reduce((acc, r) => acc + (parseFloat(r.total_general) || 0), 0);
   const estanciasActivas = reservasVigentes.length;
@@ -786,11 +849,10 @@ const handleCanjearCupon = (e) => {
 
       {/* 4. CONTENIDOS DE CADA PESTAÑA */}
 
-      {/* TAB 0: HUB FIESTA REWARDS (ESTILO MEMBERSHIP HUB SUPERADO) */}
+      {/* TAB 0: HUB FIESTA REWARDS */}
       {tabActiva === 'resumen' && (
         <section className="tab-pane">
           <div className="rewards-hub-top-grid">
-            {/* Bloque Izquierdo: Progresión y Ventajas por Nivel */}
             <div className="rewards-hub-card">
               <div className="rewards-hub-card-head">
                 <div>
@@ -802,7 +864,6 @@ const handleCanjearCupon = (e) => {
                 <span className="hub-status-pill">ESTATUS ACTIVO: {nivelOficial.toUpperCase()}</span>
               </div>
 
-              {/* Barra de Progreso de Noches */}
               <div className="loyalty-progress-container">
                 <div className="loyalty-progress-header">
                   <span>Progreso de Estancias Anuales: <strong>{nochesSql} noches acumuladas</strong></span>
@@ -813,7 +874,6 @@ const handleCanjearCupon = (e) => {
                 </div>
               </div>
 
-              {/* Selector de Niveles (Carrusel / Pestañas de Nivel) */}
               <div className="rewards-tiers-selector">
                 {NIVELES_REWARDS.map((niv) => {
                   const desbloqueado = nochesSql >= niv.minNoches;
@@ -831,7 +891,6 @@ const handleCanjearCupon = (e) => {
                 })}
               </div>
 
-              {/* Tarjetas de Beneficios del Nivel Seleccionado */}
               <div className="rewards-benefits-grid">
                 {nivelSeleccionadoObj.beneficios.map((ben, index) => (
                   <div key={index} className="reward-benefit-tile">
@@ -845,7 +904,6 @@ const handleCanjearCupon = (e) => {
               </div>
             </div>
 
-            {/* Bloque Derecho: Resumen de Monedero, Crédito Institucional y Vales */}
             <div className="rewards-wallet-summary-card">
               <h4 className="seccion-subtitulo">RESUMEN DE CRÉDITO Y MONEDERO</h4>
               <p className="seccion-desc">Saldos disponibles listos para aplicar en check-out o consumos.</p>
@@ -879,7 +937,6 @@ const handleCanjearCupon = (e) => {
             </div>
           </div>
 
-          {/* Directorio Rápido por Categorías (Estilo Booking Membership Hub) */}
           <div className="hub-directory-grid">
             <div className="hub-dir-card">
               <h5>💳 Información de Pago y Fiscal</h5>
@@ -1115,195 +1172,201 @@ const handleCanjearCupon = (e) => {
       )}
 
       {/* TAB 4: PREMIOS, MONEDERO Y TARJETAS */}
-   {tabActiva === 'billetera' && (
-     <section className="tab-pane">
-       {/* A. PANEL CONSOLIDADO DE PREMIOS Y MONEDERO */}
-       <div className="wallet-hero-panel">
-         <div className="wallet-hero-main">
-           <div className="wallet-hero-title-group">
-             <span className="wallet-icon-badge">👛</span>
-             <div>
-               <h4 className="seccion-subtitulo" style={{ marginBottom: '2px' }}>SALDO CONSOLIDADO DE PREMIOS Y MONEDERO</h4>
-               <p className="seccion-desc" style={{ marginBottom: 0 }}>
-                 Incluye tu crédito institucional Fiesta Card y el valor canjeable de tus puntos y certificados.
-               </p>
-             </div>
-           </div>
-           <div className="wallet-hero-total">
-             <small>DISPONIBLE TOTAL</small>
-             <strong>
-               ${(fiestaCard.saldo_disponible + (Number(fiestaCard.puntos_rewards_acumulados) * 0.5)).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN
-             </strong>
-           </div>
-         </div>
+      {tabActiva === 'billetera' && (
+        <section className="tab-pane">
+          <div className="wallet-hero-panel">
+            <div className="wallet-hero-main">
+              <div className="wallet-hero-title-group">
+                <span className="wallet-icon-badge">👛</span>
+                <div>
+                  <h4 className="seccion-subtitulo" style={{ marginBottom: '2px' }}>SALDO CONSOLIDADO DE PREMIOS Y MONEDERO</h4>
+                  <p className="seccion-desc" style={{ marginBottom: 0 }}>
+                    Incluye tu crédito institucional Fiesta Card y el valor canjeable de tus puntos y certificados.
+                  </p>
+                </div>
+              </div>
+              <div className="wallet-hero-total">
+                <small>DISPONIBLE TOTAL</small>
+                <strong>
+                  ${(fiestaCard.saldo_disponible + (Number(fiestaCard.puntos_rewards_acumulados) * 0.5)).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN
+                </strong>
+              </div>
+            </div>
 
-         <div className="wallet-hero-breakdown">
-           <div className="wallet-break-item">
-             <span>Crédito Institucional Fiesta Card</span>
-             <strong>${fiestaCard.saldo_disponible.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</strong>
-           </div>
-           <div className="wallet-break-item">
-             <span>Puntos Fiesta Rewards ({Number(fiestaCard.puntos_rewards_acumulados).toLocaleString('es-MX')} PTS)</span>
-             <strong className="gold-text">
-               ${(Number(fiestaCard.puntos_rewards_acumulados) * 0.5).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN
-             </strong>
-           </div>
-           <div className="wallet-break-item">
-             <span>Vales / Certificados Noche Gratis ({fiestaCard.noches_gratis_disponibles || 2})</span>
-             <strong>Activos en Cuenta</strong>
-           </div>
-           <button
-             type="button"
-             className="btn-ver-actividad-wallet"
-             onClick={() => setMostrarActividadWallet(!mostrarActividadWallet)}
-           >
-             {mostrarActividadWallet ? 'Ocultar Actividad ▲' : 'Ver Actividad en Premios y Monedero ▼'}
-           </button>
-         </div>
+            <div className="wallet-hero-breakdown">
+              <div className="wallet-break-item">
+                <span>Crédito Institucional Fiesta Card</span>
+                <strong>${fiestaCard.saldo_disponible.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</strong>
+              </div>
+              <div className="wallet-break-item">
+                <span>Puntos Fiesta Rewards ({Number(fiestaCard.puntos_rewards_acumulados).toLocaleString('es-MX')} PTS)</span>
+                <strong className="gold-text">
+                  ${(Number(fiestaCard.puntos_rewards_acumulados) * 0.5).toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN
+                </strong>
+              </div>
+              <div className="wallet-break-item">
+                <span>Vales / Certificados Noche Gratis ({fiestaCard.noches_gratis_disponibles || 2})</span>
+                <strong>Activos en Cuenta</strong>
+              </div>
+              <button
+                type="button"
+                className="btn-ver-actividad-wallet"
+                onClick={() => setMostrarActividadWallet(!mostrarActividadWallet)}
+              >
+                {mostrarActividadWallet ? 'Ocultar Actividad ▲' : 'Ver Actividad en Premios y Monedero ▼'}
+              </button>
+            </div>
 
-         {/* Desplegable de Actividad del Monedero */}
-         {mostrarActividadWallet && (
-           <div className="wallet-activity-drawer">
-             <h5>HISTORIAL DE MOVIMIENTOS Y CANJES</h5>
-             {movimientosWallet.map(mov => (
-               <div key={mov.id} className="wallet-mov-row">
-                 <div>
-                   <span className="mov-id">{mov.id}</span>
-                   <span className="mov-concepto">{mov.concepto}</span>
-                   <small className="mov-fecha">{mov.fecha}</small>
-                 </div>
-                 <span className={`mov-monto ${mov.tipo === 'ABONO' ? 'abono' : 'canje'}`}>{mov.monto}</span>
-               </div>
-             ))}
-           </div>
-         )}
-       </div>
+            {mostrarActividadWallet && (
+              <div className="wallet-activity-drawer">
+                <h5>HISTORIAL DE MOVIMIENTOS Y CANJES</h5>
+                {movimientosWallet.map(mov => (
+                  <div key={mov.id} className="wallet-mov-row">
+                    <div>
+                      <span className="mov-id">{mov.id}</span>
+                      <span className="mov-concepto">{mov.concepto}</span>
+                      <small className="mov-fecha">{mov.fecha}</small>
+                    </div>
+                    <span className={`mov-monto ${mov.tipo === 'ABONO' ? 'abono' : 'canje'}`}>{mov.monto}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
 
-       {/* B. CANJEADOR DE CÓDIGOS PROMOCIONALES */}
-       <div className="wallet-coupon-bar">
-         <div className="coupon-bar-text">
-           <strong>🎟 ¿Has conseguido un código de cortesía o regalo?</strong>
-           <span>Acredita puntos extra o saldo promocional directo a tu monedero (Ej. <code>TITANIUM500</code>, <code>CANCUN1000</code>).</span>
-         </div>
-         <form onSubmit={handleCanjearCupon} className="coupon-bar-form">
-           <input
-             type="text"
-             placeholder="Ingresa tu código..."
-             value={codigoCupon}
-             onChange={(e) => setCodigoCupon(e.target.value.toUpperCase())}
-           />
-           <button type="submit">AÑADIR AL MONEDERO</button>
-         </form>
-       </div>
-       {cuponMsg && <div className="factura-alert-banner" style={{ marginBottom: '22px' }}>{cuponMsg}</div>}
+          <div className="wallet-coupon-bar">
+            <div className="coupon-bar-text">
+              <strong>🎟 ¿Has conseguido un código de cortesía o regalo?</strong>
+              <span>Acredita puntos extra o saldo promocional directo a tu monedero (Ej. <code>TITANIUM500</code>, <code>CANCUN1000</code>).</span>
+            </div>
+            <form onSubmit={handleCanjearCupon} className="coupon-bar-form">
+              <input
+                type="text"
+                placeholder="Ingresa tu código..."
+                value={codigoCupon}
+                onChange={(e) => setCodigoCupon(e.target.value.toUpperCase())}
+              />
+              <button type="submit">AÑADIR AL MONEDERO</button>
+            </form>
+          </div>
+          {cuponMsg && <div className="factura-alert-banner" style={{ marginBottom: '22px' }}>{cuponMsg}</div>}
 
-       {/* C. TARJETA CORPORATIVA 3D Y BÓVEDA DE TARJETAS BANCARIAS */}
-       <div className="billetera-grid-layout">
-         <div className="billetera-card-col">
-           <h4 className="seccion-subtitulo">TARJETA CORPORATIVA FIESTA RECOMPENSAS</h4>
-           <p className="seccion-desc">Línea de crédito institucional asignada a tu membresía {nivelOficial}.</p>
+          <div className="billetera-grid-layout">
+            <div className="billetera-card-col">
+              <h4 className="seccion-subtitulo">TARJETA CORPORATIVA FIESTA RECOMPENSAS</h4>
+              <p className="seccion-desc">Línea de crédito institucional asignada a tu membresía {nivelOficial}.</p>
 
-           <div className="fiesta-card-render-wrapper">
-             <FiestaCard
-               saldoDisponible={fiestaCard.saldo_disponible}
-               lineaCredito={fiestaCard.linea_credito_total}
-               numeroEnmascarado={fiestaCard.numero_enmascarado}
-               titular={`${usuario.nombres} ${usuario.apellidos}`}
-               expiracion={fiestaCard.fecha_expiracion}
-               puntosRewards={fiestaCard.puntos_rewards_acumulados}
-             />
-           </div>
-         </div>
+              <div className="fiesta-card-render-wrapper">
+                <FiestaCard
+                  saldoDisponible={fiestaCard.saldo_disponible}
+                  lineaCredito={fiestaCard.linea_credito_total}
+                  numeroEnmascarado={fiestaCard.numero_enmascarado}
+                  titular={`${usuario.nombres} ${usuario.apellidos}`}
+                  expiracion={fiestaCard.fecha_expiracion}
+                  puntosRewards={fiestaCard.puntos_rewards_acumulados}
+                />
+              </div>
+            </div>
 
-         <div className="billetera-metodos-col">
-           <div className="metodos-header-flex">
-             <div>
-               <h4 className="seccion-subtitulo">TARJETAS BANCARIAS VINCULADAS</h4>
-               <p className="seccion-desc">Bóveda con cifrado bancario almacenada en SQL Server.</p>
-             </div>
-             <button
-               className="btn-agregar-tarjeta"
-               onClick={() => setModalTarjetaOpen(true)}
-             >
-               + AGREGAR TARJETA
-             </button>
-           </div>
+            <div className="billetera-metodos-col">
+              <div className="metodos-header-flex">
+                <div>
+                  <h4 className="seccion-subtitulo">TARJETAS BANCARIAS VINCULADAS</h4>
+                  <p className="seccion-desc">Bóveda con cifrado PCI-DSS almacenada en SQL Server.</p>
+                </div>
+                <button
+                  className="btn-agregar-tarjeta"
+                  onClick={() => setModalTarjetaOpen(true)}
+                >
+                  + AGREGAR TARJETA
+                </button>
+              </div>
 
-           <div className="billetera-tarjetas-lista">
-             {tarjetasBancarias.length === 0 ? (
-               <p style={{ color: '#888', fontStyle: 'italic', padding: '1rem' }}>No tienes tarjetas bancarias externas registradas.</p>
-             ) : (
-               tarjetasBancarias.map((t) => (
-                 <div key={t.tarjeta_bancaria_id} className={`tarjeta-bancaria-item ${t.es_preferida ? 'predeterminada-activa' : ''}`}>
-                   <div className="tb-brand-badge">{t.marca_tarjeta || 'CARD'}</div>
-                   <div className="tb-info">
-                     <span className="tb-num">{t.numero_enmascarado}</span>
-                     <span className="tb-titular">{t.titular_nombre} | Vence: {t.mes_expiracion}/{t.anio_expiracion}</span>
-                     <span className="tb-banco">{t.banco_emisor} • {t.tipo_cuenta}</span>
-                   </div>
-                   <div className="tb-acciones">
-                     {t.es_preferida ? (
-                       <span className="tb-badge-pred">PREDETERMINADA</span>
-                     ) : (
-                       <button
-                         className="btn-hacer-pred"
-                         onClick={() => handleEstablecerPredeterminada(t.tarjeta_bancaria_id)}
-                       >
-                         Elegir principal
-                       </button>
-                     )}
-                     <button
-                       className="btn-eliminar-tb"
-                       onClick={() => handleEliminarTarjeta(t.tarjeta_bancaria_id)}
-                       title="Eliminar tarjeta"
-                     >
-                       🗑
-                     </button>
-                   </div>
-                 </div>
-               ))
-             )}
-           </div>
-         </div>
-       </div>
+              <div className="billetera-tarjetas-lista">
+                {tarjetasBancarias.length === 0 ? (
+                  <p style={{ color: '#888', fontStyle: 'italic', padding: '1rem' }}>No tienes tarjetas bancarias externas registradas.</p>
+                ) : (
+                  tarjetasBancarias.map((t) => (
+                    <div key={t.tarjeta_bancaria_id} className={`tarjeta-bancaria-item ${t.es_preferida ? 'predeterminada-activa' : ''}`}>
+                      <div className="tb-brand-badge">{t.marca_tarjeta || 'CARD'}</div>
+                      <div className="tb-info">
+                        <span className="tb-num">{t.numero_enmascarado}</span>
+                        <span className="tb-titular">{t.titular_nombre} | Vence: {t.mes_expiracion}/{t.anio_expiracion}</span>
+                        <span className="tb-banco">{t.banco_emisor} • {t.tipo_cuenta}</span>
+                      </div>
+                      <div className="tb-acciones">
+                        {t.es_preferida ? (
+                          <span className="tb-badge-pred">PREDETERMINADA</span>
+                        ) : (
+                          <button
+                            className="btn-hacer-pred"
+                            onClick={() => handleEstablecerPredeterminada(t.tarjeta_bancaria_id)}
+                          >
+                            Elegir principal
+                          </button>
+                        )}
+                        <button
+                          className="btn-eliminar-tb"
+                          onClick={() => handleEliminarTarjeta(t.tarjeta_bancaria_id)}
+                          title="Eliminar tarjeta"
+                        >
+                          🗑
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </div>
 
-       {/* D. GUÍA DE FUNCIONAMIENTO DE PREMIOS Y MONEDERO */}
-       <div className="wallet-pillars-box">
-         <h4 className="seccion-subtitulo">¿CÓMO FUNCIONA PREMIOS Y MONEDERO?</h4>
-         <div className="wallet-pillars-grid">
-           <div className="wallet-pillar-item">
-             <span>🏆</span>
-             <div>
-               <h5>Reserva y gana premios</h5>
-               <p>Cada estancia liquidada y experiencia en Spa acumula puntos y certificados listos para tu próxima visita.</p>
-             </div>
-           </div>
-           <div className="wallet-pillar-item">
-             <span>📱</span>
-             <div>
-               <h5>Tenlo todo a mano</h5>
-               <p>Consulta en un solo lugar tus saldos, códigos promocionales, certificados vigentes y tarjetas guardadas.</p>
-             </div>
-           </div>
-           <div className="wallet-pillar-item">
-             <span>💎</span>
-             <div>
-               <h5>Paga con el Monedero y ahorra</h5>
-               <p>Aplica tus puntos Fiesta Rewards o tu línea institucional directamente en la pasarela de reservaciones.</p>
-             </div>
-           </div>
-         </div>
-       </div>
-     </section>
-   )}
+          <div className="wallet-pillars-box">
+            <h4 className="seccion-subtitulo">¿CÓMO FUNCIONA PREMIOS Y MONEDERO?</h4>
+            <div className="wallet-pillars-grid">
+              <div className="wallet-pillar-item">
+                <span>🏆</span>
+                <div>
+                  <h5>Reserva y gana premios</h5>
+                  <p>Cada estancia liquidada y experiencia en Spa acumula puntos y certificados listos para tu próxima visita.</p>
+                </div>
+              </div>
+              <div className="wallet-pillar-item">
+                <span>📱</span>
+                <div>
+                  <h5>Tenlo todo a mano</h5>
+                  <p>Consulta en un solo lugar tus saldos, códigos promocionales, certificados vigentes y tarjetas guardadas.</p>
+                </div>
+              </div>
+              <div className="wallet-pillar-item">
+                <span>💎</span>
+                <div>
+                  <h5>Paga con el Monedero y ahorra</h5>
+                  <p>Aplica tus puntos Fiesta Rewards o tu línea institucional directamente en la pasarela de reservaciones.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* TAB 5: FACTURACIÓN CFDI 4.0 */}
       {tabActiva === 'facturacion' && (
         <section className="tab-pane">
           <div className="facturacion-layout">
             <div className="facturacion-box">
-              <h4 className="seccion-subtitulo">TIMBRADO FISCAL SAT (CFDI 4.0)</h4>
-              <p className="seccion-desc">Ingresa tu folio de confirmación y los datos de tu Constancia de Situación Fiscal.</p>
+              <div className="cfdi-header-demo-row">
+                <div>
+                  <h4 className="seccion-subtitulo">TIMBRADO FISCAL SAT (CFDI 4.0)</h4>
+                  <p className="seccion-desc">Ingresa tu folio de confirmación y los datos de tu Constancia de Situación Fiscal.</p>
+                </div>
+                <button
+                  type="button"
+                  className="btn-demo-sat-autofill"
+                  onClick={autocompletarDatosSatDemo}
+                >
+                  ✨ Autocompletar Datos SAT Demo
+                </button>
+              </div>
 
               {facturaMsg && <div className="factura-alert-banner">{facturaMsg}</div>}
 
@@ -1322,7 +1385,7 @@ const handleCanjearCupon = (e) => {
                 <div className="form-row-2">
                   <div className="input-field">
                     <label>Nombre o Razón Social</label>
-                    <input type="text" required placeholder="Kevin Ramirez Soria" value={razonSocial} onChange={(e) => setRazonSocial(e.target.value)} />
+                    <input type="text" required placeholder="Nombre o Razón Social" value={razonSocial} onChange={(e) => setRazonSocial(e.target.value)} />
                   </div>
                   <div className="input-field">
                     <label>Código Postal Fiscal</label>
@@ -1372,8 +1435,26 @@ const handleCanjearCupon = (e) => {
                     <p className="fic-uuid"><strong>UUID:</strong> {f.uuid_sat || 'SAT-VALIDATED-UUID'}</p>
                     <p className="fic-meta">Receptor: {f.rfc_receptor || 'XAXX010101000'} | {f.razon_social_receptor || f.razon_social || 'Socio Posadas'}</p>
                     <div className="fic-actions">
-                      <button className="btn-descarga-xml" onClick={() => alert('Descargando archivo XML timbrado...')}>XML SAT</button>
-                      <button className="btn-descarga-pdf" onClick={() => alert('Descargando representación impresa PDF...')}>PDF SAT</button>
+                      <button
+                        type="button"
+                        className="btn-descarga-xml"
+                        onClick={() => {
+                          const fn = cfdiXmlUtils.default || Object.values(cfdiXmlUtils).find(v => typeof v === 'function');
+                          if (fn) fn(f, usuario);
+                        }}
+                      >
+                        XML SAT
+                      </button>
+                      <button
+                        type="button"
+                        className="btn-descarga-pdf"
+                        onClick={() => {
+                          const fn = cfdiPdfUtils.default || Object.values(cfdiPdfUtils).find(v => typeof v === 'function');
+                          if (fn) fn(f, usuario);
+                        }}
+                      >
+                        PDF SAT
+                      </button>
                     </div>
                   </div>
                 ))
@@ -1436,7 +1517,6 @@ const handleCanjearCupon = (e) => {
       {/* TAB 7: SEGURIDAD, PRIVACIDAD & CUENTA */}
       {tabActiva === 'cuenta' && (
         <section className="tab-pane">
-          {/* A. PANEL DE ESTADO DE SEGURIDAD Y VERIFICACIÓN */}
           <div className="security-status-banner">
             <div className="sec-badge-card">
               <span className="sec-icon">🛡️</span>
@@ -1463,7 +1543,6 @@ const handleCanjearCupon = (e) => {
 
           {seguridadFeedback && <div className="factura-alert-banner">{seguridadFeedback}</div>}
 
-          {/* B. DATOS PERSONALES Y CREDENCIALES (SQL SERVER) */}
           <div className="cuenta-box" style={{ marginBottom: '24px' }}>
             <div className="cuenta-header-row">
               <div>
@@ -1505,8 +1584,8 @@ const handleCanjearCupon = (e) => {
 
               <div className="form-row-2">
                 <div className="input-field">
-                  <label>Nueva Contraseña (Opcional - Bcrypt Hash)</label>
-                  <input type="password" placeholder="Mínimo 6 caracteres" value={editPassword} onChange={(e) => setEditPassword(e.target.value)} />
+                  <label>Nueva Contraseña (Política NIST: 8+ chars, Mayús, Núm y Símbolo)</label>
+                  <input type="password" placeholder="Ej. Gfa$Riviera#9482!" value={editPassword} onChange={(e) => setEditPassword(e.target.value)} />
                 </div>
                 <div className="input-field">
                   <label>Confirmar Nueva Contraseña</label>
@@ -1520,9 +1599,7 @@ const handleCanjearCupon = (e) => {
             </form>
           </div>
 
-          {/* C. PREFERENCIAS DE COMUNICACIÓN Y ACOMPAÑANTES DE VIAJE */}
           <div className="billetera-grid-layout" style={{ marginBottom: '24px' }}>
-            {/* Preferencias de Comunicación */}
             <div className="cuenta-box">
               <h4 className="seccion-subtitulo">PREFERENCIAS DE COMUNICACIÓN</h4>
               <p className="seccion-desc">Elige cómo deseas recibir tus llaves digitales, facturas y beneficios.</p>
@@ -1575,7 +1652,6 @@ const handleCanjearCupon = (e) => {
               </div>
             </div>
 
-            {/* Acompañantes de Viaje */}
             <div className="cuenta-box">
               <h4 className="seccion-subtitulo">ACOMPAÑANTES DE VIAJE FRECUENTES</h4>
               <p className="seccion-desc">Agiliza la entrega de brazaletes RFID registrando a tus invitados habituales.</p>
@@ -1615,7 +1691,7 @@ const handleCanjearCupon = (e) => {
               </div>
             </div>
           </div>
-          {/* C2. DOCUMENTOS DE VIAJE (PRE-CHECK-IN) Y PREFERENCIAS REGIONALES */}
+
           <div className="cuenta-box" style={{ marginBottom: '24px' }}>
             <div className="cuenta-header-row">
               <div>
@@ -1708,7 +1784,6 @@ const handleCanjearCupon = (e) => {
             </form>
           </div>
 
-          {/* D. PRIVACIDAD, PORTABILIDAD DE DATOS Y SESIÓN */}
           <div className="privacy-footer-box">
             <div>
               <h4 className="seccion-subtitulo" style={{ marginBottom: '4px' }}>PRIVACIDAD Y PORTABILIDAD DE DATOS</h4>
@@ -1726,11 +1801,9 @@ const handleCanjearCupon = (e) => {
             </div>
           </div>
         </section>
-        
       )}
-      
 
-      {/* MODAL BAUCHER */}
+      {/* MODAL BAUCHER CON CÓDIGO QR REAL */}
       {reservaBaucher && (
         <div className="baucher-modal-overlay">
           <div className="baucher-modal-card">
@@ -1789,7 +1862,11 @@ const handleCanjearCupon = (e) => {
               </div>
 
               <div className="baucher-qr-sim">
-                <div className="qr-box">[ CÓDIGO QR DE CHECK-IN EXPRESS ]</div>
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=110x110&data=GFA:${reservaBaucher.folio_confirmacion}`}
+                  alt="QR Check-In Express"
+                  className="baucher-qr-img"
+                />
                 <p>Presenta este comprobante en la recepción para entrega directa de tus accesos RFID.</p>
               </div>
             </div>
@@ -1802,12 +1879,23 @@ const handleCanjearCupon = (e) => {
         </div>
       )}
 
-      {/* MODAL NUEVA TARJETA BANCARIA */}
+      {/* MODAL NUEVA TARJETA BANCARIA CON MODO SANDBOX */}
       {modalTarjetaOpen && (
         <div className="baucher-modal-overlay">
           <div className="baucher-modal-card modal-tarjeta-box">
-            <h3 className="modal-tarjeta-title">VINCULAR NUEVA TARJETA BANCARIA</h3>
-            <p className="seccion-desc">Cifrado de grado bancario para transacciones de alta seguridad en Grupo Posadas.</p>
+            <div className="modal-tarjeta-head-row">
+              <div>
+                <h3 className="modal-tarjeta-title">VINCULAR NUEVA TARJETA BANCARIA</h3>
+                <p className="seccion-desc">Tokenización PCI-DSS almacenada en SQL Server.</p>
+              </div>
+              <button
+                type="button"
+                className="btn-demo-sat-autofill"
+                onClick={autocompletarTarjetaBovedaDemo}
+              >
+                ✨ Tarjeta Sandbox
+              </button>
+            </div>
 
             {tbError && <div className="factura-alert-banner" style={{ borderColor: '#DC3545', color: '#FF7B88' }}>{tbError}</div>}
 
@@ -1818,7 +1906,7 @@ const handleCanjearCupon = (e) => {
                   type="text"
                   required
                   maxLength={19}
-                  placeholder="4152 3140 1234 5678"
+                  placeholder="4532 0151 1283 0366"
                   value={tbNumero}
                   onChange={(e) => setTbNumero(e.target.value)}
                 />
@@ -1829,9 +1917,9 @@ const handleCanjearCupon = (e) => {
                 <input
                   type="text"
                   required
-                  placeholder="KEVIN RAMIREZ SORIA"
+                  placeholder="TITULAR DE LA TARJETA"
                   value={tbTitular}
-                  onChange={(e) => setTbTitular(e.target.value)}
+                  onChange={(e) => setTbTitular(e.target.value.toUpperCase())}
                 />
               </div>
 
@@ -1842,7 +1930,7 @@ const handleCanjearCupon = (e) => {
                     type="text"
                     required
                     maxLength={5}
-                    placeholder="12/28"
+                    placeholder="11/29"
                     value={tbExp}
                     onChange={(e) => setTbExp(e.target.value)}
                   />
@@ -1855,7 +1943,7 @@ const handleCanjearCupon = (e) => {
                     maxLength={4}
                     placeholder="•••"
                     value={tbCvv}
-                    onChange={(e) => setTbCvv(e.target.value)}
+                    onChange={(e) => setTbCvv(e.target.value.replace(/\D/g, ''))}
                   />
                 </div>
               </div>

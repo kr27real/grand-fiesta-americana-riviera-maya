@@ -363,3 +363,162 @@ select.form-input {
   letter-spacing: 0.4em;
   padding-left: 0.85rem;
 }
+/* ==========================================================
+   ESTILOS DE BLINDAJE, CAPTCHA Y DEMO COLOQUIO (ESCRITORIO)
+   ========================================================== */
+.demo-coloquio-btn {
+  margin-top: 0.75rem;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.16), rgba(212, 175, 55, 0.06));
+  border: 1px dashed rgba(212, 175, 55, 0.65);
+  color: #f3d478;
+  padding: 0.42rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.demo-coloquio-btn:hover {
+  background: rgba(212, 175, 55, 0.26);
+  border-color: #d4af37;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.18);
+}
+
+.captcha-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.captcha-badge {
+  user-select: none;
+  font-family: 'Courier New', monospace;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.28em;
+  padding: 0.55rem 0.85rem;
+  border-radius: 8px;
+  color: #f7df8b;
+  background: repeating-linear-gradient(
+    -45deg,
+    #18181b,
+    #18181b 8px,
+    #23211a 8px,
+    #23211a 16px
+  );
+  border: 1px solid rgba(212, 175, 55, 0.45);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.85);
+  min-width: 132px;
+  text-align: center;
+}
+
+.btn-refresh-captcha {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  color: #e5e7eb;
+  border-radius: 8px;
+  padding: 0.62rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-refresh-captcha:hover {
+  background: rgba(212, 175, 55, 0.2);
+  color: #d4af37;
+  transform: rotate(30deg);
+}
+
+.captcha-input {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+  text-align: center;
+  flex: 1;
+}
+
+.strength-meter-container {
+  margin-top: -0.25rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.strength-bar-bg {
+  width: 100%;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.strength-bar-fill {
+  height: 100%;
+  transition: width 0.25s ease, background-color 0.25s ease;
+}
+
+.strength-label {
+  font-size: 0.73rem;
+  font-weight: 600;
+}
+
+.trust-seal-footer {
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+  color: #9ca3af;
+  text-align: center;
+}
+/* ==========================================================
+   BOTÓN DEMO COLOQUIO & SELLO DE CONFIANZA (ESCRITORIO)
+   ========================================================== */
+.btn-demo-coloquio {
+  margin-top: 0.7rem;
+  background: rgba(212, 175, 55, 0.14);
+  border: 1px dashed rgba(212, 175, 55, 0.6);
+  color: #f3d478;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.btn-demo-coloquio:hover {
+  background: rgba(212, 175, 55, 0.26);
+  border-style: solid;
+  transform: translateY(-1px);
+}
+
+.login-trust-seal {
+  margin-top: 1.1rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+  color: #9ca3af;
+  text-align: center;
+}

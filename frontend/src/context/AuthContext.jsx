@@ -2,18 +2,27 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const AuthContext = createContext(null);
 
+const normalizarUsuario = (u) => {
+  if (!u) return null;
+  return {
+    ...u,
+    id: u.usuario_id || u.id,
+    usuario_id: u.usuario_id || u.id
+  };
+};
+
 export function AuthProvider({ children }) {
   const [usuario, setUsuario] = useState(() => {
     try {
       const raw = localStorage.getItem('usuario_gfa') || localStorage.getItem('usuario') || localStorage.getItem('gfa_user');
-      return raw ? JSON.parse(raw) : null;
+      return raw ? normalizarUsuario(JSON.parse(raw)) : null;
     } catch {
       return null;
     }
   });
 
   const [token, setToken] = useState(() => {
-    return localStorage.getItem('token_gfa') || localStorage.getItem('token') || null;
+    return localStorage.getItem('gfa_jwt_token') || localStorage.getItem('token_gfa') || localStorage.getItem('token') || null;
   });
 
   const [loginModalAbierto, setLoginModalAbierto] = useState(false);
@@ -23,8 +32,8 @@ export function AuthProvider({ children }) {
     const handleStorage = () => {
       try {
         const rawUser = localStorage.getItem('usuario_gfa') || localStorage.getItem('usuario') || localStorage.getItem('gfa_user');
-        const currentToken = localStorage.getItem('token_gfa') || localStorage.getItem('token');
-        setUsuario(rawUser ? JSON.parse(rawUser) : null);
+        const currentToken = localStorage.getItem('gfa_jwt_token') || localStorage.getItem('token_gfa') || localStorage.getItem('token');
+        setUsuario(rawUser ? normalizarUsuario(JSON.parse(rawUser)) : null);
         setToken(currentToken || null);
       } catch {
         setUsuario(null);
@@ -41,13 +50,16 @@ export function AuthProvider({ children }) {
   }, []);
 
   const iniciarSesion = (nuevoUsuario, nuevoToken) => {
-    localStorage.setItem('usuario_gfa', JSON.stringify(nuevoUsuario));
-    localStorage.setItem('token_gfa', nuevoToken);
-    // Compatibilidad retroactiva
-    localStorage.setItem('usuario', JSON.stringify(nuevoUsuario));
-    localStorage.setItem('token', nuevoToken);
+    const userNorm = normalizarUsuario(nuevoUsuario);
+    localStorage.setItem('usuario_gfa', JSON.stringify(userNorm));
+    localStorage.setItem('usuario', JSON.stringify(userNorm));
+    if (nuevoToken) {
+      localStorage.setItem('gfa_jwt_token', nuevoToken);
+      localStorage.setItem('token_gfa', nuevoToken);
+      localStorage.setItem('token', nuevoToken);
+    }
 
-    setUsuario(nuevoUsuario);
+    setUsuario(userNorm);
     setToken(nuevoToken);
     setLoginModalAbierto(false);
     window.dispatchEvent(new Event('gfa_sesion_cambiada'));
@@ -56,6 +68,7 @@ export function AuthProvider({ children }) {
   const cerrarSesion = () => {
     localStorage.removeItem('usuario_gfa');
     localStorage.removeItem('token_gfa');
+    localStorage.removeItem('gfa_jwt_token');
     localStorage.removeItem('usuario');
     localStorage.removeItem('token');
     localStorage.removeItem('gfa_user');

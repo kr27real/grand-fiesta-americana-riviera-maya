@@ -206,6 +206,22 @@ export default function Checkout() {
       return `${soloDigitos.slice(0, 2)}/${soloDigitos.slice(2)}`;
     return soloDigitos;
   };
+  // Modo Sandbox Coloquio: Autocompleta tarjeta virtual Visa certificada sin exponer datos reales
+  const autocompletarTarjetaSandbox = () => {
+    const titularDemo = `${datosHuesped.nombres || 'EVALUADOR'} ${datosHuesped.apellidos || 'COLOQUIO'}`
+      .trim()
+      .toUpperCase();
+
+    setMetodoPago('nueva_tarjeta');
+    setNuevaTarjeta({
+      titular: titularDemo,
+      numero: '4532 0151 1283 0366',
+      exp: '11/29',
+      cvv: '842'
+    });
+    setCvvBovedaConfirm('842');
+    setErrorTransaccion('');
+  };
 
   const catalogoExtras = [
     {
@@ -938,6 +954,27 @@ export default function Checkout() {
                       onClick={() => setMetodoPago("spei_codi")}
                     >
                       SPEI / CoDi® 24h
+                    </button>
+                  </div>
+                  
+                  {/* BANNER DE CONFIANZA SANDBOX PARA DEMOSTRACIÓN */}
+                  <div className="sandbox-banner">
+                    <div className="sandbox-banner-info">
+                      <div className="sandbox-badge-row">
+                        <span className="sandbox-badge">MODO SANDBOX PCI-DSS</span>
+                        <span className="sandbox-cipher">TLS 1.3 · Tokenización Activa</span>
+                      </div>
+                      <p>
+                        Entorno de demostración certificado. No ingreses tarjetas reales; usa una tarjeta virtual de prueba con un clic.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      className="btn-sandbox-autofill"
+                      onClick={autocompletarTarjetaSandbox}
+                    >
+                      <Sparkles size={15} />
+                      <span>Autocompletar Tarjeta Demo</span>
                     </button>
                   </div>
 

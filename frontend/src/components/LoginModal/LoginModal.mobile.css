@@ -78,3 +78,97 @@
     min-height: 44px;
   }
 }
+/* ==========================================================
+   ADAPTACIÓN MÓVIL DE CAPTCHA, DEMO Y BLINDAJE (<= 768px)
+   ========================================================== */
+@media (max-width: 768px) {
+  .demo-coloquio-btn {
+    width: 100%;
+    padding: 0.52rem 0.75rem;
+    font-size: 0.74rem;
+  }
+
+  .captcha-wrapper {
+    flex-wrap: wrap;
+    gap: 0.45rem;
+  }
+
+  .captcha-badge {
+    flex: 1;
+    min-width: 115px;
+    font-size: 1.05rem;
+    padding: 0.5rem 0.6rem;
+    letter-spacing: 0.22em;
+  }
+
+  .btn-refresh-captcha {
+    padding: 0.56rem;
+    min-width: 40px;
+    min-height: 40px;
+  }
+
+  .captcha-input {
+    width: 100%;
+    flex: 1 1 100%;
+    min-height: 42px;
+    font-size: 0.95rem;
+  }
+
+  .trust-seal-footer {
+    flex-direction: column;
+    gap: 0.25rem;
+    font-size: 0.68rem;
+    line-height: 1.35;
+  }
+}
+/* ==========================================================
+   LOGIN MODAL RESPONSIVO & DEMO COLOQUIO (MÓVIL <= 768px)
+   ========================================================== */
+@media (max-width: 768px) {
+  .login-modal-overlay {
+    padding: 0.65rem;
+    align-items: flex-start;
+    overflow-y: auto;
+  }
+
+  .login-modal-container {
+    width: 100%;
+    max-width: 100%;
+    max-height: 92dvh;
+    overflow-y: auto;
+    padding: 1.35rem 1rem;
+    margin: auto 0;
+  }
+
+  .form-row-2col {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .form-row-2col .form-group {
+    flex: 1 1 auto !important;
+    width: 100%;
+  }
+
+  .btn-demo-coloquio {
+    width: 100%;
+    min-height: 40px;
+    font-size: 0.75rem;
+    padding: 0.5rem 0.75rem;
+  }
+
+  .captcha-wrapper {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .captcha-input {
+    flex: 1 1 120px;
+    font-size: 16px; /* Evita zoom automático en iOS/Android */
+  }
+
+  .btn-gold-submit {
+    min-height: 46px;
+    font-size: 0.88rem;
+  }
+}

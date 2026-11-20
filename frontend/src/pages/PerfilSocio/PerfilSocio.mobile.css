@@ -226,3 +226,46 @@
     box-sizing: border-box;
   }
 }
+/* ==========================================================
+   AJUSTES RESPONSIVOS PERFIL SOCIO (MÓVIL <= 768px)
+   ========================================================== */
+@media (max-width: 768px) {
+  .perfil-tabs-nav {
+    display: flex;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    gap: 0.45rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .perfil-tab-btn {
+    white-space: nowrap;
+    flex: 0 0 auto;
+    font-size: 0.74rem;
+    padding: 0.55rem 0.8rem;
+  }
+
+  .btn-demo-sat-autofill {
+    width: 100%;
+    text-align: center;
+    min-height: 40px;
+  }
+
+  .tarjeta-bancaria-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+  }
+
+  .tb-acciones {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .baucher-modal-card {
+    width: 94vw;
+    max-height: 90dvh;
+    overflow-y: auto;
+    padding: 1.15rem;
+  }
+}
